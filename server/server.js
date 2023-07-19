@@ -13,27 +13,42 @@ const io = new Server(server);
 let SERIALPORT;
 // EXPRESS ENDPOINTS
 app.get("/api/listPorts", async (req, res) => {
+  console.log("listPorts ran");
   try {
     const serialPorts = await SerialPort.list();
-    res.json(serialPorts);
+    res.status(200).json({ status: "OK", data: serialPorts });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ status: "FAILED", data: { error: err.message } });
   }
 });
 
-app.get("/api/serialPort", async (req, res) => {
+app.get("/api/serialPort/connect", async (req, res) => {
   const { path, baudRate } = req.query;
   console.log("Attempting to connect to serialPort");
   SERIALPORT = new SerialPort({
     path,
     baudRate: parseInt(baudRate),
     autoOpen: false,
+    endOnClose: true,
   });
 
   SERIALPORT.open();
+  SERIALPORT.on("open", () => res.status(200).json({ status: "OK", data: "" }));
+  SERIALPORT.on("error", (err) =>
+    res.status(403).json({ status: "FAILED", data: { error: err.message } })
+  );
+});
 
-  SERIALPORT.on("open", () => res.json("connection established"));
-  SERIALPORT.on("error", (err) => res.json(err));
+app.get("/api/serialPort/disconnect", async (req, res) => {
+  if (!SERIALPORT) return;
+  SERIALPORT.close();
+  SERIALPORT.on("end", () => {
+    res.status(200).json({ status: "OK", data: "" });
+  });
+  // unlikely
+  SERIALPORT.on("error", (err) =>
+    res.status(403).json({ status: "FAILED", data: { error: err.message } })
+  );
 });
 
 // WEBSOCKET CONNECTION

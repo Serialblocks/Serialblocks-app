@@ -1,3 +1,7 @@
+you can delete package.json that's only used to run the script start and acheive the same by running
+
+npx concurrently "npm -C client run client" "npm -C server run server"
+
 clock configuration: the processing speed of which your code will be executed.
 
 apart from configuring the main clock speed
