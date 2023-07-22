@@ -1,4 +1,4 @@
-import cc from "clsx";
+import { cn } from "@/lib/utils";
 import React from "react";
 import { useGauge } from "use-gauge";
 export function Power(props) {
@@ -28,7 +28,7 @@ export function Power(props) {
             return (
               <React.Fragment key={`tick-group-${angle}`}>
                 <line
-                  className={cc([
+                  className={cn([
                     "stroke-gray-300",
                     {
                       "stroke-green-300": asValue <= 20,

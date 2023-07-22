@@ -1,31 +1,26 @@
-import "./index.css";
+import { Lamp } from "@/components/Lamp";
+import { SerialPort } from "@/components/SerialPort";
 
-import SerialPort from "./components/SerialPort";
-import SocketBlock from "./components/socketBlock";
-import Status2 from "./components/Status2";
-
-import DGView from "./components/DGView";
-import DummyGraph from "./components/DummyGraph";
-import Lamp from "./components/Lamp";
 import { useState } from "react";
+import { Socket } from "@/components/Socket";
+import { Status } from "@/components/Status";
+import { LineChart } from "@/components/LineChart";
+import { Gauge } from "@/components/Gauge";
+import { Toaster } from "@/ui/toaster";
 
 const App = () => {
-  const [isPortConn, setIsPortConn] = useState(null);
-
+  const [isConnected, setIsConnected] = useState(null);
+  const [serialData, setSerialData] = useState(null);
   return (
-    <div className="grid grid-cols-5 grid-rows-[min-content_1fr] gap-2 max-w-6xl [&>*]:rounded-md m-auto">
-      <SerialPort
-        colSpan="3"
-        rowSpan="2"
-        setIsPortConn={setIsPortConn}
-        isPortConn={isPortConn}
-      />
-      <SocketBlock colSpan="1" rowSpan="2" />
-      <Status2 colSpan="1" rowSpan="2" isPortConn={isPortConn} />
+    <div className="grid grid-cols-5 grid-rows-2 gap-2 max-w-7xl m-auto align-middle">
+      <SerialPort setIsConnected={setIsConnected} isConnected={isConnected} />
+      <Socket />
+      <Status />
 
-      <DummyGraph colSpan="3" rowSpan="2" />
-      <DGView colSpan="2" rowSpan="1" />
-      <Lamp colSpan="2" rowSpan="1" />
+      <LineChart />
+      <Gauge />
+      <Lamp />
+      <Toaster />
     </div>
   );
 };

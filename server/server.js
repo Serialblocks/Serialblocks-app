@@ -35,7 +35,7 @@ app.get("/api/serialPort/connect", async (req, res) => {
   SERIALPORT.open();
   SERIALPORT.on("open", () => res.status(200).json({ status: "OK", data: "" }));
   SERIALPORT.on("error", (err) =>
-    res.status(403).json({ status: "FAILED", data: { error: err.message } })
+    res.status(200).json({ status: "FAILED", data: { error: err.message } })
   );
 });
 
