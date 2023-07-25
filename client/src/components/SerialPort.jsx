@@ -1,16 +1,16 @@
 import { useRef, useState } from "react";
 
-import { Input } from "@/ui/input";
-import { Button } from "@/ui/button";
-import { Spinner } from "@/ui/spinner";
-import { ToastAction } from "@/ui/toast";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { ToastAction } from "@/components/ui/toast";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/ui/select";
+} from "@/components/ui/select";
 
 import {
   Card,
@@ -19,7 +19,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/ui/card";
+} from "@/components/ui/card";
 
 import {
   LinkIcon,
@@ -27,7 +27,7 @@ import {
   BoltIcon,
 } from "@heroicons/react/24/solid";
 
-import { useToast } from "@/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 const SerialPort = ({ setIsConnected, isConnected }) => {
   const [isLoading, setIsLoading] = useState(false);

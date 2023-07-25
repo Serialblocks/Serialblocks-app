@@ -6,7 +6,7 @@ import { Socket } from "@/components/Socket";
 import { Status } from "@/components/Status";
 import { LineChart } from "@/components/LineChart";
 import { Gauge } from "@/components/Gauge";
-import { Toaster } from "@/ui/toaster";
+import { Toaster } from "@/components/ui/toaster";
 
 const App = () => {
   const [isConnected, setIsConnected] = useState(null);

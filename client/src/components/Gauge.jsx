@@ -9,7 +9,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/ui/card";
+} from "@/components/ui/card";
 
 const Gauge = () => {
   const [count, setCount] = useState(97);
