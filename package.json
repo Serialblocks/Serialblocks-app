@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "start": "concurrently \"npm -C client run client\" \"npm -C server run server\"",
-    "client": "npm -C client run client",
-    "server": "npm -C server run server"
+    "start": "concurrently \"npm run client\" \"npm run server\"",
+    "client": "npm run client --prefix client",
+    "server": "npm run server --prefix server"
   }
 }

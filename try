@@ -1,0 +1,79 @@
+  char *user_data = "The application is running\r\n"; //demo data for transmission-
+
+  uint8_t data_buffer[100]; // data buffer
+  uint8_t recvd_data; // receive buffer
+  uint32_t count=0; // count how many bytes are received
+
+  /* USER CODE END 2 */
+  HAL_UART_Transmit_IT(&huart1,(uint8_t*)user_data,strlen(user_data)); //Transmit data in interrupt mode
+    HAL_UART_Receive_IT(&huart1,&recvd_data,1); //receive data from data buffer interrupt mode
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+  /* USER CODE END 3 */
+}
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	memset(user_data, 0, strlen(user_data)); //empty the transmission data buffer
+}
+
+//UART 2 receive complete callback
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+
+	 if(recvd_data == '\r') //when enter is pressed go to this condition
+	 {
+		 data_buffer[count++]='\r';
+		 HAL_UART_Transmit(huart,data_buffer,count,HAL_MAX_DELAY); //transmit the full sentence again
+		 memset(data_buffer, 0, count); // enpty the data buffer
+	 }
+	 else
+	 {
+		 data_buffer[count++] = recvd_data; // every time when interrput is happen, received 1 byte of data
+	 }
+	 HAL_UART_Receive_IT(&huart1,&recvd_data,1); //start next data receive interrupt
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	memset(user_data, 0, strlen(user_data)); //empty the transmission data buffer
+}
+
+//UART 2 receive complete callback
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+
+	 if(recvd_data == '\r') //when enter is pressed go to this condition
+	 {
+		 data_buffer[count++]='\r';
+		 
+//		 HAL_UART_Transmit(huart,data_buffer,count,HAL_MAX_DELAY); //transmit the full sentence again
+		 memset(data_buffer, 0, count); // enpty the data buffer
+	 }
+	 else
+	 {
+		 data_buffer[count++] = recvd_data; // every time when interrput is happen, received 1 byte of data
+	 }
+	 HAL_UART_Receive_IT(&huart1,&recvd_data,1); //start next data receive interrupt
+
+
+}
