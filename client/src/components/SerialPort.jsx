@@ -125,7 +125,7 @@ const SerialPort = ({ setIsConnected, isConnected }) => {
   };
 
   return (
-    <Card className="col-span-3 row-span-2">
+    <Card className="col-span-2 row-span-4">
       <CardContent className="grid grid-cols-5 grid-rows-2 gap-2 ">
         <Select
           value={path}
