@@ -22,7 +22,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
-
 #include <string.h>
 
 /* USER CODE END Includes */
@@ -74,10 +73,8 @@ char stringBuffer[50];
 
 void transmitLEDState(void) {
     char btnStrBuffer[20]; // Adjust the size as per your requirement
-
     // Assuming you have defined appropriate macros or variables for LED_GPIO_Port and LED_Pin
     snprintf(btnStrBuffer, sizeof(btnStrBuffer), "{\"LED\"}:%d \n\r", HAL_GPIO_ReadPin(LED_GPIO_Port, LED_Pin));
-
     // Assuming you have defined huart1 and HAL_UART_Transmit correctly
     HAL_UART_Transmit(&huart1, (uint8_t *)btnStrBuffer, strlen(btnStrBuffer), 100);
 }
@@ -145,44 +142,14 @@ int main(void)
     HAL_UART_Transmit( & huart1, (uint8_t * ) stringBuffer, strlen(stringBuffer), 1000);
     HAL_Delay(1000);
   }
-}
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-  currentMillis = HAL_GetTick();
-
-  if (GPIO_Pin == PUSHBTN_INT_Pin && (currentMillis - previousMillis > 200)) // If The INT Source Is EXTI Line4 (B4 Pin)
-  {
-    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin); // Toggle The Output (LED) Pin
-    transmitLEDState();
-    previousMillis = currentMillis;
-  }
-}
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef * huart) {
-  if (huart == & huart1) // Make sure the callback is for UART1
-  {
-    if (recvd_data == '\r') { //when enter is pressed go to this condition
-      data_buffer[count++] = '\0';
-
-      if (strcmp(data_buffer, "TOGGLE_LED") == 0) //when enter is pressed go to this condition
-      {
-        HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin); //loggle the user led which is connected to GPIO PA5
-        transmitLEDState();
-      }
-      memset(data_buffer, 0, count); // enpty the data buffer
-      count = 0;
-    } else {
-      data_buffer[count++] = recvd_data; // every time when interrput is happen, received 1 byte of data
-    }
-    HAL_UART_Receive_IT(huart, & recvd_data, 1); //start next data receive interrupt
-
-  }
-}
 
   /* USER CODE END 3 */
-
+}
 
 /**
   * @brief System Clock Configuration
@@ -398,7 +365,36 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+  currentMillis = HAL_GetTick();
 
+  if (GPIO_Pin == PUSHBTN_INT_Pin && (currentMillis - previousMillis > 200)) // If The INT Source Is EXTI Line4 (B4 Pin)
+  {
+    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin); // Toggle The Output (LED) Pin
+    transmitLEDState();
+    previousMillis = currentMillis;
+  }
+}
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef * huart) {
+  if (huart == & huart1) // Make sure the callback is for UART1
+  {
+    if (recvd_data == '\r') { //when enter is pressed go to this condition
+      data_buffer[count++] = '\0';
+
+      if (strcmp(data_buffer, "TOGGLE_LED") == 0) //when enter is pressed go to this condition
+      {
+        HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin); //loggle the user led which is connected to GPIO PA5
+        transmitLEDState();
+      }
+      memset(data_buffer, 0, count); // enpty the data buffer
+      count = 0;
+    } else {
+      data_buffer[count++] = recvd_data; // every time when interrput is happen, received 1 byte of data
+    }
+    HAL_UART_Receive_IT(huart, & recvd_data, 1); //start next data receive interrupt
+
+  }
+}
 /* USER CODE END 4 */
 
 /**
@@ -430,8 +426,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-
-// Using no resistance and directly connecting the push-button to Vcc for pull-up is not recommended, and it can lead to problems in your circuit. Let's understand why:
-
-// Excessive Current Consumption: When you directly connect the push-button to Vcc without any resistance, it creates a short-circuit path between Vcc and ground whenever the button is pressed. This causes a significant increase in current flow through the button, which can lead to excessive current consumption and may even damage the push-button or the microcontroller's GPIO pin.

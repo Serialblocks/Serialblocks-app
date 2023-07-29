@@ -50,11 +50,11 @@ const Status = ({ isConnected }) => {
         >
           <span>
             <SignalIcon className="w-4 h-4 mr-2 animate-pulse" />
-            live
+            GO live
           </span>
         </Button>
 
-        <Button size="pill" variant="increase" className="col-span-1" asChild>
+        {/* <Button size="pill" variant="increase" className="col-span-1" asChild>
           <span>
             <ArrowTrendingUpIcon className="w-4 h-4 mr-2" />
             +12.3%
@@ -66,7 +66,7 @@ const Status = ({ isConnected }) => {
             <ArrowTrendingDownIcon className="w-4 h-4 mr-2" />
             -12.3%
           </span>
-        </Button>
+        </Button> */}
       </CardContent>
     </Card>
   );

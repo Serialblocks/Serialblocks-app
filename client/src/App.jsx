@@ -12,16 +12,17 @@ const App = () => {
   const [isConnected, setIsConnected] = useState(null);
   const [serialData, setSerialData] = useState(null);
   return (
-    <div className="grid grid-cols-5 grid-rows-2 gap-2 max-w-7xl m-auto align-middle">
-      <SerialPort setIsConnected={setIsConnected} isConnected={isConnected} />
-      <Socket />
-      <Status />
+    <>
+      <div className="grid grid-cols-5 grid-rows-2 gap-2 max-w-7xl m-auto align-middle">
+        <SerialPort setIsConnected={setIsConnected} isConnected={isConnected} />
+        <Socket />
+        <Status />
 
-      <LineChart />
-      <Gauge />
-      <Lamp />
+        <LineChart />
+        <Lamp />
+      </div>
       <Toaster />
-    </div>
+    </>
   );
 };
 export default App;

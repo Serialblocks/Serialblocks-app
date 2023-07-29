@@ -1,4 +1,9 @@
-import { LinkIcon, StopIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import {
+  LinkIcon,
+  SignalIcon,
+  StopIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/solid";
 import {
   Card,
   CardContent,
@@ -41,8 +46,8 @@ const Socket = () => {
       <CardContent className="flex flex-col gap-2 ">
         <div className="flex flex-col gap-2">
           <Button onClick={() => socket.connect()} className="">
-            <LinkIcon className="mr-2 w-4 h-4" />
-            connect live
+            <SignalIcon className="mr-2 w-5 h-5" />
+            Live
           </Button>
           <Button variant="secondary" className="">
             <XMarkIcon className="mr-2 w-4 h-4" />
