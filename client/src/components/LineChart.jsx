@@ -27,7 +27,7 @@ const LineChart = () => {
   ];
 
   return (
-    <Card className="col-span-3 row-span-3">
+    <Card className="col-span-6 row-span-3">
       <CardContent>
         <Chart options={options} series={series} type="line" />
       </CardContent>

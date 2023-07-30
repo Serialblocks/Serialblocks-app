@@ -14,12 +14,18 @@ import { Footer } from "@/components/Footer";
 
 const App = () => {
   const [isConnected, setIsConnected] = useState(null);
-  const [serialData, setSerialData] = useState(null);
+  const [serialData, setSerialData] = useState({
+    Temperature: 0,
+    LDR: 0,
+    LED: 0,
+    OutputArr: [],
+  });
+  console.log(serialData);
   return (
     <>
-      <div className="grid grid-cols-5 grid-rows-4 gap-2 max-w-7xl m-auto align-middle">
+      <div className="grid grid-cols-12 grid-rows-4 mt-4 gap-2 max-w-7xl m-auto align-middle">
         <SerialPort setIsConnected={setIsConnected} isConnected={isConnected} />
-        <Socket />
+        <Socket serialData={serialData} setSerialData={setSerialData} />
         <LineChart />
         <MCInternalTemp />
         <LED />

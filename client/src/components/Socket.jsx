@@ -9,10 +9,15 @@ const socket = io.connect("http://localhost:3003", {
   transports: ["websocket"],
   autoConnect: false,
 });
-const Socket = () => {
+const Socket = ({ setSerialData }) => {
   useEffect(() => {
     socket.on("getParsedData", (data) => {
-      console.log(data);
+      let dataObj = JSON.parse(data);
+      setSerialData((prevData) => ({
+        ...prevData,
+        ...dataObj,
+        OutputArr: [...prevData.OutputArr.slice(-3), data],
+      }));
     });
 
     socket.on("connect", () => {
@@ -31,7 +36,7 @@ const Socket = () => {
   }, []);
 
   return (
-    <Card className="col-span-3 row-span-4">
+    <Card className="col-span-6 row-span-4">
       <CardContent className="grid grid-cols-3 grid-rows-2 gap-2">
         <Button
           onClick={() => socket.connect()}

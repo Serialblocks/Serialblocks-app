@@ -945,7 +945,7 @@ void transmitLEDState(void) {
  8000b40:	af00      	add	r7, sp, #0
     char btnStrBuffer[20]; // Adjust the size as per your requirement
     // Assuming you have defined appropriate macros or variables for LED_GPIO_Port and LED_Pin
-    snprintf(btnStrBuffer, sizeof(btnStrBuffer), "{\"LED\"}:%d \n\r", HAL_GPIO_ReadPin(LED_GPIO_Port, LED_Pin));
+    snprintf(btnStrBuffer, sizeof(btnStrBuffer), "{\"LED\":%d}\n\r", HAL_GPIO_ReadPin(LED_GPIO_Port, LED_Pin));
  8000b42:	f44f 5180 	mov.w	r1, #4096	; 0x1000
  8000b46:	480c      	ldr	r0, [pc, #48]	; (8000b78 <transmitLEDState+0x3c>)
  8000b48:	f001 fd24 	bl	8002594 <HAL_GPIO_ReadPin>
@@ -1087,7 +1087,7 @@ int main(void)
  8000c32:	4603      	mov	r3, r0
  8000c34:	603b      	str	r3, [r7, #0]
 
-    snprintf(stringBuffer, sizeof(stringBuffer), "{\"temperature\":%.4f,\"LDR\":%d}\n\r", celsius,LDRValue);
+    snprintf(stringBuffer, sizeof(stringBuffer), "{\"Temperature\":%.4f,\"LDR\":%d}\n\r", celsius,LDRValue);
  8000c36:	6838      	ldr	r0, [r7, #0]
  8000c38:	f7ff fc00 	bl	800043c <__aeabi_f2d>
  8000c3c:	4602      	mov	r2, r0
