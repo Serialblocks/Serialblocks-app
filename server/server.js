@@ -31,7 +31,6 @@ app.get("/api/serialPort/connect", async (req, res) => {
     autoOpen: false,
     endOnClose: true,
   });
-
   SERIALPORT.open();
   SERIALPORT.on("open", () => res.status(200).json({ status: "OK", data: "" }));
   SERIALPORT.on("error", (err) =>
@@ -51,6 +50,14 @@ app.get("/api/serialPort/disconnect", async (req, res) => {
   );
 });
 
+app.get("/api/serialPort/write", async (req, res) => {
+  const { command } = req.query;
+  console.log(command);
+  if (!SERIALPORT) return;
+  SERIALPORT.write(`${command}\r`);
+  res.status(200).json({ status: "OK", data: command });
+});
+capabilities;
 // WEBSOCKET CONNECTION
 io.on("connection", (socket) => {
   //  TODO: handle better
