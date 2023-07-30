@@ -57,7 +57,6 @@ app.get("/api/serialPort/write", async (req, res) => {
   SERIALPORT.write(`${command}\r`);
   res.status(200).json({ status: "OK", data: command });
 });
-capabilities;
 // WEBSOCKET CONNECTION
 io.on("connection", (socket) => {
   //  TODO: handle better
