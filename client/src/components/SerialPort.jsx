@@ -3,7 +3,6 @@ import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { ToastAction } from "@/components/ui/toast";
 import {
   Select,
   SelectContent,
@@ -46,9 +45,9 @@ const SerialPort = ({ setIsConnected, isConnected }) => {
     description: "",
   };
 
-  console.log(serialPorts, "ss");
+  // console.log(serialPorts, "ss");
   // TODO: FIX multiple re-renders on writing the baudrate
-
+  // TODO:
   const fetchSerialPorts = async () => {
     // try {
     let res = await fetch("./api/listPorts");
@@ -125,7 +124,7 @@ const SerialPort = ({ setIsConnected, isConnected }) => {
   };
 
   return (
-    <Card className="col-span-2 row-span-4">
+    <Card className="col-span-6 row-span-4">
       <CardContent className="grid grid-cols-5 grid-rows-2 gap-2 ">
         <Select
           value={path}
