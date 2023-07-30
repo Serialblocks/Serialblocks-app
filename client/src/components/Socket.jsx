@@ -2,22 +2,46 @@ import { SignalIcon } from "@heroicons/react/24/solid";
 import { Card, CardContent } from "@/components/ui/card";
 import { io } from "socket.io-client";
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { SerialMonitor } from "./SerialMonitor";
 import { Input } from "@/components/ui/input";
 const socket = io.connect("http://localhost:3003", {
   transports: ["websocket"],
   autoConnect: false,
 });
-const Socket = ({ setSerialData }) => {
+const Socket = ({ setSerialData, setSerialOutput }) => {
+  const formRef = useRef(null);
+  const writeOnPort = async (command) => {
+    let res = await fetch(`./api/serialPort/write?command=${command}`);
+    console.log(res);
+    // if (res.ok) {
+    //   let { status, data } = await res.json();
+    //   if (status === "OK") {
+    //     toastMsg.title = `Connected`;
+    //     toastMsg.description = `${path} has been connected successfully.`;
+    //     setIsConnected(true);
+    //   } else {
+    //     toastMsg.title = "Connection problem";
+    //     toastMsg.description = `${data.error}.`;
+    //     setIsConnected(false);
+    //   }
+    // } else {
+    //   toastMsg.title =
+    //     "There was a problem connecting to serial port, \n please try again later.";
+    //   toastMsg.description = `${res.statusText} (${res.status})`;
+    //   setIsConnected(false);
+    // }
+    // toast(toastMsg);
+    // setIsLoading(false);
+  };
   useEffect(() => {
     socket.on("getParsedData", (data) => {
-      let dataObj = JSON.parse(data);
+      let serialDataObj = JSON.parse(data);
       setSerialData((prevData) => ({
         ...prevData,
-        ...dataObj,
-        OutputArr: [...prevData.OutputArr.slice(-3), data],
+        ...serialDataObj,
       }));
+      setSerialOutput((prevOutput) => [...prevOutput.slice(-3), data]);
     });
 
     socket.on("connect", () => {
@@ -46,11 +70,20 @@ const Socket = ({ setSerialData }) => {
           Live
         </Button>
         <SerialMonitor />
-        <Input
-          className="col-span-1 row-span-1"
-          type="text"
-          placeholder="type and press enter"
-        />
+        <form
+          ref={formRef}
+          onSubmit={(e) => {
+            e.preventDefault();
+            writeOnPort(formRef.current.elements.command.value);
+          }}
+        >
+          <Input
+            className="col-span-1 row-span-1"
+            type="text"
+            name="command"
+            placeholder="type and press enter"
+          />
+        </form>
       </CardContent>
     </Card>
   );

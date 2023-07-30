@@ -32,7 +32,7 @@ const SerialPort = ({ setIsConnected, isConnected }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [portConfig, setPortConfig] = useState({
     path: "",
-    baudRate: "",
+    baudRate: 115200,
   });
   const [serialPorts, setSerialPorts] = useState(null);
 
@@ -99,6 +99,7 @@ const SerialPort = ({ setIsConnected, isConnected }) => {
 
   const connectPort = async () => {
     setIsLoading(true);
+    //TODO: CHECK PROBLEM WITH QUERY PARAMS AND NOT QUERY ATA IN SERVER
     let res = await fetch(
       `./api/serialPort/connect?path=${path}&baudRate=${baudRate}`
     );
