@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 // import { fontFamily } from "tailwindcss/defaultTheme";
 import tailwindAnimate from "tailwindcss-animate";
+import { fontFamily } from "tailwindcss/defaultTheme";
 export default {
   // this is to support tailwind intellisense for CVA
   "tailwindCSS.experimental.classRegex": [
@@ -31,30 +32,6 @@ export default {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        connect: {
-          DEFAULT: "hsl(var(--connect))",
-          foreground: "hsl(var(--connect-foreground))",
-        },
-        fetch: {
-          DEFAULT: "hsl(var(--fetch))",
-          foreground: "hsl(var(--fetch-foreground))",
-        },
-        live: {
-          DEFAULT: "hsl(var(--live))",
-          foreground: "hsl(var(--live-foreground))",
-        },
-        increase: {
-          DEFAULT: "hsl(var(--increase))",
-          foreground: "hsl(var(--increase-foreground))",
-        },
-        decrease: {
-          DEFAULT: "hsl(var(--decrease))",
-          foreground: "hsl(var(--decrease-foreground))",
-        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
@@ -71,15 +48,16 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        terminal: {
+          DEFAULT: "hsl(var(--terminal))",
+          foreground: "hsl(var(--terminal-foreground))",
+        },
       },
-      borderRadius: {
-        lg: `var(--radius)`,
-        md: `calc(var(--radius) - 2px)`,
-        sm: "calc(var(--radius) - 4px)",
+
+      fontFamily: {
+        sans: ["var(--font-sans)", ...fontFamily.sans],
+        mono: ["var(--font-mono)", ...fontFamily.mono],
       },
-      // fontFamily: {
-      //   sans: ["var(--font-sans)", ...fontFamily.sans],
-      // },
       keyframes: {
         "accordion-down": {
           from: { height: 0 },

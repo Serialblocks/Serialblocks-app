@@ -3,7 +3,7 @@ import { useState } from "react";
 import { SerialPort } from "@/components/SerialPort";
 import { Socket } from "@/components/Socket";
 import { LineChart } from "@/components/LineChart";
-import { MCInternalTemp } from "@/components/MCInternalTemp";
+import { Processor } from "@/components/Processor";
 
 import { LED } from "@/components/LED";
 import { Plant } from "@/components/Plant";
@@ -24,14 +24,16 @@ const App = () => {
   console.log(serialOutput);
   return (
     <>
-      <div className="grid grid-cols-12 grid-rows-4 mt-4 gap-2 max-w-7xl m-auto align-middle">
-        <SerialPort setIsConnected={setIsConnected} isConnected={isConnected} />
-        <Socket
+      <div className="grid grid-cols-12 grid-rows-4 gap-2 max-w-7xl mx-auto">
+        <SerialPort
+          setIsConnected={setIsConnected}
+          isConnected={isConnected}
           setSerialData={setSerialData}
           setSerialOutput={setSerialOutput}
         />
+        <Socket serialOutput={serialOutput} />
         <LineChart />
-        <MCInternalTemp />
+        <Processor />
         <LED />
         <Temperature />
         <Humidity />

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,31 +11,30 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
-import {
-  LinkIcon,
-  MagnifyingGlassIcon,
-  BoltIcon,
-} from "@heroicons/react/24/solid";
-
+import { Search } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
-const SerialPort = ({ setIsConnected, isConnected }) => {
+import { io } from "socket.io-client";
+import { testJSON } from "@/lib/utils";
+const socket = io.connect("http://localhost:3003", {
+  transports: ["websocket"],
+  autoConnect: false,
+});
+
+const SerialPort = ({
+  setIsConnected,
+  isConnected,
+  setSerialData,
+  setSerialOutput,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [portConfig, setPortConfig] = useState({
     path: "",
     baudRate: 115200,
   });
   const [serialPorts, setSerialPorts] = useState(null);
-
   const { toast } = useToast();
   const { path, baudRate } = portConfig;
 
@@ -44,6 +43,33 @@ const SerialPort = ({ setIsConnected, isConnected }) => {
     title: "",
     description: "",
   };
+
+  useEffect(() => {
+    socket.on("getParsedData", (data) => {
+      if (testJSON(data)) {
+        let serialDataObj = JSON.parse(data);
+        setSerialData((prevData) => ({
+          ...prevData,
+          ...serialDataObj,
+        }));
+      }
+      setSerialOutput((prevOutput) => [...prevOutput.slice(-3), data]);
+    });
+
+    socket.on("connect", () => {
+      console.log("connected");
+      //live tag
+    });
+
+    socket.on("disconnect", () => {
+      console.log("disconnected");
+      //NOT LIVE
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   // console.log(serialPorts, "ss");
   // TODO: FIX multiple re-renders on writing the baudrate
@@ -85,9 +111,10 @@ const SerialPort = ({ setIsConnected, isConnected }) => {
     let res = await fetch("./api/serialPort/disconnect");
     if (res.ok) {
       let { status } = await res.json();
-      setIsConnected(status === "OK" ? false : true);
       toastMsg.title = `Disconnected`;
       toastMsg.description = `${path} has been disconnected successfully.`;
+      setIsConnected(status === "OK" ? false : true);
+      socket.disconnect();
     } else {
       toastMsg.title =
         "There was a problem disconnecting the serial port, \n please try again later.";
@@ -108,6 +135,7 @@ const SerialPort = ({ setIsConnected, isConnected }) => {
       if (status === "OK") {
         toastMsg.title = `Connected`;
         toastMsg.description = `${path} has been connected successfully.`;
+        socket.connect();
         setIsConnected(true);
       } else {
         toastMsg.title = "Connection problem";
@@ -161,7 +189,7 @@ const SerialPort = ({ setIsConnected, isConnected }) => {
           onClick={fetchSerialPorts}
           className="col-span-1"
         >
-          <MagnifyingGlassIcon className="mr-2 w-4 h-4" />
+          <Search className="mr-2 w-4 h-4" />
           {serialPorts === null ? "load ports" : "another shot"}
         </Button>
 

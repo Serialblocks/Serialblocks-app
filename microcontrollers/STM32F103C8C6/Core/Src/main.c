@@ -74,7 +74,7 @@ char stringBuffer[50];
 void transmitLEDState(void) {
     char btnStrBuffer[20]; // Adjust the size as per your requirement
     // Assuming you have defined appropriate macros or variables for LED_GPIO_Port and LED_Pin
-    snprintf(btnStrBuffer, sizeof(btnStrBuffer), "{\"LED\":%d}\n\r", HAL_GPIO_ReadPin(LED_GPIO_Port, LED_Pin));
+    snprintf(btnStrBuffer, sizeof(btnStrBuffer), "{\"LED\":%d}\r\n", HAL_GPIO_ReadPin(LED_GPIO_Port, LED_Pin));
     // Assuming you have defined huart1 and HAL_UART_Transmit correctly
     HAL_UART_Transmit(&huart1, (uint8_t *)btnStrBuffer, strlen(btnStrBuffer), 100);
 }
@@ -137,7 +137,7 @@ int main(void)
     uint8_t LDRValue = HAL_ADC_GetValue( & hadc2);
     float celsius = (357.558 - 0.187364 * tempValue) / 10.0;
 
-    snprintf(stringBuffer, sizeof(stringBuffer), "{\"Temperature\":%.4f,\"LDR\":%d}\n\r", celsius,LDRValue);
+    snprintf(stringBuffer, sizeof(stringBuffer), "{\"Temperature\":%.4f,\"LDR\":%d}\r\n", celsius,LDRValue);
 
     HAL_UART_Transmit( & huart1, (uint8_t * ) stringBuffer, strlen(stringBuffer), 1000);
     HAL_Delay(1000);
@@ -380,8 +380,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef * huart) {
   {
     if (recvd_data == '\r') { //when enter is pressed go to this condition
       data_buffer[count++] = '\0';
-
-      if (strcmp(data_buffer, "TOGGLE_LED") == 0) //when enter is pressed go to this condition
+      char sentBuff[120];
+      snprintf(sentBuff, sizeof(sentBuff), "%s\r\n", data_buffer);
+      HAL_UART_Transmit(&huart1, (uint8_t *)sentBuff, strlen(sentBuff), HAL_MAX_DELAY);
+      if (strcmp(data_buffer, "TOGGLE_LED") == 0)
       {
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin); //loggle the user led which is connected to GPIO PA5
         transmitLEDState();

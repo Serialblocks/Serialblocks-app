@@ -7,4 +7,4 @@
 ../Core/Src/main.c:332:13:MX_GPIO_Init	1
 ../Core/Src/main.c:368:6:HAL_GPIO_EXTI_Callback	3
 ../Core/Src/main.c:378:6:HAL_UART_RxCpltCallback	4
-../Core/Src/main.c:404:6:Error_Handler	1
+../Core/Src/main.c:406:6:Error_Handler	1

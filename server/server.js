@@ -61,7 +61,7 @@ app.get("/api/serialPort/write", async (req, res) => {
 io.on("connection", (socket) => {
   //  TODO: handle better
   if (!SERIALPORT) return;
-  const parser = SERIALPORT.pipe(new ReadlineParser({ delimiter: "\n\r" }));
+  const parser = SERIALPORT.pipe(new ReadlineParser({ delimiter: "\r\n" }));
   parser.on("data", async (data) => {
     socket.emit("getParsedData", data);
   });
