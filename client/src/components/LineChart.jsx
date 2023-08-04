@@ -1,11 +1,49 @@
 import Chart from "react-apexcharts";
 import { Card, CardContent } from "@/components/ui/card";
 
-const LineChart = () => {
+const LineChart = ({ LDR }) => {
   const options = {
+    grid: {
+      show: true,
+      borderColor: "#90A4AE",
+      strokeDashArray: 4,
+      position: "back",
+      xaxis: {},
+      yaxis: {
+        lines: {
+          show: true,
+        },
+      },
+    },
+    xaxis: {
+      lines: {
+        show: false,
+      },
+      axisBorder: {
+        show: false,
+      },
+      axisTicks: {
+        show: false,
+      },
+      crosshairs: {
+        show: true,
+        width: 1,
+        position: "back",
+        stroke: {
+          color: "#D1D5DB",
+          width: 1,
+          dashArray: 0,
+        },
+      },
+      tooltip: {
+        enabled: false,
+      },
+      labels: {
+        show: false,
+      },
+    },
     chart: {
       fontFamily: "Open Sans, Arial, sans-serif",
-
       id: "realtime",
       type: "line",
       animations: {
@@ -14,9 +52,6 @@ const LineChart = () => {
         dynamicAnimation: {
           speed: 1000,
         },
-      },
-      toolbar: {
-        show: false,
       },
       zoom: {
         enabled: false,
@@ -38,25 +73,21 @@ const LineChart = () => {
         dataPointIndex,
         w,
       }) => `<div class="bg-green-600">
-      <p>w: ${console.dir(w)}</p>
+      <p>w: ${/* console.dir(w) */ ""}</p>
             <p>seriesIndex: ${series[seriesIndex][dataPointIndex]}</p>
             <p>dataPointIndex: ${dataPointIndex}</p>
           </div>`,
     },
-
-    legend: {
-      show: true,
-    },
     stroke: {
       curve: "smooth",
       width: 2,
-      colors: ["#7cd7ff"],
+      colors: "#3B82F6",
     },
     markers: {
       // the dot that appears when you hover
-      colors: ["#7cd7ff"],
+      colors: "#3B82F6",
       hover: {
-        size: 5,
+        size: 4,
       },
     },
   };
@@ -64,12 +95,7 @@ const LineChart = () => {
   const series = [
     {
       name: "light",
-      data: [
-        [1, 124],
-        [2, 56],
-        [3, 28],
-        [4, 0],
-      ],
+      data: LDR,
     },
   ];
 

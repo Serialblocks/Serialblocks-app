@@ -1,14 +1,9 @@
 /** @type {import('tailwindcss').Config} */
-// import { fontFamily } from "tailwindcss/defaultTheme";
 import tailwindAnimate from "tailwindcss-animate";
 import { fontFamily } from "tailwindcss/defaultTheme";
 export default {
-  // this is to support tailwind intellisense for CVA
-  "tailwindCSS.experimental.classRegex": [
-    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-  ],
+  darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  darkMode: "class",
   theme: {
     container: {
       center: true,

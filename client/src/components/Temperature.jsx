@@ -6,7 +6,7 @@ const Temperature = () => {
   return (
     <Card className="row-span-1 col-span-3">
       <CardContent className="relative">
-        <span className="flex flex-row items-center font-medium gap-1">
+        <span className="flex  items-center font-medium gap-1">
           <Sun className="inline h-6 w-6" />
           <p>Temperature</p>
         </span>

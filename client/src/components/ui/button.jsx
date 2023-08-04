@@ -13,14 +13,6 @@ const buttonVariants = cva(
           "bg-primary text-primary-foreground shadow hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
-        connect:
-          "bg-connect text-connect-foreground shadow-sm hover:bg-connect/90",
-        fetch: "bg-fetch text-fetch-foreground shadow-sm hover:bg-fetch/90",
-        live: "bg-live text-live-foreground shadow-sm hover:bg-live/90",
-        increase:
-          "bg-increase text-increase-foreground shadow-sm hover:bg-increase/90",
-        decrease:
-          "bg-decrease text-decrease-foreground shadow-sm hover:bg-decrease/90",
         outline:
           "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
         secondary:

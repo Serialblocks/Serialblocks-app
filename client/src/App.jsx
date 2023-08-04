@@ -1,43 +1,68 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { SerialPort } from "@/components/SerialPort";
-import { Socket } from "@/components/Socket";
-import { LineChart } from "@/components/LineChart";
-import { Processor } from "@/components/Processor";
-
-import { LED } from "@/components/LED";
-import { Plant } from "@/components/Plant";
-import { Temperature } from "@/components/Temperature";
+import {
+  SerialPort,
+  Terminal,
+  LineChart,
+  Processor,
+  LED,
+  Temperature,
+  Humidity,
+  Footer,
+} from "@/components";
 import { Toaster } from "@/components/ui/toaster";
-import { Humidity } from "./components/Humidity";
-import { Footer } from "@/components/Footer";
-
+import { socket } from "@/service/socket";
 const App = () => {
-  const [isConnected, setIsConnected] = useState(null);
+  const [isPortConn, setIsPortConn] = useState(null);
+  const [portConfig, setPortConfig] = useState({
+    path: "",
+    baudRate: "",
+  });
   const [serialData, setSerialData] = useState({
     Temperature: 0,
-    LDR: 0,
+    LDR: [],
     LED: 0,
   });
-  const [serialOutput, setSerialOutput] = useState([]);
-  console.log(serialData);
-  console.log(serialOutput);
+  // cleanup for when the component unmounts/page closes or refreshes
+  useEffect(() => {
+    const cleanup = () => {
+      // TODO:IF SOCKET CONNECTED / IF PORT CONNECTED
+      if (isPortConn) {
+        fetch("./api/serialPort/disconnect");
+      }
+      if (socket.connected) {
+        socket.off("getParsedData");
+        socket.disconnect();
+      }
+    };
+    window.addEventListener("beforeunload", cleanup);
+
+    return () => {
+      window.removeEventListener("beforeunload", cleanup);
+    };
+  }, [isPortConn]);
+
   return (
     <>
-      <div className="grid grid-cols-12 grid-rows-4 gap-2 max-w-7xl mx-auto">
+      <div className="grid grid-cols-12 grid-rows-[min_content_1fr] gap-4 max-w-7xl mx-auto">
         <SerialPort
-          setIsConnected={setIsConnected}
-          isConnected={isConnected}
-          setSerialData={setSerialData}
-          setSerialOutput={setSerialOutput}
+          setIsPortConn={setIsPortConn}
+          isPortConn={isPortConn}
+          portConfig={portConfig}
+          setPortConfig={setPortConfig}
         />
-        <Socket serialOutput={serialOutput} />
-        <LineChart />
-        <Processor />
+        <Terminal
+          isPortConn={isPortConn}
+          setSerialData={setSerialData}
+          portConfig={portConfig}
+        />
+
+        <LineChart LDR={serialData.LDR} />
+        <Processor Temperature={serialData.Temperature} />
+
         <LED />
         <Temperature />
         <Humidity />
-        <Plant />
         <Footer />
       </div>
       <Toaster />

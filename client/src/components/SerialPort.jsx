@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,64 +12,39 @@ import {
 } from "@/components/ui/select";
 
 import { Card, CardContent } from "@/components/ui/card";
-
+import { socket } from "@/service/socket";
 import { Search } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
-import { io } from "socket.io-client";
-import { testJSON } from "@/lib/utils";
-const socket = io.connect("http://localhost:3003", {
-  transports: ["websocket"],
-  autoConnect: false,
-});
-
 const SerialPort = ({
-  setIsConnected,
-  isConnected,
-  setSerialData,
-  setSerialOutput,
+  setIsPortConn,
+  isPortConn,
+  portConfig,
+  setPortConfig,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [portConfig, setPortConfig] = useState({
-    path: "",
-    baudRate: 115200,
-  });
+
   const [serialPorts, setSerialPorts] = useState(null);
   const { toast } = useToast();
   const { path, baudRate } = portConfig;
 
-  const SPL = !serialPorts?.length;
+  useEffect(() => {
+    const cleanup = () => {
+      if (isPortConn) fetch("./api/serialPort/disconnect");
+    };
+    window.addEventListener("beforeunload", cleanup);
+
+    return () => window.removeEventListener("beforeunload", cleanup);
+  }, []);
+
+  const SPL = serialPorts?.length > 0 && !!path;
+  console.log(
+    `serialPorts.length > 0: ${serialPorts?.length > 0} && path: ${!!path}`
+  );
   const toastMsg = {
     title: "",
     description: "",
   };
-
-  useEffect(() => {
-    socket.on("getParsedData", (data) => {
-      if (testJSON(data)) {
-        let serialDataObj = JSON.parse(data);
-        setSerialData((prevData) => ({
-          ...prevData,
-          ...serialDataObj,
-        }));
-      }
-      setSerialOutput((prevOutput) => [...prevOutput.slice(-3), data]);
-    });
-
-    socket.on("connect", () => {
-      console.log("connected");
-      //live tag
-    });
-
-    socket.on("disconnect", () => {
-      console.log("disconnected");
-      //NOT LIVE
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
 
   // console.log(serialPorts, "ss");
   // TODO: FIX multiple re-renders on writing the baudrate
@@ -112,9 +87,8 @@ const SerialPort = ({
     if (res.ok) {
       let { status } = await res.json();
       toastMsg.title = `Disconnected`;
-      toastMsg.description = `${path} has been disconnected successfully.`;
-      setIsConnected(status === "OK" ? false : true);
-      socket.disconnect();
+      toastMsg.description = `${path} has been Disconnected successfully.`;
+      setIsPortConn(status === "OK" ? false : true);
     } else {
       toastMsg.title =
         "There was a problem disconnecting the serial port, \n please try again later.";
@@ -135,25 +109,26 @@ const SerialPort = ({
       if (status === "OK") {
         toastMsg.title = `Connected`;
         toastMsg.description = `${path} has been connected successfully.`;
+        setIsPortConn(true);
+        // connect socket
         socket.connect();
-        setIsConnected(true);
       } else {
         toastMsg.title = "Connection problem";
         toastMsg.description = `${data.error}.`;
-        setIsConnected(false);
+        setIsPortConn(false);
       }
     } else {
       toastMsg.title =
         "There was a problem connecting to serial port, \n please try again later.";
       toastMsg.description = `${res.statusText} (${res.status})`;
-      setIsConnected(false);
+      setIsPortConn(false);
     }
     toast(toastMsg);
     setIsLoading(false);
   };
 
   return (
-    <Card className="col-span-6 row-span-4">
+    <Card className="col-span-6 row-span-3">
       <CardContent className="grid grid-cols-5 grid-rows-2 gap-2 ">
         <Select
           value={path}
@@ -163,7 +138,7 @@ const SerialPort = ({
               path: newPath,
             }))
           }
-          disabled={serialPorts === null}
+          disabled={!serialPorts}
         >
           <SelectTrigger className="col-span-2">
             <SelectValue placeholder="im not working!" />
@@ -172,36 +147,36 @@ const SerialPort = ({
         </Select>
 
         <Input
-          onChange={({ currentTarget: { value: newBaudRate } }) =>
+          onBlur={({ currentTarget: { value: newBaudRate } }) => {
+            // uncontrolled input
             setPortConfig((prevConfig) => ({
               ...prevConfig,
               baudRate: newBaudRate,
-            }))
-          }
-          value={baudRate}
-          disabled={SPL}
+            }));
+          }}
+          disabled={!SPL}
           placeholder="baud rate"
           className="col-span-2"
         />
 
         <Button
-          variant="fetch"
+          variant="outline"
           onClick={fetchSerialPorts}
-          className="col-span-1"
+          className="col-span-1 px-2"
         >
           <Search className="mr-2 w-4 h-4" />
-          {serialPorts === null ? "load ports" : "another shot"}
+          List Ports
         </Button>
 
         <Button
           className="col-span-5"
-          variant="connect"
-          onClick={isConnected ? disconnectPort : connectPort}
-          disabled={SPL || !baudRate}
+          variant="default"
+          onClick={isPortConn ? disconnectPort : connectPort}
+          disabled={!SPL}
           size="md"
         >
           {isLoading && <Spinner />}
-          {isConnected ? "Disconnect" : "Connect"}
+          {isPortConn ? "Disconnect" : "Connect"}
         </Button>
       </CardContent>
     </Card>

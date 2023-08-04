@@ -10,7 +10,7 @@ app.use(cors({ origin: "*" }));
 const server = http.createServer(app);
 const io = new Server(server);
 
-let SERIALPORT;
+let SERIALPORT = null;
 // EXPRESS ENDPOINTS
 app.get("/api/listPorts", async (req, res) => {
   console.log("listPorts ran");
@@ -23,44 +23,60 @@ app.get("/api/listPorts", async (req, res) => {
 });
 
 app.get("/api/serialPort/connect", async (req, res) => {
-  const { path, baudRate } = req.query;
   console.log("Attempting to connect to serialPort");
+  const { path, baudRate } = req.query;
   SERIALPORT = new SerialPort({
     path,
     baudRate: parseInt(baudRate),
-    autoOpen: false,
+    autoOpen: true,
     endOnClose: true,
   });
-  SERIALPORT.open();
-  SERIALPORT.on("open", () => res.status(200).json({ status: "OK", data: "" }));
+  SERIALPORT.on("open", () => {
+    res.status(200).json({ status: "OK", data: "" });
+  });
   SERIALPORT.on("error", (err) =>
     res.status(200).json({ status: "FAILED", data: { error: err.message } })
   );
 });
 
 app.get("/api/serialPort/disconnect", async (req, res) => {
-  if (!SERIALPORT) return;
+  console.log("Attempting to disconnect port");
+  if (!SERIALPORT)
+    return res.status(403).json({
+      status: "FAILED",
+      error: "serialport isn't connected, unauthorized access",
+    });
+
   SERIALPORT.close();
   SERIALPORT.on("end", () => {
     res.status(200).json({ status: "OK", data: "" });
   });
   // unlikely
   SERIALPORT.on("error", (err) =>
-    res.status(403).json({ status: "FAILED", data: { error: err.message } })
+    res.status(200).json({ status: "FAILED", data: { error: err.message } })
   );
 });
 
 app.get("/api/serialPort/write", async (req, res) => {
+  console.log("Attempting to write on port");
+  if (!SERIALPORT)
+    return res.status(403).json({
+      status: "FAILED",
+      error: "serialport isn't connected, unauthorized access",
+    });
+
   const { command } = req.query;
-  console.log(command);
-  if (!SERIALPORT) return;
   SERIALPORT.write(`${command}\r`);
   res.status(200).json({ status: "OK", data: command });
 });
+
 // WEBSOCKET CONNECTION
 io.on("connection", (socket) => {
+  console.log("transport method", socket.conn.transport.name); // prints "websocket"
+
   //  TODO: handle better
   if (!SERIALPORT) return;
+
   const parser = SERIALPORT.pipe(new ReadlineParser({ delimiter: "\r\n" }));
   parser.on("data", async (data) => {
     socket.emit("getParsedData", data);
