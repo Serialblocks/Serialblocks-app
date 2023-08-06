@@ -31,7 +31,19 @@ app.get("/api/serialPort/connect", async (req, res) => {
     autoOpen: true,
     endOnClose: true,
   });
+  console.log(
+    SERIALPORT.isOpen,
+    SERIALPORT.port,
+    SERIALPORT.baudRate,
+    SERIALPORT.readable
+  );
   SERIALPORT.on("open", () => {
+    console.log(
+      SERIALPORT.isOpen,
+      SERIALPORT.port,
+      SERIALPORT.baudRate,
+      SERIALPORT.readable
+    );
     res.status(200).json({ status: "OK", data: "" });
   });
   SERIALPORT.on("error", (err) =>

@@ -7,12 +7,12 @@ const Footer = () => {
       <CardContent className="">
         <p>SerialSocket</p>
         <span>star on github</span>
-        <iframe
+        {/* <iframe
           src="https://ghbtns.com/github-btn.html?user=ahmadghoniem&repo=serialSocket&type=star&count=true&size=large"
           width="170"
           height="30"
           title="GitHub"
-        ></iframe>
+        ></iframe> */}
         <Button
           onClick={() => document.documentElement.classList.toggle("dark")}
         >

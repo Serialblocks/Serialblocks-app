@@ -1,21 +1,21 @@
 /**
-  ******************************************************************************
-  * @file    stm32f1xx_hal.h
-  * @author  MCD Application Team
-  * @brief   This file contains all the functions prototypes for the HAL
-  *          module driver.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    stm32f1xx_hal.h
+ * @author  MCD Application Team
+ * @brief   This file contains all the functions prototypes for the HAL
+ *          module driver.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2017 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32F1xx_HAL_H
@@ -29,67 +29,66 @@ extern "C" {
 #include "stm32f1xx_hal_conf.h"
 
 /** @addtogroup STM32F1xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @addtogroup HAL
-  * @{
-  */
+ * @{
+ */
 
 /* Exported constants --------------------------------------------------------*/
 
 /** @defgroup HAL_Exported_Constants HAL Exported Constants
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup HAL_TICK_FREQ Tick Frequency
-  * @{
-  */
-typedef enum
-{
-  HAL_TICK_FREQ_10HZ         = 100U,
-  HAL_TICK_FREQ_100HZ        = 10U,
-  HAL_TICK_FREQ_1KHZ         = 1U,
-  HAL_TICK_FREQ_DEFAULT      = HAL_TICK_FREQ_1KHZ
+ * @{
+ */
+typedef enum {
+	HAL_TICK_FREQ_10HZ = 100U,
+	HAL_TICK_FREQ_100HZ = 10U,
+	HAL_TICK_FREQ_1KHZ = 1U,
+	HAL_TICK_FREQ_DEFAULT = HAL_TICK_FREQ_1KHZ
 } HAL_TickFreqTypeDef;
 /**
-  * @}
-  */
+ * @}
+ */
 /* Exported types ------------------------------------------------------------*/
 extern __IO uint32_t uwTick;
 extern uint32_t uwTickPrio;
 extern HAL_TickFreqTypeDef uwTickFreq;
 
 /**
-  * @}
-  */
+ * @}
+ */
 /* Exported macro ------------------------------------------------------------*/
 /** @defgroup HAL_Exported_Macros HAL Exported Macros
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup DBGMCU_Freeze_Unfreeze Freeze Unfreeze Peripherals in Debug mode
-  * @brief   Freeze/Unfreeze Peripherals in Debug mode
-  * Note: On devices STM32F10xx8 and STM32F10xxB,
-  *                  STM32F101xC/D/E and STM32F103xC/D/E,
-  *                  STM32F101xF/G and STM32F103xF/G
-  *                  STM32F10xx4 and STM32F10xx6
-  *       Debug registers DBGMCU_IDCODE and DBGMCU_CR are accessible only in
-  *       debug mode (not accessible by the user software in normal mode).
-  *       Refer to errata sheet of these devices for more details.
-  * @{
-  */
+ * @brief   Freeze/Unfreeze Peripherals in Debug mode
+ * Note: On devices STM32F10xx8 and STM32F10xxB,
+ *                  STM32F101xC/D/E and STM32F103xC/D/E,
+ *                  STM32F101xF/G and STM32F103xF/G
+ *                  STM32F10xx4 and STM32F10xx6
+ *       Debug registers DBGMCU_IDCODE and DBGMCU_CR are accessible only in
+ *       debug mode (not accessible by the user software in normal mode).
+ *       Refer to errata sheet of these devices for more details.
+ * @{
+ */
 
 /* Peripherals on APB1 */
 /**
-  * @brief  TIM2 Peripherals Debug mode
-  */
+ * @brief  TIM2 Peripherals Debug mode
+ */
 #define __HAL_DBGMCU_FREEZE_TIM2()            SET_BIT(DBGMCU->CR, DBGMCU_CR_DBG_TIM2_STOP)
 #define __HAL_DBGMCU_UNFREEZE_TIM2()          CLEAR_BIT(DBGMCU->CR, DBGMCU_CR_DBG_TIM2_STOP)
 
 /**
-  * @brief  TIM3 Peripherals Debug mode
-  */
+ * @brief  TIM3 Peripherals Debug mode
+ */
 #define __HAL_DBGMCU_FREEZE_TIM3()            SET_BIT(DBGMCU->CR, DBGMCU_CR_DBG_TIM3_STOP)
 #define __HAL_DBGMCU_UNFREEZE_TIM3()          CLEAR_BIT(DBGMCU->CR, DBGMCU_CR_DBG_TIM3_STOP)
 
@@ -150,20 +149,20 @@ extern HAL_TickFreqTypeDef uwTickFreq;
 #endif
 
 /**
-  * @brief  WWDG Peripherals Debug mode
-  */
+ * @brief  WWDG Peripherals Debug mode
+ */
 #define __HAL_DBGMCU_FREEZE_WWDG()            SET_BIT(DBGMCU->CR, DBGMCU_CR_DBG_WWDG_STOP)
 #define __HAL_DBGMCU_UNFREEZE_WWDG()          CLEAR_BIT(DBGMCU->CR, DBGMCU_CR_DBG_WWDG_STOP)
 
 /**
-  * @brief  IWDG Peripherals Debug mode
-  */
+ * @brief  IWDG Peripherals Debug mode
+ */
 #define __HAL_DBGMCU_FREEZE_IWDG()            SET_BIT(DBGMCU->CR, DBGMCU_CR_DBG_IWDG_STOP)
 #define __HAL_DBGMCU_UNFREEZE_IWDG()          CLEAR_BIT(DBGMCU->CR, DBGMCU_CR_DBG_IWDG_STOP)
 
 /**
-  * @brief  I2C1 Peripherals Debug mode
-  */
+ * @brief  I2C1 Peripherals Debug mode
+ */
 #define __HAL_DBGMCU_FREEZE_I2C1_TIMEOUT()    SET_BIT(DBGMCU->CR, DBGMCU_CR_DBG_I2C1_SMBUS_TIMEOUT)
 #define __HAL_DBGMCU_UNFREEZE_I2C1_TIMEOUT()  CLEAR_BIT(DBGMCU->CR, DBGMCU_CR_DBG_I2C1_SMBUS_TIMEOUT)
 
@@ -177,8 +176,8 @@ extern HAL_TickFreqTypeDef uwTickFreq;
 
 #if defined (DBGMCU_CR_DBG_CAN1_STOP)
 /**
-  * @brief  CAN1 Peripherals Debug mode
-  */
+ * @brief  CAN1 Peripherals Debug mode
+ */
 #define __HAL_DBGMCU_FREEZE_CAN1()            SET_BIT(DBGMCU->CR, DBGMCU_CR_DBG_CAN1_STOP)
 #define __HAL_DBGMCU_UNFREEZE_CAN1()          CLEAR_BIT(DBGMCU->CR, DBGMCU_CR_DBG_CAN1_STOP)
 #endif
@@ -194,8 +193,8 @@ extern HAL_TickFreqTypeDef uwTickFreq;
 /* Peripherals on APB2 */
 #if defined (DBGMCU_CR_DBG_TIM1_STOP)
 /**
-  * @brief  TIM1 Peripherals Debug mode
-  */
+ * @brief  TIM1 Peripherals Debug mode
+ */
 #define __HAL_DBGMCU_FREEZE_TIM1()            SET_BIT(DBGMCU->CR, DBGMCU_CR_DBG_TIM1_STOP)
 #define __HAL_DBGMCU_UNFREEZE_TIM1()          CLEAR_BIT(DBGMCU->CR, DBGMCU_CR_DBG_TIM1_STOP)
 #endif
@@ -232,7 +231,6 @@ extern HAL_TickFreqTypeDef uwTickFreq;
 #define __HAL_DBGMCU_UNFREEZE_TIM11()          CLEAR_BIT(DBGMCU->CR, DBGMCU_CR_DBG_TIM11_STOP)
 #endif
 
-
 #if defined (DBGMCU_CR_DBG_TIM15_STOP)
 /**
   * @brief  TIM15 Peripherals Debug mode
@@ -258,26 +256,26 @@ extern HAL_TickFreqTypeDef uwTickFreq;
 #endif
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /** @defgroup HAL_Private_Macros HAL Private Macros
-  * @{
-  */
+ * @{
+ */
 #define IS_TICKFREQ(FREQ) (((FREQ) == HAL_TICK_FREQ_10HZ)  || \
                            ((FREQ) == HAL_TICK_FREQ_100HZ) || \
                            ((FREQ) == HAL_TICK_FREQ_1KHZ))
 /**
-  * @}
-  */
+ * @}
+ */
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup HAL_Exported_Functions
-  * @{
-  */
+ * @{
+ */
 /** @addtogroup HAL_Exported_Functions_Group1
-  * @{
-  */
+ * @{
+ */
 /* Initialization and de-initialization functions  ******************************/
 HAL_StatusTypeDef HAL_Init(void);
 HAL_StatusTypeDef HAL_DeInit(void);
@@ -285,12 +283,12 @@ void HAL_MspInit(void);
 void HAL_MspDeInit(void);
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
 /**
-  * @}
-  */
+ * @}
+ */
 
 /** @addtogroup HAL_Exported_Functions_Group2
-  * @{
-  */
+ * @{
+ */
 /* Peripheral Control functions  ************************************************/
 void HAL_IncTick(void);
 void HAL_Delay(uint32_t Delay);
@@ -313,45 +311,44 @@ void HAL_DBGMCU_DisableDBGStopMode(void);
 void HAL_DBGMCU_EnableDBGStandbyMode(void);
 void HAL_DBGMCU_DisableDBGStandbyMode(void);
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 /* Private types -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /** @defgroup HAL_Private_Variables HAL Private Variables
-  * @{
-  */
+ * @{
+ */
 /**
-  * @}
-  */
+ * @}
+ */
 /* Private constants ---------------------------------------------------------*/
 /** @defgroup HAL_Private_Constants HAL Private Constants
-  * @{
-  */
+ * @{
+ */
 /**
-  * @}
-  */
+ * @}
+ */
 /* Private macros ------------------------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* __STM32F1xx_HAL_H */
-
 

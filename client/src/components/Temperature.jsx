@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -6,10 +6,10 @@ const Temperature = () => {
   return (
     <Card className="row-span-1 col-span-3">
       <CardContent className="relative">
-        <span className="flex  items-center font-medium gap-1">
+        <CardTitle className="flex items-center gap-1">
           <Sun className="inline h-6 w-6" />
-          <p>Temperature</p>
-        </span>
+          Temperature
+        </CardTitle>
         <span className="flex gap-1 justify-start mt-4">
           <p className="text-3xl font-bold">27</p>
           <p className="font-medium text-lg">°C</p>

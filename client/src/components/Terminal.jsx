@@ -1,5 +1,5 @@
 import { ChevronRight, TerminalSquare } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Fragment, useEffect, useState } from "react";
@@ -33,13 +33,26 @@ const Terminal = ({ isPortConn, setSerialData, portConfig }) => {
   }, [setSerialData]);
 
   return (
-    <Card className="relative col-span-6 row-span-4 bg-terminal text-terminal-foreground">
+    <Card className="relative col-span-6 font-mono row-span-4 bg-terminal text-terminal-foreground">
       <CardContent className="p-0">
-        <span className="flex p-1 items-center gap-1 text-sm/3 rounded-t-lg font-mono font-semibold bg-[#333644]">
+        <CardTitle className="tracking-tight flex p-1 items-center gap-1 text-sm/3 rounded-t-lg font-semibold bg-[#DFE0E2] dark:bg-[#333644]">
           <TerminalSquare className="inline w-4 h-4" />
-          <p className="">{!isPortConn ? "TERMINAL" : path}</p>
-        </span>
-        <div className="px-1 h-36 overflow-y-scroll">
+          {!isPortConn ? "TERMINAL" : path}
+        </CardTitle>
+        <div className="px-1 mt-1 h-36 overflow-y-scroll scrollbar scrollbar-thumb-[#E3E5E9] hover:scrollbar-thumb-[#DBDFE3]  dark:hover:scrollbar-thumb-[#262B41] dark:scrollbar-thumb-[#292D45]">
+          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
+          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
+          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
+          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
+          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
+          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
+          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
+          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
+          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
+          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
+          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
+          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
+          "ahmad" "ahmad" "ahmad"
           {serialOutput.map((output, i) => (
             <Fragment key={i}>
               {output}
