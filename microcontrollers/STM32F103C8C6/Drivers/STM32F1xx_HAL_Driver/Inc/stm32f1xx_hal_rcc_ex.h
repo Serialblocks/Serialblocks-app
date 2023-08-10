@@ -1,19 +1,19 @@
 /**
- ******************************************************************************
- * @file    stm32f1xx_hal_rcc_ex.h
- * @author  MCD Application Team
- * @brief   Header file of RCC HAL Extension module.
- ******************************************************************************
- * @attention
- *
- * Copyright (c) 2016 STMicroelectronics.
- * All rights reserved.
- *
- * This software is licensed under terms that can be found in the LICENSE file in
- * the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- ******************************************************************************
- */
+  ******************************************************************************
+  * @file    stm32f1xx_hal_rcc_ex.h
+  * @author  MCD Application Team
+  * @brief   Header file of RCC HAL Extension module.
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2016 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  ******************************************************************************
+  */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32F1xx_HAL_RCC_EX_H
@@ -27,12 +27,12 @@ extern "C" {
 #include "stm32f1xx_hal_def.h"
 
 /** @addtogroup STM32F1xx_HAL_Driver
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup RCCEx
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup RCCEx_Private_Constants
  * @{
@@ -52,11 +52,12 @@ extern "C" {
 
 #endif /* STM32F105xC || STM32F107xC */
 
+
 #define CR_REG_INDEX                 ((uint8_t)1)
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @addtogroup RCCEx_Private_Macros
  * @{
@@ -189,14 +190,14 @@ extern "C" {
 #endif /* STM32F102x6 || STM32F102xB || STM32F103x6 || STM32F103xB || STM32F103xE || STM32F103xG */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /* Exported types ------------------------------------------------------------*/
 
 /** @defgroup RCCEx_Exported_Types RCCEx Exported Types
- * @{
- */
+  * @{
+  */
 
 #if defined(STM32F105xC) || defined(STM32F107xC)
 /**
@@ -220,36 +221,37 @@ typedef struct
 #endif /* STM32F105xC || STM32F107xC */
 
 /**
- * @brief  RCC Internal/External Oscillator (HSE, HSI, LSE and LSI) configuration structure definition
- */
-typedef struct {
-	uint32_t OscillatorType; /*!< The oscillators to be configured.
-	 This parameter can be a value of @ref RCC_Oscillator_Type */
+  * @brief  RCC Internal/External Oscillator (HSE, HSI, LSE and LSI) configuration structure definition
+  */
+typedef struct
+{
+  uint32_t OscillatorType;       /*!< The oscillators to be configured.
+                                       This parameter can be a value of @ref RCC_Oscillator_Type */
 
 #if defined(STM32F105xC) || defined(STM32F107xC)
   uint32_t Prediv1Source;       /*!<  The Prediv1 source value.
                                        This parameter can be a value of @ref RCCEx_Prediv1_Source */
 #endif /* STM32F105xC || STM32F107xC */
 
-	uint32_t HSEState; /*!< The new state of the HSE.
-	 This parameter can be a value of @ref RCC_HSE_Config */
+  uint32_t HSEState;              /*!< The new state of the HSE.
+                                       This parameter can be a value of @ref RCC_HSE_Config */
 
-	uint32_t HSEPredivValue; /*!<  The Prediv1 factor value (named PREDIV1 or PLLXTPRE in RM)
-	 This parameter can be a value of @ref RCCEx_Prediv1_Factor */
+  uint32_t HSEPredivValue;       /*!<  The Prediv1 factor value (named PREDIV1 or PLLXTPRE in RM)
+                                       This parameter can be a value of @ref RCCEx_Prediv1_Factor */
 
-	uint32_t LSEState; /*!<  The new state of the LSE.
-	 This parameter can be a value of @ref RCC_LSE_Config */
+  uint32_t LSEState;              /*!<  The new state of the LSE.
+                                        This parameter can be a value of @ref RCC_LSE_Config */
 
-	uint32_t HSIState; /*!< The new state of the HSI.
-	 This parameter can be a value of @ref RCC_HSI_Config */
+  uint32_t HSIState;              /*!< The new state of the HSI.
+                                       This parameter can be a value of @ref RCC_HSI_Config */
 
-	uint32_t HSICalibrationValue; /*!< The HSI calibration trimming value (default is RCC_HSICALIBRATION_DEFAULT).
-	 This parameter must be a number between Min_Data = 0x00 and Max_Data = 0x1F */
+  uint32_t HSICalibrationValue;   /*!< The HSI calibration trimming value (default is RCC_HSICALIBRATION_DEFAULT).
+                                       This parameter must be a number between Min_Data = 0x00 and Max_Data = 0x1F */
 
-	uint32_t LSIState; /*!<  The new state of the LSI.
-	 This parameter can be a value of @ref RCC_LSI_Config */
+  uint32_t LSIState;              /*!<  The new state of the LSI.
+                                        This parameter can be a value of @ref RCC_LSI_Config */
 
-	RCC_PLLInitTypeDef PLL; /*!< PLL structure parameters */
+  RCC_PLLInitTypeDef PLL;         /*!< PLL structure parameters */
 
 #if defined(STM32F105xC) || defined(STM32F107xC)
   RCC_PLL2InitTypeDef PLL2;         /*!< PLL2 structure parameters */
@@ -274,17 +276,18 @@ typedef struct
 #endif /* STM32F105xC || STM32F107xC */
 
 /**
- * @brief  RCC extended clocks structure definition
- */
-typedef struct {
-	uint32_t PeriphClockSelection; /*!< The Extended Clock to be configured.
-	 This parameter can be a value of @ref RCCEx_Periph_Clock_Selection */
+  * @brief  RCC extended clocks structure definition
+  */
+typedef struct
+{
+  uint32_t PeriphClockSelection;      /*!< The Extended Clock to be configured.
+                                       This parameter can be a value of @ref RCCEx_Periph_Clock_Selection */
 
-	uint32_t RTCClockSelection; /*!< specifies the RTC clock source.
-	 This parameter can be a value of @ref RCC_RTC_Clock_Source */
+  uint32_t RTCClockSelection;         /*!< specifies the RTC clock source.
+                                       This parameter can be a value of @ref RCC_RTC_Clock_Source */
 
-	uint32_t AdcClockSelection; /*!< ADC clock source
-	 This parameter can be a value of @ref RCCEx_ADC_Prescaler */
+  uint32_t AdcClockSelection;         /*!< ADC clock source
+                                       This parameter can be a value of @ref RCCEx_ADC_Prescaler */
 
 #if defined(STM32F103xE) || defined(STM32F103xG) || defined(STM32F105xC)\
  || defined(STM32F107xC)
@@ -304,25 +307,25 @@ typedef struct {
 #if defined(STM32F102x6) || defined(STM32F102xB) || defined(STM32F103x6)\
  || defined(STM32F103xB) || defined(STM32F103xE) || defined(STM32F103xG)\
  || defined(STM32F105xC) || defined(STM32F107xC)
-	uint32_t UsbClockSelection; /*!< USB clock source
-	 This parameter can be a value of @ref RCCEx_USB_Prescaler */
+  uint32_t UsbClockSelection;         /*!< USB clock source
+                                       This parameter can be a value of @ref RCCEx_USB_Prescaler */
 
 #endif /* STM32F102x6 || STM32F102xB || STM32F103x6 || STM32F103xB || STM32F103xE || STM32F103xG || STM32F105xC || STM32F107xC */
 } RCC_PeriphCLKInitTypeDef;
 
 /**
- * @}
- */
+  * @}
+  */
 
 /* Exported constants --------------------------------------------------------*/
 
 /** @defgroup RCCEx_Exported_Constants RCCEx Exported Constants
- * @{
- */
+  * @{
+  */
 
 /** @defgroup RCCEx_Periph_Clock_Selection Periph Clock Selection
- * @{
- */
+  * @{
+  */
 #define RCC_PERIPHCLK_RTC           0x00000001U
 #define RCC_PERIPHCLK_ADC           0x00000002U
 #if defined(STM32F101xE) || defined(STM32F101xG) || defined(STM32F103xE)\
@@ -337,20 +340,20 @@ typedef struct {
 #endif /* STM32F102x6 || STM32F102xB || STM32F103x6 || STM32F103xB || STM32F103xE || STM32F103xG || STM32F105xC || STM32F107xC */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup RCCEx_ADC_Prescaler ADC Prescaler
- * @{
- */
+  * @{
+  */
 #define RCC_ADCPCLK2_DIV2              RCC_CFGR_ADCPRE_DIV2
 #define RCC_ADCPCLK2_DIV4              RCC_CFGR_ADCPRE_DIV4
 #define RCC_ADCPCLK2_DIV6              RCC_CFGR_ADCPRE_DIV6
 #define RCC_ADCPCLK2_DIV8              RCC_CFGR_ADCPRE_DIV8
 
 /**
- * @}
- */
+  * @}
+  */
 
 #if defined(STM32F103xE) || defined(STM32F103xG) || defined(STM32F105xC)\
  || defined(STM32F107xC)
@@ -384,16 +387,17 @@ typedef struct {
  || defined(STM32F103xB) || defined(STM32F103xE) || defined(STM32F103xG)
 
 /** @defgroup RCCEx_USB_Prescaler USB Prescaler
- * @{
- */
+  * @{
+  */
 #define RCC_USBCLKSOURCE_PLL              RCC_CFGR_USBPRE
 #define RCC_USBCLKSOURCE_PLL_DIV1_5       0x00000000U
 
 /**
- * @}
- */
+  * @}
+  */
 
 #endif /* STM32F102x6 || STM32F102xB || STM32F103x6 || STM32F103xB || STM32F103xE || STM32F103xG */
+
 
 #if defined(STM32F105xC) || defined(STM32F107xC)
 /** @defgroup RCCEx_USB_Prescaler USB Prescaler
@@ -439,8 +443,8 @@ typedef struct {
 #endif /* STM32F105xC || STM32F107xC */
 
 /** @defgroup RCCEx_Prediv1_Factor HSE Prediv1 Factor
- * @{
- */
+  * @{
+  */
 
 #define RCC_HSE_PREDIV_DIV1              0x00000000U
 
@@ -466,8 +470,8 @@ typedef struct {
 #endif /* STM32F105xC || STM32F107xC || STM32F100xB || STM32F100xE */
 
 /**
- * @}
- */
+  * @}
+  */
 
 #if defined(STM32F105xC) || defined(STM32F107xC)
 /** @defgroup RCCEx_Prediv2_Factor HSE Prediv2 Factor
@@ -527,8 +531,8 @@ typedef struct {
 #endif /* STM32F105xC || STM32F107xC */
 
 /** @defgroup RCCEx_PLL_Multiplication_Factor PLL Multiplication Factor
- * @{
- */
+  * @{
+  */
 
 #if defined(STM32F105xC) || defined(STM32F107xC)
 #else
@@ -554,12 +558,12 @@ typedef struct {
 #endif /* STM32F105xC || STM32F107xC */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup RCCEx_MCO1_Clock_Source MCO1 Clock Source
- * @{
- */
+  * @{
+  */
 #define RCC_MCO1SOURCE_NOCLOCK           ((uint32_t)RCC_CFGR_MCO_NOCLOCK)
 #define RCC_MCO1SOURCE_SYSCLK            ((uint32_t)RCC_CFGR_MCO_SYSCLK)
 #define RCC_MCO1SOURCE_HSI               ((uint32_t)RCC_CFGR_MCO_HSI)
@@ -572,8 +576,8 @@ typedef struct {
 #define RCC_MCO1SOURCE_PLL3CLK           ((uint32_t)RCC_CFGR_MCO_PLL3CLK)
 #endif /* STM32F105xC || STM32F107xC*/
 /**
- * @}
- */
+  * @}
+  */
 
 #if defined(STM32F105xC) || defined(STM32F107xC)
 /** @defgroup RCCEx_Interrupt RCCEx Interrupt
@@ -601,8 +605,8 @@ typedef struct {
 #endif /* STM32F105xC || STM32F107xC*/
 
 /**
- * @}
- */
+  * @}
+  */
 
 /* Exported macro ------------------------------------------------------------*/
 /** @defgroup RCCEx_Exported_Macros RCCEx Exported Macros
@@ -610,12 +614,12 @@ typedef struct {
  */
 
 /** @defgroup RCCEx_Peripheral_Clock_Enable_Disable Peripheral Clock Enable Disable
- * @brief  Enable or disable the AHB1 peripheral clock.
- * @note   After reset, the peripheral clock (used for registers read/write access)
- *         is disabled and the application software has to enable this clock before
- *         using it.
- * @{
- */
+  * @brief  Enable or disable the AHB1 peripheral clock.
+  * @note   After reset, the peripheral clock (used for registers read/write access)
+  *         is disabled and the application software has to enable this clock before
+  *         using it.
+  * @{
+  */
 
 #if defined(STM32F101xE) || defined(STM32F103xE) || defined(STM32F101xG)\
  || defined(STM32F103xG) || defined(STM32F105xC) || defined  (STM32F107xC)\
@@ -719,16 +723,16 @@ typedef struct {
 #endif /* STM32F107xC*/
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup RCCEx_AHB1_Peripheral_Clock_Enable_Disable_Status AHB1 Peripheral Clock Enable Disable Status
- * @brief  Get the enable or disable status of the AHB1 peripheral clock.
- * @note   After reset, the peripheral clock (used for registers read/write access)
- *         is disabled and the application software has to enable this clock before
- *         using it.
- * @{
- */
+  * @brief  Get the enable or disable status of the AHB1 peripheral clock.
+  * @note   After reset, the peripheral clock (used for registers read/write access)
+  *         is disabled and the application software has to enable this clock before
+  *         using it.
+  * @{
+  */
 
 #if defined(STM32F101xE) || defined(STM32F103xE) || defined(STM32F101xG)\
  || defined(STM32F103xG) || defined(STM32F105xC) || defined  (STM32F107xC)\
@@ -759,16 +763,16 @@ typedef struct {
 #endif /* STM32F107xC*/
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup RCCEx_APB1_Clock_Enable_Disable APB1 Clock Enable Disable
- * @brief  Enable or disable the Low Speed APB (APB1) peripheral clock.
- * @note   After reset, the peripheral clock (used for registers read/write access)
- *         is disabled and the application software has to enable this clock before
- *         using it.
- * @{
- */
+  * @brief  Enable or disable the Low Speed APB (APB1) peripheral clock.
+  * @note   After reset, the peripheral clock (used for registers read/write access)
+  *         is disabled and the application software has to enable this clock before
+  *         using it.
+  * @{
+  */
 
 #if defined(STM32F103x6) || defined(STM32F103xB) || defined(STM32F103xE)\
  || defined(STM32F103xG) || defined(STM32F105xC) ||defined(STM32F107xC)
@@ -1053,16 +1057,16 @@ typedef struct {
 #endif /* STM32F101xG || STM32F103xG*/
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup RCCEx_APB1_Peripheral_Clock_Enable_Disable_Status APB1 Peripheral Clock Enable Disable Status
- * @brief  Get the enable or disable status of the APB1 peripheral clock.
- * @note   After reset, the peripheral clock (used for registers read/write access)
- *         is disabled and the application software has to enable this clock before
- *         using it.
- * @{
- */
+  * @brief  Get the enable or disable status of the APB1 peripheral clock.
+  * @note   After reset, the peripheral clock (used for registers read/write access)
+  *         is disabled and the application software has to enable this clock before
+  *         using it.
+  * @{
+  */
 
 #if defined(STM32F103x6) || defined(STM32F103xB) || defined(STM32F103xE)\
  || defined(STM32F103xG) || defined(STM32F105xC) ||defined(STM32F107xC)
@@ -1144,16 +1148,16 @@ typedef struct {
 #endif /* STM32F101xG || STM32F103xG*/
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup RCCEx_APB2_Clock_Enable_Disable APB2 Clock Enable Disable
- * @brief  Enable or disable the High Speed APB (APB2) peripheral clock.
- * @note   After reset, the peripheral clock (used for registers read/write access)
- *         is disabled and the application software has to enable this clock before
- *         using it.
- * @{
- */
+  * @brief  Enable or disable the High Speed APB (APB2) peripheral clock.
+  * @note   After reset, the peripheral clock (used for registers read/write access)
+  *         is disabled and the application software has to enable this clock before
+  *         using it.
+  * @{
+  */
 
 #if defined(STM32F101xG) || defined(STM32F103x6) || defined(STM32F103xB)\
  || defined(STM32F105xC) || defined(STM32F107xC) || defined(STM32F103xE)\
@@ -1309,16 +1313,16 @@ typedef struct {
 #endif /* STM32F101xG || STM32F103xG */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup RCCEx_APB2_Peripheral_Clock_Enable_Disable_Status APB2 Peripheral Clock Enable Disable Status
- * @brief  Get the enable or disable status of the APB2 peripheral clock.
- * @note   After reset, the peripheral clock (used for registers read/write access)
- *         is disabled and the application software has to enable this clock before
- *         using it.
- * @{
- */
+  * @brief  Get the enable or disable status of the APB2 peripheral clock.
+  * @note   After reset, the peripheral clock (used for registers read/write access)
+  *         is disabled and the application software has to enable this clock before
+  *         using it.
+  * @{
+  */
 
 #if defined(STM32F101xG) || defined(STM32F103x6) || defined(STM32F103xB)\
  || defined(STM32F105xC) || defined(STM32F107xC) || defined(STM32F103xE)\
@@ -1370,8 +1374,8 @@ typedef struct {
 #endif /* STM32F101xG || STM32F103xG */
 
 /**
- * @}
- */
+  * @}
+  */
 
 #if defined(STM32F105xC) || defined(STM32F107xC)
 /** @defgroup RCCEx_Peripheral_Clock_Force_Release Peripheral Clock Force Release
@@ -1396,9 +1400,9 @@ typedef struct {
 #endif /* STM32F105xC || STM32F107xC */
 
 /** @defgroup RCCEx_APB1_Force_Release_Reset APB1 Force Release Reset
- * @brief  Force or release APB1 peripheral reset.
- * @{
- */
+  * @brief  Force or release APB1 peripheral reset.
+  * @{
+  */
 
 #if defined(STM32F103x6) || defined(STM32F103xB) || defined(STM32F103xE)\
  || defined(STM32F103xG) || defined(STM32F105xC) ||defined(STM32F107xC)
@@ -1494,13 +1498,13 @@ typedef struct {
 #endif /* STM32F101xG || STM32F103xG */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup RCCEx_APB2_Force_Release_Reset APB2 Force Release Reset
- * @brief  Force or release APB2 peripheral reset.
- * @{
- */
+  * @brief  Force or release APB2 peripheral reset.
+  * @{
+  */
 
 #if defined(STM32F101xG) || defined(STM32F103x6) || defined(STM32F103xB)\
  || defined(STM32F105xC) || defined(STM32F107xC) || defined(STM32F103xE)\
@@ -1565,12 +1569,12 @@ typedef struct {
 #endif /* STM32F101xG || STM32F103xG*/
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup RCCEx_HSE_Configuration HSE Configuration
- * @{
- */
+  * @{
+  */
 
 #if defined(STM32F105xC) || defined(STM32F107xC) || defined(STM32F100xB)\
  || defined(STM32F100xE)
@@ -1585,13 +1589,13 @@ typedef struct {
 #define __HAL_RCC_HSE_PREDIV_CONFIG(__HSE_PREDIV_VALUE__) MODIFY_REG(RCC->CFGR2, RCC_CFGR2_PREDIV1, (uint32_t)(__HSE_PREDIV_VALUE__))
 #else
 /**
- * @brief  Macro to configure the External High Speed oscillator (HSE) Predivision factor for PLL.
- * @note   Predivision factor can not be changed if PLL is used as system clock
- *         In this case, you have to select another source of the system clock, disable the PLL and
- *         then change the HSE predivision factor.
- * @param  __HSE_PREDIV_VALUE__ specifies the division value applied to HSE.
- *         This parameter must be a number between RCC_HSE_PREDIV_DIV1 and RCC_HSE_PREDIV_DIV2.
- */
+  * @brief  Macro to configure the External High Speed oscillator (HSE) Predivision factor for PLL.
+  * @note   Predivision factor can not be changed if PLL is used as system clock
+  *         In this case, you have to select another source of the system clock, disable the PLL and
+  *         then change the HSE predivision factor.
+  * @param  __HSE_PREDIV_VALUE__ specifies the division value applied to HSE.
+  *         This parameter must be a number between RCC_HSE_PREDIV_DIV1 and RCC_HSE_PREDIV_DIV2.
+  */
 #define __HAL_RCC_HSE_PREDIV_CONFIG(__HSE_PREDIV_VALUE__) \
                   MODIFY_REG(RCC->CFGR,RCC_CFGR_PLLXTPRE, (uint32_t)(__HSE_PREDIV_VALUE__))
 
@@ -1606,15 +1610,15 @@ typedef struct {
 
 #else
 /**
- * @brief  Macro to get prediv1 factor for PLL.
- */
+  * @brief  Macro to get prediv1 factor for PLL.
+  */
 #define __HAL_RCC_HSE_GET_PREDIV() READ_BIT(RCC->CFGR, RCC_CFGR_PLLXTPRE)
 
 #endif /* STM32F105xC || STM32F107xC || STM32F100xB || STM32F100xE */
 
 /**
- * @}
- */
+  * @}
+  */
 
 #if defined(STM32F105xC) || defined(STM32F107xC)
 /** @defgroup RCCEx_PLLI2S_Configuration PLLI2S Configuration
@@ -1660,26 +1664,26 @@ typedef struct {
 #endif /* STM32F105xC || STM32F107xC */
 
 /** @defgroup RCCEx_Peripheral_Configuration Peripheral Configuration
- * @brief  Macros to configure clock source of different peripherals.
- * @{
- */
+  * @brief  Macros to configure clock source of different peripherals.
+  * @{
+  */
 
 #if defined(STM32F102x6) || defined(STM32F102xB) || defined(STM32F103x6)\
  || defined(STM32F103xB) || defined(STM32F103xE) || defined(STM32F103xG)
 /** @brief  Macro to configure the USB clock.
- * @param  __USBCLKSOURCE__ specifies the USB clock source.
- *          This parameter can be one of the following values:
- *            @arg @ref RCC_USBCLKSOURCE_PLL PLL clock divided by 1 selected as USB clock
- *            @arg @ref RCC_USBCLKSOURCE_PLL_DIV1_5 PLL clock divided by 1.5 selected as USB clock
- */
+  * @param  __USBCLKSOURCE__ specifies the USB clock source.
+  *          This parameter can be one of the following values:
+  *            @arg @ref RCC_USBCLKSOURCE_PLL PLL clock divided by 1 selected as USB clock
+  *            @arg @ref RCC_USBCLKSOURCE_PLL_DIV1_5 PLL clock divided by 1.5 selected as USB clock
+  */
 #define __HAL_RCC_USB_CONFIG(__USBCLKSOURCE__) \
                   MODIFY_REG(RCC->CFGR, RCC_CFGR_USBPRE, (uint32_t)(__USBCLKSOURCE__))
 
 /** @brief  Macro to get the USB clock (USBCLK).
- * @retval The clock source can be one of the following values:
- *            @arg @ref RCC_USBCLKSOURCE_PLL PLL clock divided by 1 selected as USB clock
- *            @arg @ref RCC_USBCLKSOURCE_PLL_DIV1_5 PLL clock divided by 1.5 selected as USB clock
- */
+  * @retval The clock source can be one of the following values:
+  *            @arg @ref RCC_USBCLKSOURCE_PLL PLL clock divided by 1 selected as USB clock
+  *            @arg @ref RCC_USBCLKSOURCE_PLL_DIV1_5 PLL clock divided by 1.5 selected as USB clock
+  */
 #define __HAL_RCC_GET_USB_SOURCE() ((uint32_t)(READ_BIT(RCC->CFGR, RCC_CFGR_USBPRE)))
 
 #endif /* STM32F102x6 || STM32F102xB || STM32F103x6 || STM32F103xB || STM32F103xE || STM32F103xG */
@@ -1705,28 +1709,28 @@ typedef struct {
 #endif /* STM32F105xC || STM32F107xC */
 
 /** @brief  Macro to configure the ADCx clock (x=1 to 3 depending on devices).
- * @param  __ADCCLKSOURCE__ specifies the ADC clock source.
- *          This parameter can be one of the following values:
- *            @arg @ref RCC_ADCPCLK2_DIV2 PCLK2 clock divided by 2 selected as ADC clock
- *            @arg @ref RCC_ADCPCLK2_DIV4 PCLK2 clock divided by 4 selected as ADC clock
- *            @arg @ref RCC_ADCPCLK2_DIV6 PCLK2 clock divided by 6 selected as ADC clock
- *            @arg @ref RCC_ADCPCLK2_DIV8 PCLK2 clock divided by 8 selected as ADC clock
- */
+  * @param  __ADCCLKSOURCE__ specifies the ADC clock source.
+  *          This parameter can be one of the following values:
+  *            @arg @ref RCC_ADCPCLK2_DIV2 PCLK2 clock divided by 2 selected as ADC clock
+  *            @arg @ref RCC_ADCPCLK2_DIV4 PCLK2 clock divided by 4 selected as ADC clock
+  *            @arg @ref RCC_ADCPCLK2_DIV6 PCLK2 clock divided by 6 selected as ADC clock
+  *            @arg @ref RCC_ADCPCLK2_DIV8 PCLK2 clock divided by 8 selected as ADC clock
+  */
 #define __HAL_RCC_ADC_CONFIG(__ADCCLKSOURCE__) \
                   MODIFY_REG(RCC->CFGR, RCC_CFGR_ADCPRE, (uint32_t)(__ADCCLKSOURCE__))
 
 /** @brief  Macro to get the ADC clock (ADCxCLK, x=1 to 3 depending on devices).
- * @retval The clock source can be one of the following values:
- *            @arg @ref RCC_ADCPCLK2_DIV2 PCLK2 clock divided by 2 selected as ADC clock
- *            @arg @ref RCC_ADCPCLK2_DIV4 PCLK2 clock divided by 4 selected as ADC clock
- *            @arg @ref RCC_ADCPCLK2_DIV6 PCLK2 clock divided by 6 selected as ADC clock
- *            @arg @ref RCC_ADCPCLK2_DIV8 PCLK2 clock divided by 8 selected as ADC clock
- */
+  * @retval The clock source can be one of the following values:
+  *            @arg @ref RCC_ADCPCLK2_DIV2 PCLK2 clock divided by 2 selected as ADC clock
+  *            @arg @ref RCC_ADCPCLK2_DIV4 PCLK2 clock divided by 4 selected as ADC clock
+  *            @arg @ref RCC_ADCPCLK2_DIV6 PCLK2 clock divided by 6 selected as ADC clock
+  *            @arg @ref RCC_ADCPCLK2_DIV8 PCLK2 clock divided by 8 selected as ADC clock
+  */
 #define __HAL_RCC_GET_ADC_SOURCE() ((uint32_t)(READ_BIT(RCC->CFGR, RCC_CFGR_ADCPRE)))
 
 /**
- * @}
- */
+  * @}
+  */
 
 #if defined(STM32F105xC) || defined(STM32F107xC)
 
@@ -1838,26 +1842,25 @@ typedef struct {
 
 #endif /* STM32F105xC || STM32F107xC */
 /**
- * @}
- */
+  * @}
+  */
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup RCCEx_Exported_Functions
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup RCCEx_Exported_Functions_Group1
- * @{
- */
+  * @{
+  */
 
-HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(
-		RCC_PeriphCLKInitTypeDef *PeriphClkInit);
-void HAL_RCCEx_GetPeriphCLKConfig(RCC_PeriphCLKInitTypeDef *PeriphClkInit);
-uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk);
+HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClkInit);
+void              HAL_RCCEx_GetPeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClkInit);
+uint32_t          HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk);
 
 /**
- * @}
- */
+  * @}
+  */
 
 #if defined(STM32F105xC) || defined(STM32F107xC)
 /** @addtogroup RCCEx_Exported_Functions_Group2
@@ -1882,20 +1885,21 @@ HAL_StatusTypeDef HAL_RCCEx_DisablePLL2(void);
 #endif /* STM32F105xC || STM32F107xC */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* __STM32F1xx_HAL_RCC_EX_H */
+
 

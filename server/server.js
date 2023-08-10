@@ -29,21 +29,10 @@ app.get("/api/serialPort/connect", async (req, res) => {
     path,
     baudRate: parseInt(baudRate),
     autoOpen: true,
-    endOnClose: true,
+    // endOnClose: true,
   });
-  console.log(
-    SERIALPORT.isOpen,
-    SERIALPORT.port,
-    SERIALPORT.baudRate,
-    SERIALPORT.readable
-  );
+
   SERIALPORT.on("open", () => {
-    console.log(
-      SERIALPORT.isOpen,
-      SERIALPORT.port,
-      SERIALPORT.baudRate,
-      SERIALPORT.readable
-    );
     res.status(200).json({ status: "OK", data: "" });
   });
   SERIALPORT.on("error", (err) =>
@@ -60,7 +49,7 @@ app.get("/api/serialPort/disconnect", async (req, res) => {
     });
 
   SERIALPORT.close();
-  SERIALPORT.on("end", () => {
+  SERIALPORT.on("close", () => {
     res.status(200).json({ status: "OK", data: "" });
   });
   // unlikely
@@ -85,6 +74,7 @@ app.get("/api/serialPort/write", async (req, res) => {
 // WEBSOCKET CONNECTION
 io.on("connection", (socket) => {
   console.log("transport method", socket.conn.transport.name); // prints "websocket"
+  console.log("I GOT CONNECTED!!!!!"); // prints "websocket"
 
   //  TODO: handle better
   if (!SERIALPORT) return;
@@ -97,6 +87,16 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log(`${socket.id} has disconnected`);
     // SERIALPORT.close();
+  });
+
+  // TODO: ADD THESE FEATURES
+
+  SERIALPORT.on("close", () => {
+    socket.emit("portClose", "port closed suddently!!!!!!!!!");
+  });
+
+  SERIALPORT.on("error", () => {
+    socket.emit("portError", "port errored suddently!!!!!!!!!");
   });
 });
 

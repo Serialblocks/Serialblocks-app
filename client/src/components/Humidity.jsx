@@ -19,19 +19,21 @@ const Humidity = () => {
           <p className="text-3xl font-bold">30</p>
           <span className="font-medium text-lg">%</span>
         </span>
-
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Button size="pill" className="absolute right-2 top-2" asChild>
-                <div>DHT11</div>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>DHT IS A SENSOR FOR..</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <div className="absolute right-2 top-2">
+          <TooltipProvider delayDuration={250}>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button size="pill" className="shadow-md select-none" asChild>
+                  <div>DHT11</div>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                requires DHT-11 sensor, <br /> make sure to use Temperature in
+                your JSON to get activated
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </CardContent>
     </Card>
   );

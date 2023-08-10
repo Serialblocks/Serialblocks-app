@@ -1,0 +1,8 @@
+{
+  "stm32-for-vscode.makePath": false,
+  "stm32-for-vscode.armToolchainPath": false,
+  "cmake.sourceDirectory": "C:/Users/AhmedIbrahimAmer/GitHub/serialSocket/microcontrollers/STM32F103C8C6",
+  "files.associations": {
+    "ADF.C": "cpp"
+  }
+}

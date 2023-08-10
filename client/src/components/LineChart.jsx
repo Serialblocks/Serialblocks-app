@@ -2,6 +2,7 @@ import Chart from "react-apexcharts";
 import { Card, CardContent } from "@/components/ui/card";
 
 const LineChart = ({ LDR }) => {
+  // LDR = [25, 65, 32, 101, 24, 77, 123];
   const options = {
     grid: {
       show: true,
@@ -43,6 +44,9 @@ const LineChart = ({ LDR }) => {
       },
     },
     chart: {
+      toolbar: {
+        show: false,
+      },
       fontFamily: "Open Sans, Arial, sans-serif",
       id: "realtime",
       type: "line",
@@ -57,13 +61,9 @@ const LineChart = ({ LDR }) => {
         enabled: false,
       },
     },
-    //TODO:
     title: {
-      text: "Dynamic Updating Chart",
+      text: "Brightness level",
       align: "left",
-      style: {
-        cssClass: "",
-      },
     },
     tooltip: {
       enabled: true,
@@ -72,22 +72,27 @@ const LineChart = ({ LDR }) => {
         seriesIndex,
         dataPointIndex,
         w,
-      }) => `<div class="bg-green-600">
-      <p>w: ${/* console.dir(w) */ ""}</p>
-            <p>seriesIndex: ${series[seriesIndex][dataPointIndex]}</p>
-            <p>dataPointIndex: ${dataPointIndex}</p>
-          </div>`,
+      }) => `<div class="rounded-lg border bg-background p-2">
+      <div class="grid grid-cols-2 gap-2">
+        <div class="flex flex-col">
+          <span class="text-[0.70rem] uppercase text-muted-foreground">
+          ${series[seriesIndex][dataPointIndex]}
+          </span>
+          <span class="font-bold text-muted-foreground">
+          ${dataPointIndex}</span>
+        </div>`,
     },
+
     stroke: {
       curve: "smooth",
-      width: 2,
+      width: 2.5,
       colors: "#3B82F6",
     },
     markers: {
       // the dot that appears when you hover
       colors: "#3B82F6",
       hover: {
-        size: 4,
+        size: 6,
       },
     },
   };
@@ -100,8 +105,9 @@ const LineChart = ({ LDR }) => {
   ];
 
   return (
-    <Card className="col-span-6 row-span-3">
-      <CardContent>
+    <Card className="col-span-6 row-span-3 relative">
+      <CardContent className="">
+        <div className=" absolute rounded-lg inset-0 w-full h-full bg-[url('@/assets/grid.svg')] opacity-10 bg-[position:calc(100%+5px)_calc(100%+24px)]"></div>
         <Chart options={options} series={series} />
       </CardContent>
     </Card>

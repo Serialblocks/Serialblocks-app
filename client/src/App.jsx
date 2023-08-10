@@ -11,7 +11,7 @@ import {
   Footer,
 } from "@/components";
 import { Toaster } from "@/components/ui/toaster";
-import { socket } from "@/service/socket";
+import { socket } from "@/api/socket";
 const App = () => {
   const [isPortConn, setIsPortConn] = useState(null);
   const [portConfig, setPortConfig] = useState({

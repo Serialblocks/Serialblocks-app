@@ -61,6 +61,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define LED_Pin GPIO_PIN_13
 #define LED_GPIO_Port GPIOC
+#define RGB_RED_Pin GPIO_PIN_1
+#define RGB_RED_GPIO_Port GPIOA
 #define RGB_GREEN_Pin GPIO_PIN_2
 #define RGB_GREEN_GPIO_Port GPIOA
 #define RGB_BLUE_Pin GPIO_PIN_3

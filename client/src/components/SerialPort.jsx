@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { socket } from "@/service/socket";
+import { socket } from "@/api/socket";
 import { Search } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -27,15 +27,6 @@ const SerialPort = ({
   const [serialPorts, setSerialPorts] = useState(null);
   const { toast } = useToast();
   const { path, baudRate } = portConfig;
-
-  useEffect(() => {
-    const cleanup = () => {
-      if (isPortConn) fetch("./api/serialPort/disconnect");
-    };
-    window.addEventListener("beforeunload", cleanup);
-
-    return () => window.removeEventListener("beforeunload", cleanup);
-  }, []);
 
   const SPL = serialPorts?.length > 0 && !!path;
   console.log(
@@ -89,10 +80,12 @@ const SerialPort = ({
       toastMsg.title = `Disconnected`;
       toastMsg.description = `${path} has been Disconnected successfully.`;
       setIsPortConn(status === "OK" ? false : true);
+      // disconnect socket
+      socket.disconnect();
     } else {
       toastMsg.title =
         "There was a problem disconnecting the serial port, \n please try again later.";
-      toastMsg.description = `${res.statusText} (${res.status})`;
+      toastMsg.description = `${res.statusText} (${res.status} ${res.data.error})`;
     }
     toast(toastMsg);
     setIsLoading(false);
@@ -113,7 +106,7 @@ const SerialPort = ({
         // connect socket
         socket.connect();
       } else {
-        toastMsg.title = "Connection problem";
+        toastMsg.title = "Connection problem.";
         toastMsg.description = `${data.error}.`;
         setIsPortConn(false);
       }

@@ -2,9 +2,9 @@ import { ChevronRight, TerminalSquare } from "lucide-react";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { testJSON } from "@/lib/utils";
-import { socket } from "@/service/socket";
+import { socket } from "@/api/socket";
 const writeOnPort = async (command) => {
   let res = await fetch(`./api/serialPort/write?command=${command}`);
   console.log(res);
@@ -12,11 +12,12 @@ const writeOnPort = async (command) => {
 
 const Terminal = ({ isPortConn, setSerialData, portConfig }) => {
   const [serialOutput, setSerialOutput] = useState([]);
-
   const { path, baudRate } = portConfig;
 
   useEffect(() => {
     const onParsedData = (data) => {
+      console.log(data);
+
       if (testJSON(data)) {
         let serialDataObj = JSON.parse(data);
         setSerialData((prevData) => ({
@@ -26,33 +27,23 @@ const Terminal = ({ isPortConn, setSerialData, portConfig }) => {
           // LDR: [...prevData.LDR.slice(-25), serialDataObj.LDR],
         }));
       }
-      setSerialOutput((prevOutput) => [...prevOutput.slice(-100), data]);
+      setSerialOutput((prevOutput) => [...prevOutput, data]);
+      // divRef.current.scrollTop = divRef.current.scrollHeight;
     };
 
     socket.on("getParsedData", onParsedData);
+    socket.on("portClose", (data) => alert(data));
+    socket.on("portError", (data) => alert(data));
   }, [setSerialData]);
 
   return (
-    <Card className="relative col-span-6 font-mono row-span-4 bg-terminal text-terminal-foreground">
+    <Card className=" border-none col-span-6 font-mono row-span-4 bg-terminal text-terminal-foreground">
       <CardContent className="p-0">
         <CardTitle className="tracking-tight flex p-1 items-center gap-1 text-sm/3 rounded-t-lg font-semibold bg-[#DFE0E2] dark:bg-[#333644]">
           <TerminalSquare className="inline w-4 h-4" />
           {!isPortConn ? "TERMINAL" : path}
         </CardTitle>
-        <div className="px-1 mt-1 h-36 overflow-y-scroll scrollbar scrollbar-thumb-[#E3E5E9] hover:scrollbar-thumb-[#DBDFE3]  dark:hover:scrollbar-thumb-[#262B41] dark:scrollbar-thumb-[#292D45]">
-          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
-          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
-          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
-          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
-          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
-          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
-          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
-          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
-          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
-          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
-          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
-          "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad" "ahmad"
-          "ahmad" "ahmad" "ahmad"
+        <div className="px-1 mt-1 h-36 overflow-y-scroll scrollbar hover:scrollbar-thumb-terminal-thumb scrollbar-thumb-terminal-thumb/80">
           {serialOutput.map((output, i) => (
             <Fragment key={i}>
               {output}

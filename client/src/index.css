@@ -30,10 +30,12 @@
 
     --terminal: 210 29% 97%;
     --terminal-foreground: 229 9% 51%;
+    --terminal-thumb: 220 12% 90%;
 
     --ring: 215 20.2% 65.1%;
   }
   :root.dark {
+    color-scheme: dark;
     --font-mono: JetBrains Mono;
     --font-sans: Open Sans;
 
@@ -52,14 +54,15 @@
     --popover: 229 84% 5%;
     --popover-foreground: 215 20.2% 65.1%;
 
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
 
     --card: 229 84% 5%;
     --card-foreground: 213 31% 91%;
 
     --terminal: 229 26% 16%;
     --terminal-foreground: 229 9% 51%;
+    --terminal-thumb: 231 25% 22%;
 
     --ring: 216 34% 17%;
   }
@@ -74,4 +77,10 @@
       "rlig" 1,
       "calt" 1;
   }
+}
+.apexcharts-title-text {
+  @apply fill-foreground text-base font-normal;
+}
+.apexcharts-tooltip {
+  @apply !shadow-none !bg-[color:unset] !border-none;
 }
