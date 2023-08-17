@@ -5,9 +5,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "orserver": "nodemon server.js",
-    "build": "rollup build",
-    "server": "nodemon ./dist/index.js"
+    "server": "nodemon ./src/server.js",
+    "build": "nodemon ./dist/src/index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

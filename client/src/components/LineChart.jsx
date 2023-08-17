@@ -1,12 +1,19 @@
 import Chart from "react-apexcharts";
-import { Card, CardContent } from "@/components/ui/card";
-
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Sun } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 const LineChart = ({ LDR }) => {
   // LDR = [25, 65, 32, 101, 24, 77, 123];
   const options = {
     grid: {
       show: true,
-      borderColor: "#90A4AE",
+      borderColor: "hsl(var(--primary))",
       strokeDashArray: 4,
       position: "back",
       xaxis: {},
@@ -31,6 +38,7 @@ const LineChart = ({ LDR }) => {
         width: 1,
         position: "back",
         stroke: {
+          // TODO: CHANGE COLOR USING HSL VAR ..
           color: "#D1D5DB",
           width: 1,
           dashArray: 0,
@@ -61,10 +69,7 @@ const LineChart = ({ LDR }) => {
         enabled: false,
       },
     },
-    title: {
-      text: "Brightness level",
-      align: "left",
-    },
+
     tooltip: {
       enabled: true,
       custom: ({
@@ -86,11 +91,11 @@ const LineChart = ({ LDR }) => {
     stroke: {
       curve: "smooth",
       width: 2.5,
-      colors: "#3B82F6",
+      colors: "hsl(var(--primary))",
     },
     markers: {
       // the dot that appears when you hover
-      colors: "#3B82F6",
+      colors: "hsl(var(--primary))",
       hover: {
         size: 6,
       },
@@ -107,8 +112,27 @@ const LineChart = ({ LDR }) => {
   return (
     <Card className="col-span-6 row-span-3 relative">
       <CardContent className="">
+        <CardTitle className="flex items-center gap-1">
+          <Sun className="inline h-6 w-6" />
+          Brightness
+        </CardTitle>
         <div className=" absolute rounded-lg inset-0 w-full h-full bg-[url('@/assets/grid.svg')] opacity-10 bg-[position:calc(100%+5px)_calc(100%+24px)]"></div>
         <Chart options={options} series={series} />
+        <div className="absolute right-2 top-2">
+          <TooltipProvider delayDuration={250}>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button size="pill" className="shadow-md select-none" asChild>
+                  <div>DHT11</div>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                requires DHT-11 sensor, <br /> make sure to use Temperature in
+                your JSON to get activated
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </CardContent>
     </Card>
   );
