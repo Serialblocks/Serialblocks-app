@@ -26,7 +26,6 @@ const App = () => {
   // cleanup for when the component unmounts/page closes or refreshes
   useEffect(() => {
     const cleanup = () => {
-      // TODO:IF SOCKET CONNECTED / IF PORT CONNECTED
       if (isPortConn) {
         fetch("./api/serialPort/disconnect");
       }

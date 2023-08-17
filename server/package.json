@@ -5,11 +5,14 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "server": "nodemon server.js"
+    "orserver": "nodemon server.js",
+    "build": "rollup build",
+    "server": "nodemon ./dist/index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "esbuild": "^0.19.2",
     "express": "^4.18.2",
     "http": "^0.0.1-security",
     "socket.io": "^4.7.1"
@@ -17,6 +20,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "rollup": "^3.28.0"
   }
 }
