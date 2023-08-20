@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const Footer = () => {
   return (
-    <Card className="row-span-3 col-span-12">
+    <Card className="col-span-6 row-auto row-start-[6]">
       <CardContent className="">
         <p>SerialSocket</p>
         <span>star on github</span>

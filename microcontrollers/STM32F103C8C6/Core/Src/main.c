@@ -1,9 +1,16 @@
+/* USER CODE BEGIN Header */
 
+/* USER CODE END Header */
+/* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <string.h>
+/* USER CODE END Includes */
 
+/* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 
@@ -16,62 +23,60 @@ char data_buffer[50]; // data buffer
 uint8_t UART1_rxBuffer;
 uint32_t previousMillis = 0;
 uint32_t currentMillis = 0;
-int RED = 001;
-int GREEN = 001;
-int BLUE = 255;
+int RED = 000;
+int GREEN = 000;
+int BLUE = 000;
 int8_t count = 0; // count how many bytes are received
+/* USER CODE END PV */
 
+/* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_ADC2_Init(void);
 static void MX_TIM2_Init(void);
+/* USER CODE BEGIN PFP */
 
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
 int customParseRGB(char *input, int *r, int *g, int *b) {
-
   input += 4; // Move the pointer past "RGB_"
 
-  // Parse the red component
-  int red = 0;
-  while (*input && *input != '_') {
+  int components[3] = {0}; // Array to store the RGB components
 
-    red = red * 10 + (*input - '0');
-    ++input;
+  for (int i = 0; i < 3; ++i) {
+    int component = 0;
+    while (*input && *input != '_') {
+      component = component * 10 + (*input - '0');
+      ++input;
+    }
+    components[i] = component;
+    if (*input == '_') {
+      ++input; // Move past the underscore
+    } else if (i < 2 || *input != '\0') {
+      return 0; // Invalid input format
+    }
   }
 
-  ++input; // Move past the underscore
-
-  // Parse the green component
-  int green = 0;
-  while (*input && *input != '_') {
-
-    green = green * 10 + (*input - '0');
-    ++input;
-  }
-
-  ++input; // Move past the underscore
-
-  // Parse the blue component
-  int blue = 0;
-  while (*input && *input != '\0') {
-
-    blue = blue * 10 + (*input - '0');
-    ++input;
-  }
-
-  *r = red;
-  *g = green;
-  *b = blue;
-
+  *r = components[0];
+  *g = components[1];
+  *b = components[2];
   return 1; // Successfully parsed RGB values
 }
+
 void transmitLEDState(void) {
   char ledStatusJSON[20]; // Adjust the size as per your requirement
   // Assuming you have defined appropriate macros or variables for
   // LED_GPIO_Port and LED_Pin
   int ledStatus = HAL_GPIO_ReadPin(LED_GPIO_Port, LED_Pin);
   snprintf(ledStatusJSON, 20, "{\"LED\":%d}\r\n", ledStatus);
+
+  // toggle pin
+  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+
   // Assuming you have defined huart1 and HAL_UART_Transmit correctly
   HAL_UART_Transmit(&huart1, (uint8_t *)ledStatusJSON, sizeof(ledStatusJSON),
                     100);
@@ -84,9 +89,28 @@ void transmitLEDState(void) {
  * @retval int
  */
 int main(void) {
+  /* USER CODE BEGIN 1 */
 
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick.
+   */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
   SystemClock_Config();
 
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   MX_ADC1_Init();
@@ -105,7 +129,6 @@ int main(void) {
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
-
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
@@ -122,6 +145,7 @@ int main(void) {
 
     HAL_UART_Transmit(&huart1, (uint8_t *)data_buffer, sizeof(data_buffer),
                       100);
+    HAL_Delay(1000);
   }
 
   /* USER CODE END WHILE */
@@ -285,6 +309,9 @@ static void MX_TIM2_Init(void) {
   if (HAL_TIM_PWM_Init(&htim2) != HAL_OK) {
     Error_Handler();
   }
+  if (HAL_TIM_OC_Init(&htim2) != HAL_OK) {
+    Error_Handler();
+  }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK) {
@@ -300,7 +327,8 @@ static void MX_TIM2_Init(void) {
   if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3) != HAL_OK) {
     Error_Handler();
   }
-  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_4) != HAL_OK) {
+  sConfigOC.OCMode = TIM_OCMODE_TIMING;
+  if (HAL_TIM_OC_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_4) != HAL_OK) {
     Error_Handler();
   }
   /* USER CODE BEGIN TIM2_Init 2 */
@@ -383,7 +411,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
       (currentMillis - previousMillis >
        200)) // If The INT Source Is EXTI Line4 (B4 Pin)
   {
-    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin); // Toggle The Output (LED) Pin
     transmitLEDState();
     previousMillis = currentMillis;
   }
@@ -401,15 +428,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     HAL_UART_Transmit(&huart1, (uint8_t *)sentBuff, strlen(sentBuff), 100);
 
     if (strncmp(data_buffer, "RGB_", 4) == 0) {
-      customParseRGB(data_buffer, &RED, &GREEN, &BLUE);
+//    	sscanf( data_buffer, "RGB_%d_%d_%d",&RED, &GREEN, &BLUE);
+        customParseRGB(data_buffer, &RED, &GREEN, &BLUE);
+
       TIM2->CCR2 = (65535 - RED * 255);
       TIM2->CCR3 = (65535 - GREEN * 255);
       TIM2->CCR4 = (65535 - BLUE * 255);
-      sprintf(sentBuff, "RED:%d, GREEN:%d,BLUE:%d \r\n", RED, GREEN, BLUE);
-      HAL_UART_Transmit(&huart1, (uint8_t *)sentBuff, strlen(sentBuff), 100);
     }
-    if (strcmp(data_buffer, "TOGGLE_LED") == 0) {
-      HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    else if (strcmp(data_buffer, "TOGGLE_LED") == 0) {
       transmitLEDState();
     }
     count = 0;
