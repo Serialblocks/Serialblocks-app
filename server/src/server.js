@@ -31,7 +31,6 @@ app.get("/api/serialPort/connect", async (req, res) => {
     autoOpen: true,
     // endOnClose: true,
   });
-
   SERIALPORT.on("open", () => {
     res.status(200).json({ status: "OK", data: "" });
   });
@@ -47,11 +46,17 @@ app.get("/api/serialPort/disconnect", async (req, res) => {
       status: "FAILED",
       error: "serialport isn't connected, unauthorized access",
     });
+  //
+  if (SERIALPORT.isOpen) {
+    SERIALPORT.close();
 
-  SERIALPORT.close();
-  SERIALPORT.on("close", () => {
+    SERIALPORT.on("close", () => {
+      res.status(200).json({ status: "OK", data: "" });
+    });
+  } else {
     res.status(200).json({ status: "OK", data: "" });
-  });
+  }
+
   // unlikely
   SERIALPORT.on("error", (err) =>
     res.status(200).json({ status: "FAILED", data: { error: err.message } })
