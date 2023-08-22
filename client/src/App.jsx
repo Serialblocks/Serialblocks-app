@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 import {
   SerialPort,
@@ -27,7 +28,7 @@ const App = () => {
   useEffect(() => {
     const cleanup = () => {
       if (isPortConn) {
-        fetch("./api/serialPort/disconnect");
+        axios.get("./api/serialPort/disconnect");
       }
       if (socket.connected) {
         socket.off("getParsedData");

@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { testJSON } from "@/lib/utils";
 import { socket } from "@/api/socket";
+import axios from "axios"; //
 const writeOnPort = async (command) => {
-  let res = await fetch(`./api/serialPort/write?command=${command}`);
+  let res = await axios.get(`./api/serialPort/write?command=${command}`);
   console.log(res);
 };
 

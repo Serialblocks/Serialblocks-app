@@ -3,6 +3,7 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Palette } from "lucide-react";
 import { RgbColorPicker } from "react-colorful";
 import { useState } from "react";
+import axios from "axios";
 function formatRGB({ r, g, b }) {
   // for (const [key, color] of Object.entries(rgb)) {
   //   if (Object.hasOwn(rgb, key)) {
@@ -29,7 +30,7 @@ const LED = () => {
           className="flex-1 h-auto"
           onChange={(color) => {
             console.log(color);
-            fetch(`./api/serialPort/write?command=${formatRGB(color)}`);
+            axios.get(`./api/serialPort/write?command=${formatRGB(color)}`);
             setColor(color);
           }}
         />

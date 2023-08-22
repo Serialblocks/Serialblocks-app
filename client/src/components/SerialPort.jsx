@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -42,9 +43,10 @@ const SerialPort = ({
   // TODO:
   const fetchSerialPorts = async () => {
     // try {
-    let res = await fetch("./api/listPorts");
-    if (res.ok) {
-      let { data } = await res.json();
+    let res = await axios.get("./api/listPorts");
+    if (res.status===200 && res.statusText==='OK') {
+      let 
+      data = await res.data;
       if (data.length > 0) {
         toastMsg.title = `Found ${data.length} port(s) available.`;
         toastMsg.description = "select the one you want from the dropdown!";
@@ -75,9 +77,9 @@ const SerialPort = ({
   const disconnectPort = async () => {
     setIsLoading(true);
 
-    let res = await fetch("./api/serialPort/disconnect");
-    if (res.ok) {
-      let { status } = await res.json();
+    let res = await axios.get("./api/serialPort/disconnect");
+    if (res.status===200 && res.statusText==='OK') {
+      let status = await res.statusText;
       toastMsg.title = `Disconnected`;
       toastMsg.description = `${path} has been Disconnected successfully.`;
       setIsPortConn(status === "OK" ? false : true);
@@ -95,12 +97,14 @@ const SerialPort = ({
   const connectPort = async () => {
     setIsLoading(true);
     //TODO: CHECK PROBLEM WITH QUERY PARAMS AND NOT QUERY ATA IN SERVER
-    let res = await fetch(
+    let res = await axios.get(
       `./api/serialPort/connect?path=${path}&baudRate=${baudRate}`
     );
     console.dir(res);
-    if (res.ok) {
-      let { status, data } = await res.json();
+    if (res.status===200 && res.statusText==='OK') {
+      // let { status, data } = await res.json();
+      let status=res.statusText;
+      let data=await res.data;
       if (status === "OK") {
         toastMsg.title = `Connected`;
         toastMsg.description = `${path} has been connected successfully.`;
