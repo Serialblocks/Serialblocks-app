@@ -45,8 +45,7 @@ const SerialPort = ({
     // try {
     let res = await axios.get("./api/listPorts");
     if (res.status===200 && res.statusText==='OK') {
-      let 
-      data = await res.data;
+      let data = await res.data;
       if (data.length > 0) {
         toastMsg.title = `Found ${data.length} port(s) available.`;
         toastMsg.description = "select the one you want from the dropdown!";
