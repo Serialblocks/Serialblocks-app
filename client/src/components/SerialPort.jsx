@@ -13,7 +13,7 @@ import {
 
 import { Card, CardContent } from "@/components/ui/card";
 import { socket } from "@/api/socket";
-import { Search } from "lucide-react";
+import { Search, SearchCheck, SearchX } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 const SerialPort = ({
@@ -24,7 +24,7 @@ const SerialPort = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const [serialPorts, setSerialPorts] = useState(null);
+  const [serialPorts, setSerialPorts] = useState(undefined);
   const { toast } = useToast();
   const { path, baudRate } = portConfig;
 
@@ -57,12 +57,13 @@ const SerialPort = ({
       toastMsg.title =
         "There was a problem with locating connected serial ports, \n please try again later.";
       toastMsg.description = `${res.statusText} (${res.status})`;
+      setSerialPorts(null);
     }
     toast(toastMsg);
   };
 
   const selectItems =
-    Array.isArray(serialPorts) && serialPorts.length
+    Array.isArray(serialPorts) && serialPorts?.length
       ? serialPorts.map(({ manufacturer: Mfr, path, serialNumber: SN }) => (
           <SelectItem key={SN} value={path}>
             {path} - {Mfr}
@@ -97,6 +98,7 @@ const SerialPort = ({
     let res = await fetch(
       `./api/serialPort/connect?path=${path}&baudRate=${baudRate}`
     );
+    console.dir(res);
     if (res.ok) {
       let { status, data } = await res.json();
       if (status === "OK") {
@@ -121,7 +123,7 @@ const SerialPort = ({
   };
 
   return (
-    <Card className="col-span-6 row-span-2">
+    <Card className="col-span-6 row-span-6">
       <CardContent className="grid grid-cols-5 grid-rows-2 gap-2 ">
         <Select
           value={path}
@@ -157,7 +159,13 @@ const SerialPort = ({
           onClick={fetchSerialPorts}
           className="col-span-1 px-2"
         >
-          <Search className="mr-2 w-4 h-4" />
+          {serialPorts === undefined ? (
+            <Search className="mr-2 w-4 h-4" />
+          ) : serialPorts?.length > 0 ? (
+            <SearchCheck className="mr-2 w-4 h-4" />
+          ) : (
+            <SearchX className="mr-2 w-4 h-4" />
+          )}
           List Ports
         </Button>
 

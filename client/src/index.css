@@ -8,25 +8,25 @@
     --font-sans: Open Sans;
 
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 229 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 229 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
     --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-foreground: 229 47.4% 11.2%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 229 47.4% 11.2%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card-foreground: 229 47.4% 11.2%;
 
     --terminal: 210 29% 97%;
     --terminal-foreground: 229 9% 51%;
@@ -39,11 +39,11 @@
     --font-mono: JetBrains Mono;
     --font-sans: Open Sans;
 
-    --background: 222.2 84% 4.9%;
+    --background: 229 84% 4.9%;
     --foreground: 210 40% 98%;
 
     --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 1.2%;
+    --primary-foreground: 229 47.4% 1.2%;
 
     --muted: 223 47% 11%;
     --muted-foreground: 215.4 16.3% 56.9%;
@@ -78,9 +78,8 @@
       "calt" 1;
   }
 }
-.apexcharts-title-text {
-  @apply fill-foreground text-base font-normal;
-}
+/*resets for apexcharts*/
+
 .apexcharts-tooltip {
   @apply !shadow-none !bg-[color:unset] !border-none;
 }

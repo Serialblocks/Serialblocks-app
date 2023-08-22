@@ -3,7 +3,7 @@ import { Cpu } from "lucide-react";
 const Processor = ({ Temperature }) => {
   const date = new Date();
   return (
-    <Card className="row-span-1 col-span-3 min-h-[10rem]">
+    <Card className="row-span-2 col-span-3 min-h-[10rem]">
       <CardContent className="relative">
         <CardTitle className="flex items-center gap-1">
           <Cpu className="inline h-6 w-6" />
