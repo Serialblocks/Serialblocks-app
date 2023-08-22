@@ -1,7 +1,13 @@
 {
   "scripts": {
-    "start": "concurrently \"npm run client\" \"npm run server\"",
+    "dev": "concurrently \"npm run client\" \"npm run server\"",
+    "dist": "concurrently \"npm run clientDist\" \"npm run serverDist\"",
     "client": "npm run client --prefix client",
-    "server": "npm run server --prefix server"
+    "clientDist": "npm run clientDist --prefix client",
+    "server": "npm run server --prefix server",
+    "serverDist": "npm run serverDist --prefix server"
+  },
+  "dependencies": {
+    "react-colorful": "^5.6.1"
   }
 }

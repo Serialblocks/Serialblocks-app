@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "server": "nodemon ./src/server.js",
-    "build": "nodemon ./dist/src/index.js"
+    "dist": "nodemon ./dist/src/index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
