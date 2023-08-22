@@ -110,7 +110,7 @@ const LineChart = ({ LDR }) => {
   ];
 
   return (
-    <Card className="col-span-6 row-span-3 relative">
+    <Card className="col-span-6 row-span-5 relative">
       <CardContent className="">
         <CardTitle className="flex items-center gap-1">
           <Sun className="inline h-6 w-6" />

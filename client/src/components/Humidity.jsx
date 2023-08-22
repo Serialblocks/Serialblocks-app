@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 const Humidity = () => {
   return (
-    <Card className="row-span-1 col-span-3 min-h-[10rem]">
+    <Card className="row-span-2 col-span-3 min-h-[10rem]">
       <CardContent className="relative">
         <CardTitle className="flex items-center gap-1">
           <Droplets className="inline h-6 w-6" /> Humidity

@@ -37,13 +37,13 @@ const Terminal = ({ isPortConn, setSerialData, portConfig }) => {
   }, [setSerialData]);
 
   return (
-    <Card className=" border-none col-span-6 font-mono row-span-4 bg-terminal text-terminal-foreground">
-      <CardContent className="p-0">
+    <Card className=" border-none col-span-6 font-mono row-[span_8_/_span_8] bg-terminal text-terminal-foreground">
+      <CardContent className="p-0 flex flex-col h-full">
         <CardTitle className="tracking-tight flex p-1 items-center gap-1 text-sm/3 rounded-t-lg font-semibold bg-[#DFE0E2] dark:bg-[#333644]">
           <TerminalSquare className="inline w-4 h-4" />
           {!isPortConn ? "TERMINAL" : path}
         </CardTitle>
-        <div className="px-1 mt-1 h-36 overflow-y-scroll scrollbar hover:scrollbar-thumb-terminal-thumb scrollbar-thumb-terminal-thumb/80">
+        <div className="px-1 mt-1 flex-1 overflow-y-scroll scrollbar hover:scrollbar-thumb-terminal-thumb scrollbar-thumb-terminal-thumb/80">
           {serialOutput.map((output, i) => (
             <Fragment key={i}>
               {output}
@@ -52,7 +52,7 @@ const Terminal = ({ isPortConn, setSerialData, portConfig }) => {
           ))}
         </div>
         <form
-          className="flex gap-2 p-1"
+          className="flex gap-2 m-1"
           onSubmit={(e) => {
             e.preventDefault();
             //TODO: IF NOT CONNECTED don't connect again
@@ -64,7 +64,7 @@ const Terminal = ({ isPortConn, setSerialData, portConfig }) => {
             className="h-8 px-2"
             type="text"
             name="command"
-            placeholder="type START and press enter"
+            placeholder="Enter your command (e.g., LED_TOGGLE)"
           />
           <Button className="h-8" size="sm">
             <ChevronRight className="mr-2 w-5 h-5" />

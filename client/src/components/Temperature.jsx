@@ -5,7 +5,7 @@ import { memo } from "react";
 
 let Temperature = memo(() => {
   return (
-    <Card className="row-span-1 col-span-3 relative">
+    <Card className="row-span-2 col-span-3 relative min-h-[10rem]">
       {/* adding before:absolute and changing opacity of the before pseudo element will add grain effect to the background of the card */}
       <CardContent className=" before:inset-0 before:content-[' '] before:rounded-lg before:opacity-0 before:bg-[url(@/assets/noise.svg)]">
         <CardTitle className="flex items-center gap-1">

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Palette } from "lucide-react";
-import Colorful from "@uiw/react-color-colorful";
+import { RgbColorPicker } from "react-colorful";
 import { useState } from "react";
 function formatRGB({ r, g, b }) {
   // for (const [key, color] of Object.entries(rgb)) {
@@ -12,23 +12,25 @@ function formatRGB({ r, g, b }) {
   const paddedR = String(r).padStart(3, "0");
   const paddedG = String(g).padStart(3, "0");
   const paddedB = String(b).padStart(3, "0");
+  console.log(`RGB_${paddedR}_${paddedG}_${paddedB}`);
   return `RGB_${paddedR}_${paddedG}_${paddedB}`;
 }
 const LED = () => {
-  const [hex, setHex] = useState("#59c09a");
+  const [color, setColor] = useState({ r: 0, g: 0, b: 0 });
   return (
-    <Card className="row-span-1 col-span-3">
-      <CardContent className="relative">
+    <Card className="row-span-2 col-span-3 min-h-[10rem]">
+      <CardContent className="relative flex flex-col">
         <CardTitle className="flex items-center gap-1">
           <Palette className="inline h-6 w-6" />
           RGB_LED
         </CardTitle>
-        <Colorful
-          color={hex}
-          disableAlpha={true}
+        <RgbColorPicker
+          color={color}
+          className="flex-1 h-auto"
           onChange={(color) => {
-            fetch(`./api/serialPort/write?command=${formatRGB(color.rgb)}`);
-            setHex(color.hex);
+            console.log(color);
+            fetch(`./api/serialPort/write?command=${formatRGB(color)}`);
+            setColor(color);
           }}
         />
         <Button size="pill" className="absolute right-2 top-2" asChild>
