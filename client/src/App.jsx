@@ -16,7 +16,7 @@ const App = () => {
   const [isPortConn, setIsPortConn] = useState(null);
   const [portConfig, setPortConfig] = useState({
     path: "",
-    baudRate: "",
+    baudRate: "115200",
   });
   const [serialData, setSerialData] = useState({
     Temperature: 0,
@@ -43,7 +43,7 @@ const App = () => {
 
   return (
     <>
-      <div className="grid grid-cols-12 grid-rows-[min_content_1fr] gap-4 max-w-7xl mx-auto">
+      <div className="mx-auto grid max-w-7xl grid-cols-12 grid-rows-[min_content_1fr] gap-4">
         <SerialPort
           setIsPortConn={setIsPortConn}
           isPortConn={isPortConn}

@@ -3,25 +3,25 @@ import { Cpu } from "lucide-react";
 const Processor = ({ Temperature }) => {
   const date = new Date();
   return (
-    <Card className="row-span-2 col-span-3 min-h-[10rem]">
+    <Card className="col-span-3 row-span-2 min-h-[10rem]">
       <CardContent className="relative">
         <CardTitle className="flex items-center gap-1">
           <Cpu className="inline h-6 w-6" />
           Processor
         </CardTitle>
 
-        <div className="flex gap-1 justify-start mt-4">
+        <div className="mt-4 flex justify-start gap-1">
           <p className="text-3xl font-bold">{Temperature.toFixed(2)}</p>
-          <span className="font-medium text-lg">°C</span>
+          <span className="text-lg font-medium">°C</span>
         </div>
 
-        <div className="absolute top-4 right-4">
+        <div className="absolute right-4 top-4">
           <span className="relative flex h-3 w-3">
             <span
               key={date.getTime()}
-              className="animate-ping repeat-1 absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+              className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75 repeat-1"
             ></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-green-500"></span>
           </span>
         </div>
       </CardContent>

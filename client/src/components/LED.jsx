@@ -18,7 +18,7 @@ function formatRGB({ r, g, b }) {
 const LED = () => {
   const [color, setColor] = useState({ r: 0, g: 0, b: 0 });
   return (
-    <Card className="row-span-2 col-span-3 min-h-[10rem]">
+    <Card className="col-span-3 row-span-2 min-h-[10rem]">
       <CardContent className="relative flex flex-col">
         <CardTitle className="flex items-center gap-1">
           <Palette className="inline h-6 w-6" />
@@ -26,7 +26,7 @@ const LED = () => {
         </CardTitle>
         <RgbColorPicker
           color={color}
-          className="flex-1 h-auto"
+          className="h-auto flex-1"
           onChange={(color) => {
             console.log(color);
             fetch(`./api/serialPort/write?command=${formatRGB(color)}`);

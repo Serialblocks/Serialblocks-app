@@ -110,19 +110,19 @@ const LineChart = ({ LDR }) => {
   ];
 
   return (
-    <Card className="col-span-6 row-span-5 relative">
+    <Card className="relative col-span-6 row-span-5">
       <CardContent className="">
         <CardTitle className="flex items-center gap-1">
           <Sun className="inline h-6 w-6" />
           Brightness
         </CardTitle>
-        <div className=" absolute rounded-lg inset-0 w-full h-full bg-[url('@/assets/grid.svg')] opacity-10 bg-[position:calc(100%+5px)_calc(100%+24px)]"></div>
+        <div className=" absolute inset-0 h-full w-full rounded-lg bg-[url('@/assets/grid.svg')] bg-[position:calc(100%+5px)_calc(100%+24px)] opacity-10"></div>
         <Chart options={options} series={series} />
         <div className="absolute right-2 top-2">
           <TooltipProvider delayDuration={250}>
             <Tooltip>
               <TooltipTrigger>
-                <Button size="pill" className="shadow-md select-none" asChild>
+                <Button size="pill" className="select-none shadow-md" asChild>
                   <div>DHT11</div>
                 </Button>
               </TooltipTrigger>

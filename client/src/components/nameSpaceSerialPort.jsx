@@ -12,17 +12,25 @@ import {
 } from "@/components/ui/select";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { socket } from "@/api/socket";
+
+import { io } from "socket.io-client";
+const URL =
+  process.env.NODE_ENV === "production" ? undefined : "http://localhost:3003";
+
 import { Search, SearchCheck, SearchX } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
-const SerialPort = ({
+const NameSpaceSP = ({
   setIsPortConn,
   isPortConn,
   portConfig,
   setPortConfig,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const socket = io.connect(URL, {
+    transports: ["websocket"],
+    autoConnect: true,
+  });
 
   const [serialPorts, setSerialPorts] = useState(undefined);
   const { toast } = useToast();
@@ -142,7 +150,6 @@ const SerialPort = ({
         </Select>
 
         <Input
-          value={baudRate}
           onBlur={({ currentTarget: { value: newBaudRate } }) => {
             // uncontrolled input
             setPortConfig((prevConfig) => ({
@@ -185,4 +192,4 @@ const SerialPort = ({
   );
 };
 
-export { SerialPort };
+export { NameSpaceSP };

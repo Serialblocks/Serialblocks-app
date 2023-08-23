@@ -81,5 +81,5 @@
 /*resets for apexcharts*/
 
 .apexcharts-tooltip {
-  @apply !shadow-none !bg-[color:unset] !border-none;
+  @apply !border-none !bg-[color:unset] !shadow-none;
 }
