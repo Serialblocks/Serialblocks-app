@@ -16,10 +16,6 @@ let SERIALPORT = undefined;
 app.get("/api/listPorts", async (req, res) => {
   console.log("listPorts ran");
   try {
-    // const path = "/COM99";
-    // SerialPortMock.binding.createPort(path);
-    // const serialport = new SerialPortMock({ path, baudRate: 9600 });
-    // // const serialPorts = await SerialPortMock.list();
     const serialPorts = await SerialPort.list();
     res.status(200).json({ status: "OK", data: serialPorts });
   } catch (err) {
@@ -77,23 +73,32 @@ app.get("/api/serialPort/write", async (req, res) => {
     });
 
   const { command } = req.query;
-  console.log(command);
-  SERIALPORT.write(command + "\r\n");
+  SERIALPORT.write(command + "\r");
   //A combination of CR (carriage return) and LF (line feed) control characters sequence is used as end-of-line (EOL) marker.
   res.status(200).json({ status: "OK", data: command });
 });
 
 // WEBSOCKET CONNECTION
 io.on("connection", (socket) => {
+  // main namespace
   console.log("transport method", socket.conn.transport.name); // prints "websocket"
   console.log("I GOT CONNECTED!!!!!"); // prints "websocket"
+
+  io.on("new_namespace", (namespace) => {
+    console.log(`new name comport joined${namespace.name}`);
+  });
+  //dynamic namespace
+  io.of("/COM-d+$/").on("connection", (socket) => {
+    console.log("nsp");
+    // ...
+  });
 
   //  TODO: handle better
   if (SERIALPORT) {
     console.log("what happened");
-    const parser = SERIALPORT.pipe(new ReadlineParser({ delimiter: "\r\n" }));
+    const parser = SERIALPORT.pipe(new ReadlineParser({ delimiter: "\r" }));
     parser.on("data", async (data) => {
-      // console.log(data);
+      console.log(data);
       socket.emit("getParsedData", data);
     });
     // TODO: ADD THESE FEATURES
