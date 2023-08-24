@@ -12,7 +12,8 @@ const Footer = () => {
             <span className="font-bold"> SerialSocket</span> © {year}. Built by
             Ahmad Ghoniem.
           </p>
-          <p>This project is open source. Contribute on GitHub!</p>
+          <p>Deployed on vercel</p>
+          <p>SerialSocket is open source. Contribute on GitHub!</p>
         </div>
 
         <div className="flex flex-row">

@@ -5,8 +5,8 @@ import {
   Terminal,
   LineChart,
   Processor,
+  RGB,
   LED,
-  Temperature,
   Humidity,
   Footer,
 } from "@/components";
@@ -19,9 +19,11 @@ const App = () => {
     baudRate: "115200",
   });
   const [serialData, setSerialData] = useState({
-    Temperature: 0,
-    LDR: [],
-    LED: 0,
+    Processor: { value: undefined, timestamp: 0 },
+    Humidity: { value: undefined, timestamp: 0 },
+
+    LDR: [{ value: undefined, timestamp: 0 }],
+    LED: { value: undefined, timestamp: 0 },
   });
   // cleanup for when the component unmounts/page closes or refreshes
   useEffect(() => {
@@ -56,12 +58,11 @@ const App = () => {
           portConfig={portConfig}
         />
 
-        <LineChart LDR={serialData.LDR} />
-        <Processor Temperature={serialData.Temperature} />
-
+        <LineChart LDR={[50, 30, 23]} />
+        <Processor Processor={serialData.Processor} />
+        <RGB />
         <LED />
-        <Temperature />
-        <Humidity />
+        <Humidity Humidity={serialData.Humidity} />
         <Footer />
       </div>
       <Toaster />

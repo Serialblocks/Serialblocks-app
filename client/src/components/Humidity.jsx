@@ -7,7 +7,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-const Humidity = () => {
+const Humidity = ({ Humidity }) => {
+  const { value, timestamp } = Humidity;
   return (
     <Card className="col-span-3 row-span-2 min-h-[10rem]">
       <CardContent className="relative">
@@ -19,6 +20,7 @@ const Humidity = () => {
           <p className="text-3xl font-bold">30</p>
           <span className="text-lg font-medium">%</span>
         </span>
+
         <div className="absolute right-2 top-2">
           <TooltipProvider delayDuration={250}>
             <Tooltip>

@@ -11,7 +11,9 @@ const writeOnPort = async (command) => {
 };
 
 const Terminal = ({ isPortConn, setSerialData, portConfig }) => {
-  const [serialOutput, setSerialOutput] = useState([]);
+  const [serialOutput, setSerialOutput] = useState([
+    { value: 0, timestamp: 0 },
+  ]);
   const { path, baudRate } = portConfig;
 
   useEffect(() => {
@@ -19,16 +21,28 @@ const Terminal = ({ isPortConn, setSerialData, portConfig }) => {
       if (testJSON(data)) {
         let serialDataObj = JSON.parse(data);
 
-        setSerialData((prevData) => ({
-          ...prevData,
-          ...serialDataObj,
-          LDR: [...prevData.LDR, serialDataObj.LDR],
+        setSerialData((prevData) => {
+          for (const [key, value] of Object.entries(serialDataObj)) {
+            prevData[key] = Array.isArray(prevData[key])
+              ? [...prevData[key], { value, timestamp: Date.now() }]
+              : {
+                  value: value,
+                  timestamp: Date.now(),
+                };
+          }
+          return JSON.parse(JSON.stringify(prevData));
           // LDR: [...prevData.LDR.slice(-25), serialDataObj.LDR],
-        }));
+        });
       }
-      setSerialOutput((prevOutput) => [...prevOutput, data]);
-      // divRef.current.scrollTop = divRef.current.scrollHeight;
+
+      // PROBLEM OCCURS WHEN DATA IS A JSON OF LED STATUS..
+      setSerialOutput((prevOutput) => [
+        ...prevOutput,
+        { value: data, timestamp: Date.now() },
+      ]);
     };
+
+    // on disconnection       // divRef.current.scrollTop = divRef.current.scrollHeight;
 
     socket.on("getParsedData", onParsedData);
     socket.on("portClose", (data) => alert(data));
@@ -43,127 +57,8 @@ const Terminal = ({ isPortConn, setSerialData, portConfig }) => {
           {!isPortConn ? "TERMINAL" : path}
         </CardTitle>
         <div className="mt-1 max-h-[13.25rem] flex-1 overflow-y-scroll whitespace-break-spaces px-1 scrollbar scrollbar-thumb-terminal-thumb/80 hover:scrollbar-thumb-terminal-thumb">
-          {/* {`
-        [1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":64}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":64}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":64}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":64}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":64}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":64}
-[1] {"Temperature":33.0578,"LDR":64}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":61}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":61}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":64}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":61}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":64}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":64}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":61}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":61}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":63}
-[1] {"Temperature":33.0578,"LDR":62}
-[1] {"Temperature":33.0578,"LDR":62}`} */}
-          {serialOutput.map((output, i) => (
-            <Fragment key={i}>{output + "\n"}</Fragment>
+          {serialOutput.map(({ value, timestamp }, i) => (
+            <Fragment key={i}>{value + "\n"}</Fragment>
           ))}
         </div>
         <form
