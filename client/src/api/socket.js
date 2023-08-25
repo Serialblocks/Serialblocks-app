@@ -4,5 +4,6 @@ const URL =
 // autoconnect should be connected true for full capabilities
 export const socket = io.connect(URL, {
   transports: ["websocket"],
-  autoConnect: false,
+  autoConnect: true,
 });
+export { io };

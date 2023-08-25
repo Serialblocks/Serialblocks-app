@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/select";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { socket } from "@/api/socket";
+import { io } from "socket.io-client";
+
 import { Search, SearchCheck, SearchX } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -29,6 +30,8 @@ const SerialPort = ({
   const [serialPorts, setSerialPorts] = useState(undefined);
   const { toast } = useToast();
   const { path, baudRate } = portConfig;
+
+  useEffect(() => {}, []);
 
   const SPL = serialPorts?.length > 0 && !!path;
   console.log(
@@ -94,35 +97,46 @@ const SerialPort = ({
     setIsLoading(false);
   };
 
-  const connectPort = async () => {
-    setIsLoading(true);
+  async function connectPort() {
+    // setIsLoading(true);
     //TODO: CHECK PROBLEM WITH QUERY PARAMS AND NOT QUERY ATA IN SERVER
-    let res = await fetch(
-      `./api/serialPort/connect?path=${path}&baudRate=${baudRate}`,
-    );
-    console.dir(res);
-    if (res.ok) {
-      let { status, data } = await res.json();
-      if (status === "OK") {
-        toastMsg.title = `Connected`;
-        toastMsg.description = `${path} has been connected successfully.`;
-        setIsPortConn(true);
-        // connect socket
-        socket.connect();
-      } else {
-        toastMsg.title = "Connection problem.";
-        toastMsg.description = `${data.error}.`;
-        setIsPortConn(false);
-      }
-    } else {
-      toastMsg.title =
-        "There was a problem connecting to serial port, \n please try again later.";
-      toastMsg.description = `${res.statusText} (${res.status})`;
-      setIsPortConn(false);
-    }
-    toast(toastMsg);
-    setIsLoading(false);
-  };
+    const url = `http://localhost:3003/${path}`;
+    console.log(url);
+    const socket = io.connect(url, {
+      transports: ["websocket"],
+      autoConnect: false,
+      query: {
+        path: "sheko",
+        baudRate: 123,
+      },
+    });
+    socket.connect();
+    socket.on("connect", (data) => {
+      console.log(data);
+    });
+    // if (socket.connected) {
+    //   socket.on("portStatus", (data)=> {
+    //     console.log(data);
+    //   });
+    //   if (status === "OK") {
+    //     toastMsg.title = `Connected`;
+    //     toastMsg.description = `${path} has been connected successfully.`;
+    //     setIsPortConn(true);
+    //     // connect socket
+    //   } else {
+    //     toastMsg.title = "Connection problem.";
+    //     toastMsg.description = `${data.error}.`;
+    //     setIsPortConn(false);
+    //   }
+    // } else {
+    //   toastMsg.title =
+    //     "There was a problem connecting to serial port, \n please try again later.";
+    //   toastMsg.description = `${res.statusText} (${res.status})`;
+    //   setIsPortConn(false);
+    // }
+    // toast(toastMsg);
+    // setIsLoading(false);
+  }
 
   return (
     <Card className="col-span-6 row-span-6">

@@ -2,7 +2,7 @@
   "name": "serialsocket-client",
   "type": "module",
   "scripts": {
-    "client": "vite",
+    "client": "vite --host",
     "clientDist": "localserver ./dist",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
