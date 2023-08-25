@@ -57,7 +57,7 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void transmitLEDState(void) {
+void toggleLedPin(void) {
   char ledStatusJSON[20]; // Adjust the size as per your requirement
   // Assuming you have defined appropriate macros or variables for
   // LED_GPIO_Port and LED_Pin
@@ -130,9 +130,9 @@ int main(void)
     uint8_t tempValue = HAL_ADC_GetValue(&hadc1);
     uint8_t LDRValue = HAL_ADC_GetValue(&hadc2);
     float celsius = (357.558 - 0.187364 * tempValue) / 10.0;
-char sentBuff[40];
+char sentBuff[50];
     snprintf(sentBuff, sizeof(sentBuff),
-             "{\"Temperature\":%.4f,\"LDR\":%d}\r\n", celsius, LDRValue);
+             "{\"ProcessorTemp\":%.4f,\"Brightness\":%d}\r\n", celsius, LDRValue);
 // use strlen instead of sizeof while using hal_uart_transmit as it sends rubbish values on the remaining space
     HAL_UART_Transmit(&huart1, (uint8_t *)sentBuff, strlen(sentBuff),
                       100);
@@ -424,7 +424,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
       (currentMillis - previousMillis >
        200)) // If The INT Source Is EXTI Line4 (B4 Pin)
   {
-    transmitLEDState();
+    toggleLedPin();
     previousMillis = currentMillis;
   }
 }
@@ -437,12 +437,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	 * CR \r not followed by LF \n 			[Classic Mac OS (before 10.0)]
 	 * LF \n that doesn't come after \r 	[Unix (and macOS starting with Mac OS X 10.0)]
 	 * \r\n CR AND CF together 				[WINDOWS]
-	 * */
-  if (		 (data_buffer[count-1]=='\r' && UART1_rxBuffer == '\n')
+	 *  (		 (data_buffer[count-1]=='\r' && UART1_rxBuffer == '\n')
 		  || (data_buffer[count-1]=='\r' && UART1_rxBuffer != '\n')
-		  || (data_buffer[count-1]!='\r' && UART1_rxBuffer == '\n') 	) {
+		  || (data_buffer[count-1]!='\r' && UART1_rxBuffer == '\n') 	)
+	 * */
+  if ( (UART1_rxBuffer == '\r' || UART1_rxBuffer == '\n') ) {
 
     data_buffer[count++] = '\0';
+    // transmits back what had been written on port
     char sentBuff[60];
     sprintf(sentBuff, "%s\r\n", data_buffer);
     HAL_UART_Transmit(&huart1, (uint8_t *)sentBuff, strlen(sentBuff), 100);
@@ -454,8 +456,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
       TIM2->CCR3 = (65535 - GREEN * 255);
       TIM2->CCR4 = (65535 - BLUE * 255);
     }
-    else if (strcmp(data_buffer, "TOGGLE_LED") == 0) {
-      transmitLEDState();
+    else if (strcmp(data_buffer, "LED_TOGGLE") == 0) {
+      toggleLedPin();
     }
     memset(data_buffer, 0, count);
     count = 0;
