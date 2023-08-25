@@ -1,8 +1,7 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Cpu } from "lucide-react";
-const Processor = ({ Processor }) => {
-  const { value, timestamp } = Processor;
-  console.log(Processor);
+const Processor = ({ ProcessorTemp }) => {
+  const { value, timestamp } = ProcessorTemp;
   return (
     <Card className="col-span-3 row-span-2 min-h-[10rem]">
       <CardContent className="relative">

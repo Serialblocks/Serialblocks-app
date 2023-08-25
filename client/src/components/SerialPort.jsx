@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectLabel,
+  SelectGroup,
 } from "@/components/ui/select";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -61,7 +63,7 @@ const SerialPort = ({
     }
     toast(toastMsg);
   };
-
+  //real serialports
   const selectItems =
     Array.isArray(serialPorts) && serialPorts?.length
       ? serialPorts.map(({ manufacturer: Mfr, path, serialNumber: SN }) => (
@@ -138,7 +140,14 @@ const SerialPort = ({
           <SelectTrigger className="col-span-2">
             <SelectValue placeholder="im not working!" />
           </SelectTrigger>
-          {selectItems && <SelectContent>{selectItems}</SelectContent>}
+          <SelectContent>
+            {selectItems && (
+              <SelectGroup>
+                <SelectLabel>SerialPorts</SelectLabel>
+                {selectItems}
+              </SelectGroup>
+            )}
+          </SelectContent>
         </Select>
 
         <Input

@@ -7,7 +7,7 @@ let LED = memo(() => {
   return (
     <Card className="relative col-span-3 row-span-2 min-h-[10rem]">
       {/* adding before:absolute and changing opacity of the before pseudo element will add grain effect to the background of the card */}
-      <CardContent className=" before:content-[' '] before:inset-0 before:rounded-lg before:bg-[url(@/assets/noise.svg)] before:opacity-0">
+      <CardContent className="before:inset-0 before:rounded-lg before:bg-[url(@/assets/noise.svg)] before:opacity-0">
         <CardTitle className="flex items-center gap-1">
           <Sun className="inline h-6 w-6" />
           Temperature

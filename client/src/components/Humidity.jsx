@@ -1,6 +1,7 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Droplets } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import MyCustComp from "@/components/MyCustComp";
 import {
   Tooltip,
   TooltipContent,
@@ -8,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 const Humidity = ({ Humidity }) => {
-  const { value, timestamp } = Humidity;
+  const { value, timestamp } = { value: 0, timestamp: 0 };
   return (
     <Card className="col-span-3 row-span-2 min-h-[10rem]">
       <CardContent className="relative">
@@ -30,8 +31,9 @@ const Humidity = ({ Humidity }) => {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                requires DHT-11 sensor, <br /> make sure to use Temperature in
-                your JSON to get activated
+                {/* requires DHT-11 sensor, <br /> make sure to use Temperature in
+                your JSON to get activated */}
+                <MyCustComp />
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

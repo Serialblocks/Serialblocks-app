@@ -8,8 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-const LineChart = ({ LDR }) => {
-  // LDR = [25, 65, 32, 101, 24, 77, 123];
+const LineChart = ({ Brightness }) => {
   const options = {
     grid: {
       show: true,
@@ -94,6 +93,7 @@ const LineChart = ({ LDR }) => {
       colors: "hsl(var(--primary))",
     },
     markers: {
+      size: 4,
       // the dot that appears when you hover
       colors: "hsl(var(--primary))",
       hover: {
@@ -104,8 +104,8 @@ const LineChart = ({ LDR }) => {
 
   const series = [
     {
-      name: "light",
-      data: LDR,
+      name: "Brightness",
+      data: Brightness,
     },
   ];
 

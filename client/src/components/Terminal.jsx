@@ -7,44 +7,24 @@ import { testJSON } from "@/lib/utils";
 import { socket } from "@/api/socket";
 const writeOnPort = async (command) => {
   let res = await fetch(`./api/serialPort/write?command=${command}`);
-  console.log(res);
 };
-
+const dateFormatter = new Intl.DateTimeFormat("en", {
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  fractionalSecondDigits: 2,
+});
 const Terminal = ({ isPortConn, setSerialData, portConfig }) => {
   const [serialOutput, setSerialOutput] = useState([
-    { value: 0, timestamp: 0 },
+    { value: "WELCOME TO THE SUMMONERS RIFT..", timestamp: Date.now() },
   ]);
   const { path, baudRate } = portConfig;
 
   useEffect(() => {
-    const onParsedData = (data) => {
-      if (testJSON(data)) {
-        let serialDataObj = JSON.parse(data);
-
-        setSerialData((prevData) => {
-          for (const [key, value] of Object.entries(serialDataObj)) {
-            prevData[key] = Array.isArray(prevData[key])
-              ? [...prevData[key], { value, timestamp: Date.now() }]
-              : {
-                  value: value,
-                  timestamp: Date.now(),
-                };
-          }
-          return JSON.parse(JSON.stringify(prevData));
-          // LDR: [...prevData.LDR.slice(-25), serialDataObj.LDR],
-        });
-      }
-
-      // PROBLEM OCCURS WHEN DATA IS A JSON OF LED STATUS..
-      setSerialOutput((prevOutput) => [
-        ...prevOutput,
-        { value: data, timestamp: Date.now() },
-      ]);
-    };
-
     // on disconnection       // divRef.current.scrollTop = divRef.current.scrollHeight;
-
-    socket.on("getParsedData", onParsedData);
+    socket.on("rawData", (data) =>
+      setSerialOutput((prevOutput) => [...prevOutput, JSON.parse(data)]),
+    );
     socket.on("portClose", (data) => alert(data));
     socket.on("portError", (data) => alert(data));
   }, [setSerialData]);
@@ -56,9 +36,14 @@ const Terminal = ({ isPortConn, setSerialData, portConfig }) => {
           <TerminalSquare className="inline h-4 w-4" />
           {!isPortConn ? "TERMINAL" : path}
         </CardTitle>
-        <div className="mt-1 max-h-[13.25rem] flex-1 overflow-y-scroll whitespace-break-spaces px-1 scrollbar scrollbar-thumb-terminal-thumb/80 hover:scrollbar-thumb-terminal-thumb">
+        <div className="mt-1 max-h-[16rem] flex-1 overflow-y-scroll whitespace-break-spaces px-1 scrollbar scrollbar-thumb-terminal-thumb/80 hover:scrollbar-thumb-terminal-thumb">
           {serialOutput.map(({ value, timestamp }, i) => (
-            <Fragment key={i}>{value + "\n"}</Fragment>
+            <p key={i} className="group flex flex-row items-baseline gap-2">
+              {value}
+              <span className="text-xs text-muted-foreground opacity-0 transition-opacity duration-75 group-hover:opacity-100">
+                {dateFormatter.format(timestamp)}
+              </span>
+            </p>
           ))}
         </div>
         <form

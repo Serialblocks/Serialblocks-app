@@ -19,14 +19,26 @@ const App = () => {
     baudRate: "115200",
   });
   const [serialData, setSerialData] = useState({
-    Processor: { value: undefined, timestamp: 0 },
+    ProcessorTemp: { value: undefined, timestamp: 0 },
     Humidity: { value: undefined, timestamp: 0 },
-
-    LDR: [{ value: undefined, timestamp: 0 }],
+    Brightness: [{ value: undefined, timestamp: 0 }],
     LED: { value: undefined, timestamp: 0 },
   });
   // cleanup for when the component unmounts/page closes or refreshes
   useEffect(() => {
+    socket.on("minpulatedData", (data) => {
+      setSerialData((prevData) => {
+        // you can mututate the prevData object as long as you are going to return a new object {...prevData}
+        // TODO: CHECK IF IT'S OKAY TO USE prevData itself
+        for (const key of Object.keys(prevData)) {
+          prevData[key] = Array.isArray(prevData[key])
+            ? [...prevData[key], data[key]]
+            : data[key] || prevData[key];
+        }
+        return { ...prevData };
+      });
+    });
+
     const cleanup = () => {
       if (isPortConn) {
         fetch("./api/serialPort/disconnect");
@@ -58,8 +70,8 @@ const App = () => {
           portConfig={portConfig}
         />
 
-        <LineChart LDR={[50, 30, 23]} />
-        <Processor Processor={serialData.Processor} />
+        <LineChart Brightness={serialData.Brightness} />
+        <Processor ProcessorTemp={serialData.ProcessorTemp} />
         <RGB />
         <LED />
         <Humidity Humidity={serialData.Humidity} />
