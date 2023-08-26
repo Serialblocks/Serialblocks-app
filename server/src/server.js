@@ -5,7 +5,17 @@ import { ReadlineParser } from "@serialport/parser-readline";
 import cors from "cors";
 import http from "http";
 import { SerialPortMock } from "serialport";
-
+function isJSON(text) {
+  if (typeof text !== "string") {
+    return false;
+  }
+  try {
+    JSON.parse(text);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 const app = express();
 app.use(cors({ origin: "*" }));
 const server = http.createServer(app);
@@ -27,7 +37,7 @@ app.get("/api/listPorts", async (req, res) => {
   }
 });
 
-app.get("/api/serialPort/connect", async (req, res) => {
+app.get("/api/serialPort/connect", (req, res) => {
   console.log("Attempting to connect to serialPort");
   const { path, baudRate } = req.query;
   SERIALPORT = new SerialPort({
@@ -44,7 +54,7 @@ app.get("/api/serialPort/connect", async (req, res) => {
   );
 });
 
-app.get("/api/serialPort/disconnect", async (req, res) => {
+app.get("/api/serialPort/disconnect", (req, res) => {
   console.log("Attempting to disconnect port");
   if (!SERIALPORT)
     return res.status(403).json({
@@ -59,6 +69,7 @@ app.get("/api/serialPort/disconnect", async (req, res) => {
       res.status(200).json({ status: "OK", data: "" });
     });
   } else {
+    // SEND CONFLICT 409 WASN'T CONNECTED TO BEGIN WITH
     res.status(200).json({ status: "OK", data: "" });
   }
 
@@ -68,7 +79,7 @@ app.get("/api/serialPort/disconnect", async (req, res) => {
   );
 });
 
-app.get("/api/serialPort/write", async (req, res) => {
+app.get("/api/serialPort/write", (req, res) => {
   console.log("Attempting to write on port");
   if (!SERIALPORT)
     return res.status(403).json({
@@ -78,7 +89,7 @@ app.get("/api/serialPort/write", async (req, res) => {
 
   const { command } = req.query;
   console.log(command);
-  SERIALPORT.write(command + "\r\n");
+  SERIALPORT.write(command.trim() + "\r\n");
   //A combination of CR (carriage return) and LF (line feed) control characters sequence is used as end-of-line (EOL) marker.
   res.status(200).json({ status: "OK", data: command });
 });
@@ -86,29 +97,41 @@ app.get("/api/serialPort/write", async (req, res) => {
 // WEBSOCKET CONNECTION
 io.on("connection", (socket) => {
   console.log("transport method", socket.conn.transport.name); // prints "websocket"
-  console.log("I GOT CONNECTED!!!!!"); // prints "websocket"
+  console.log(`${socket.id} has connected!`);
 
   //  TODO: handle better
   if (SERIALPORT) {
-    console.log("what happened");
     const parser = SERIALPORT.pipe(new ReadlineParser({ delimiter: "\r\n" }));
-    parser.on("data", async (data) => {
-      // console.log(data);
-      socket.emit("getParsedData", data);
+    parser.on("data", (data) => {
+      if (isJSON(data)) {
+        const parsedData = JSON.parse(data);
+        for (const key of Object.keys(parsedData)) {
+          parsedData[key] = { value: parsedData[key], timestamp: Date.now() };
+        }
+        socket.emit("minpulatedData", parsedData);
+      }
+      socket.emit(
+        "rawData",
+        JSON.stringify({ value: data, timestamp: Date.now() })
+      );
     });
     // TODO: ADD THESE FEATURES
 
     SERIALPORT.on("close", () => {
-      socket.emit("portClose", "port closed suddently!!!!!!!!!");
+      console.log(socket.id + "closed port all of a suddent");
+      io.to(socket.id).emit("portClose", "port closed suddently!!!!!!!!!");
     });
 
     SERIALPORT.on("error", () => {
-      socket.emit("portError", "port errored suddently!!!!!!!!!");
+      io.to(socket.id).emit("portError", "port errored suddently!!!!!!!!!");
     });
   }
-  socket.on("disconnect", () => {
-    console.log(`${socket.id} has disconnected`);
-    // SERIALPORT.close();
+
+  socket.on("connect", () => {
+    console.log(`${socket.id} has connected!`);
+  });
+  socket.on("disconnect", (reason) => {
+    console.log(`${socket.id} has disconnected with reason ${reason}`);
   });
 });
 
