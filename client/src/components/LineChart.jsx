@@ -8,7 +8,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-const LineChart = ({ Brightness }) => {
+import { useStore } from "@/api/store";
+const LineChart = () => {
+  const Brightness = useStore((store) => store.serialData.Brightness);
+
   const options = {
     grid: {
       show: true,

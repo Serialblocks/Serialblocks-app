@@ -1,7 +1,10 @@
+import { useStore } from "@/api/store";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Cpu } from "lucide-react";
-const Processor = ({ ProcessorTemp }) => {
-  const { value, timestamp } = ProcessorTemp;
+const Processor = () => {
+  const { value, timestamp } = useStore(
+    (store) => store.serialData.ProcessorTemp,
+  );
   return (
     <Card className="col-span-3 row-span-2 min-h-[10rem]">
       <CardContent className="relative">

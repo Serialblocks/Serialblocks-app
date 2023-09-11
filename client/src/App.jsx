@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-
+import { useEffect } from "react";
 import {
   SerialPort,
   Terminal,
@@ -11,70 +10,40 @@ import {
   Footer,
 } from "@/components";
 import { Toaster } from "@/components/ui/toaster";
-import { socket } from "@/api/socket";
+import { useStore } from "@/api/store";
+
 const App = () => {
-  const [isPortConn, setIsPortConn] = useState(null);
-  const [portConfig, setPortConfig] = useState({
-    path: "",
-    baudRate: "115200",
-  });
-  const [serialData, setSerialData] = useState({
-    ProcessorTemp: { value: undefined, timestamp: 0 },
-    Humidity: { value: undefined, timestamp: 0 },
-    Brightness: [{ value: undefined, timestamp: 0 }],
-    LED: { value: undefined, timestamp: 0 },
-  });
+  const connected = useStore((store) => store.connected);
+  const { disconnect } = useStore((store) => store.serialActions);
+
   // cleanup for when the component unmounts/page closes or refreshes
   useEffect(() => {
-    socket.on("minpulatedData", (data) => {
-      setSerialData((prevData) => {
-        // you can mututate the prevData object as long as you are going to return a new object {...prevData}
-        // TODO: CHECK IF IT'S OKAY TO USE prevData itself
-        for (const key of Object.keys(prevData)) {
-          prevData[key] = Array.isArray(prevData[key])
-            ? [...prevData[key], data[key]]
-            : data[key] || prevData[key];
-        }
-        return { ...prevData };
-      });
-    });
-
     const cleanup = () => {
-      if (isPortConn) {
-        fetch("./api/serialPort/disconnect");
-      }
-      if (socket.connected) {
-        socket.off("getParsedData");
-        socket.disconnect();
+      // on socket disconnection disconnect port with it..
+      // or emit to an event that disconnects the port itself
+      // NEW: on socket disconnection disconnect port with it and viceversa
+      if (connected) {
+        //TODO: Disconnect event listeners
+        // socket.current.off("getParsedData");
+        disconnect();
       }
     };
     window.addEventListener("beforeunload", cleanup);
-
     return () => {
       window.removeEventListener("beforeunload", cleanup);
     };
-  }, [isPortConn]);
+  }, [connected, disconnect]);
 
   return (
     <>
       <div className="mx-auto grid max-w-7xl grid-cols-12 grid-rows-[min_content_1fr] gap-4">
-        <SerialPort
-          setIsPortConn={setIsPortConn}
-          isPortConn={isPortConn}
-          portConfig={portConfig}
-          setPortConfig={setPortConfig}
-        />
-        <Terminal
-          isPortConn={isPortConn}
-          setSerialData={setSerialData}
-          portConfig={portConfig}
-        />
-
-        <LineChart Brightness={serialData.Brightness} />
-        <Processor ProcessorTemp={serialData.ProcessorTemp} />
+        <SerialPort />
+        <Terminal />
+        <LineChart />
+        <Processor />
         <RGB />
         <LED />
-        <Humidity Humidity={serialData.Humidity} />
+        <Humidity />
         <Footer />
       </div>
       <Toaster />

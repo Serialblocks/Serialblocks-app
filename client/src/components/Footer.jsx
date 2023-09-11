@@ -9,11 +9,11 @@ const Footer = () => {
       <CardContent className="flex flex-row text-sm text-muted-foreground">
         <div>
           <p>
-            <span className="font-bold"> SerialSocket</span> © {year}. Built by
+            <span className="font-bold"> SerialBlocks</span> © {year}. Built by
             Ahmad Ghoniem.
           </p>
           <p>Deployed on vercel</p>
-          <p>SerialSocket is open source. Contribute on GitHub!</p>
+          <p>SerialBlocks is open source. Contribute on GitHub!</p>
         </div>
 
         <div className="flex flex-row">

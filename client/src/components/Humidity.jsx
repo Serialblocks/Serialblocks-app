@@ -8,8 +8,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useStore } from "@/api/store";
 const Humidity = ({ Humidity }) => {
-  const { value, timestamp } = { value: 0, timestamp: 0 };
+  const { value, timestamp } = useStore((store) => store.serialData.Humidity);
   return (
     <Card className="col-span-3 row-span-2 min-h-[10rem]">
       <CardContent className="relative">
