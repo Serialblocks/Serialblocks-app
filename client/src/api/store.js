@@ -1,50 +1,33 @@
 import { create } from "zustand";
 import { combine } from "zustand/middleware";
-import { shallow } from "zustand/shallow";
-
-import io from "socket.io-client";
 import { produce } from "immer";
+import { socket, initialAuth } from "@/api/socket";
+const { sessionID, ...initialConfig } = initialAuth;
 // import { useToast } from "@/components/ui/use-toast";
-
 //  The initial state shapes what values we can have in our store.
 
 const initialState = {
-  connected: false,
-  ham: "jam",
+  sessionID: sessionID,
+  serialPorts: null,
+  toastContent: {
+    title: "",
+    description: "",
+  },
+  // usually it's false
+  isWsConnected: socket.connected,
+  isPortOpen: false,
   serialOutput: [
     { value: "welcome to SerialBlocks v1.0", timestamp: Date.now() },
   ],
   serialData: {
-    ProcessorTemp: { value: undefined, timestamp: 0 },
-    Humidity: { value: undefined, timestamp: 0 },
-    Brightness: [{ value: undefined, timestamp: 0 }],
-    LED: { value: undefined, timestamp: 0 },
+    ProcessorTemp: { value: null, timestamp: 0 },
+    Humidity: { value: null, timestamp: 0 },
+    Brightness: [{ value: null, timestamp: 0 }],
+    LED: { value: null, timestamp: 0 },
   },
-  // serialPorts: undefined,
-  config: {
-    path: "COM1",
-    baudRate: "115200",
-    delimiter: "\r",
-    EOL: "\r\n",
-    /** Must be one of these: 5, 6, 7, or 8 defaults to 8 */
-    dataBits: 8,
-    /** Prevent other processes from opening the port. Windows does not currently support `false`. Defaults to true */
-    lock: true,
-    /** Must be 1, 1.5 or 2 defaults to 1 */
-    stopBits: 1,
-    parity: "",
-    /** Flow control Setting. Defaults to false */
-    rtscts: false,
-    /** Flow control Setting. Defaults to false */
-    xon: false,
-    /** Flow control Setting. Defaults to false */
-    xoff: false,
-    /** Flow control Setting defaults to false*/
-    xany: false,
-    /** drop DTR on close. Defaults to true */
-    hupcl: true,
-  },
+  config: initialConfig,
 };
+// https://serialport.io/docs/api-bindings-cpp#list
 
 /*
  Here we have access to functions tha let us mutate or get data from our state.
@@ -52,28 +35,113 @@ const initialState = {
  the WebSocket implementation here and then use our store anywhere in our app!
  */
 const mutations = (setState, getState) => {
-  // Read from state in actions/mutations
-  console.log("ran inside mutations");
-  const url =
-    process.env.NODE_ENV === "production"
-      ? undefined
-      : "http://localhost:3003/";
+  // the reason why we didn't chain those events together because they don't return Socket Object instead they return Manager Object.
+  // handles connection problems
+  //Fired upon a successful reconnection.
+  socket.io.on("reconnect", (attempt) => {
+    const ordinalSuffix =
+      attempt === 1
+        ? "st"
+        : attempt === 2
+        ? "nd"
+        : attempt === 3
+        ? "rd"
+        : attempt > 3 && "th";
+    setState({
+      isWsConnected: true,
+      toastContent: {
+        title: "Reconnected",
+        description: `reconnected on the ${
+          attempt.toString() + ordinalSuffix
+        } attempt,
+          we were so worried!`,
+      },
+    });
+  }),
+    // Fired upon an attempt to reconnect.
+    socket.io.on("reconnect_attempt", (attempt) => {
+      const reconnectionAttempts = socket.io.reconnectionAttempts();
+      setState({
+        isWsConnected: false,
+        toastContent: {
+          title: "Reconnecting",
+          description: `Connection failed, trying to reconnect.. (${attempt}/${reconnectionAttempts})`,
+        },
+      });
+    });
 
-  const socket = io.connect(url, {
-    transports: ["websocket"],
-    autoConnect: true,
+  // Fired when couldn't reconnect within reconnectionAttempts.
+  socket.io.on("reconnect_failed", () => {
+    setState({
+      isWsConnected: false,
+      toastContent: {
+        title: "Failed",
+        description: `Connection failed, Please try again later..`,
+      },
+    });
   });
+
   // this is enough to connect all our server events
-  // to our state managment system!
+  // to our state management system!
   socket
     .on("connect", () => {
-      setState({ connected: true });
+      setState({
+        isWsConnected: true,
+      });
     })
     .on("disconnect", () => {
-      setState({ connected: false });
+      setState({
+        isWsConnected: false,
+      });
     })
+    .on("portError", (err, path) => {
+      // errored but all of a sudden
+      // aborted while reading from serialport most likely....
+      setState({
+        isPortOpen: false,
+        isConnecting: false,
+        toastContent: {
+          title: "Error",
+          description: `there was a problem with ${path}: ${err}`,
+        },
+      });
+    })
+    .on("suddenPortDisc", (err, path) => {
+      // closed but all of a sudden..
+      setState({
+        isPortOpen: false,
+        isConnecting: false,
+        toastContent: {
+          title: "Disconnected",
+          description: `${path} was suddenly disconnected by YOU, ${err || ""}`,
+        },
+      });
+    })
+    .on("notifyClients", ({ path, sessionID, action, err }) => {
+      let title, description;
+      switch (action) {
+        case "openPort":
+          title = "Opened";
+          description = `${path} has been opened successfully by ${sessionID}`;
+          break;
+        case "closePort":
+          title = "Closed";
+          description = `${path} has been closed successfully by ${sessionID}`;
+          break;
+        case "suddenPortDisc":
+          title = "Disconnected";
+          description = `${path} was suddenly disconnected by ${sessionID}, ${
+            err || ""
+          }`;
+          break;
+      }
+      console.log(title, description);
+      setState({
+        toastContent: { title, description },
+      });
+    })
+
     .on("rawData", (data) => {
-      console.log("RAWDATA " + data);
       setState((state) => ({
         serialOutput: [
           ...state.serialOutput,
@@ -81,44 +149,19 @@ const mutations = (setState, getState) => {
         ],
       }));
     })
-    .on("minpulatedData", (data) => {
-      const prevData = getState().serialOutput;
-      for (const [key, value] of Object.entries(prevData)) {
-        prevData[key] = Array.isArray(value)
-          ? [...value, data[key]]
-          : data[key] || value;
-      }
-      setState({ serialData: { ...prevData } });
+    .on("parsedData", (data) => {
+      setState(
+        produce(({ serialData }) => {
+          for (const key of Object.keys(serialData)) {
+            serialData[key] = Array.isArray(serialData[key])
+              ? [...serialData[key], data[key]]
+              : data[key] || serialData[key];
+          }
+        }),
+      );
     });
 
   return {
-    // the setState function is to update state in the store. Because the state is immutable, it should have been like this:
-    //  {
-    //   ...state,
-    //   config: { ...state.config, ...prop },
-    // }
-    // as this is a common pattern, set actually merges state, and we can skip the ...state part
-    // To disable the merging behavior, you can specify a replace boolean value for set like so: set((state) => newState, true)
-    // () => set({}, true) would delete the entire store and actions included.
-
-    /*
-    GOLDMINE: doesn't re-render on the same props getting changed to the same thing
-      setState((state) => {
-        produce((state) => {
-          for (const [key, value] of Object.entries(props)) {
-            state.config[key] = value;
-          }
-        });
-      });
-    */
-    /* this however re-renders without using immer
-  setState((state) => {
-    for (const [key, value] of Object.entries(props)) {
-      state.config[key] = value;
-    }
-    return state.config;
-  });
-*/
     stateActions: {
       updateConfig(props) {
         setState(
@@ -130,42 +173,117 @@ const mutations = (setState, getState) => {
         );
         // alternatively you can use
         // setState({ config: { ...getState().config, ...prop } });
-
-        // update namespace and auth
-        // socket.nsp = getState().config.path;
-        socket.auth = getState().config;
-        // if (socket.connected) {
-        //   socket.disconnect().connect();
-        // }
-      },
-      toggleConnected() {
-        setState(
-          produce((state) => {
-            state.connected = !state.connected;
-          }),
-        );
-      },
-      trulyConnected() {
-        setState({ connected: true });
       },
     },
     serialActions: {
-      connect() {
-        // socket.nsp = "/" + getState().config.path;
-        // socket.auth = getState().config;
-        socket.connect();
-      },
       disconnect() {
         socket.disconnect();
       },
-      reconnect() {
-        socket.disconnect().connect();
+      closePort() {
+        // BROADCAST client disconnection
+        socket.emit("closePort", (path) => {
+          setState({
+            isConnecting: false,
+            isPortOpen: false,
+            toastContent: {
+              title: "Closed",
+              description: `${path} has been closed successfully by YOU`,
+            },
+          });
+        });
       },
-      write(command) {
-        socket.emit("writeOnPort", command);
+      openPort() {
+        setState({ isConnecting: true });
+        socket.emit("openPort", (errorMsg, path) => {
+          if (errorMsg === null) {
+            setState({
+              isConnecting: false,
+              isPortOpen: true,
+              toastContent: {
+                title: "Opened",
+                description: `${path} has been opened successfully by YOU`,
+              },
+            });
+          } else {
+            setState({
+              isConnecting: false,
+              isPortOpen: false,
+              toastContent: {
+                title: "Error",
+                description: `${errorMsg}`,
+              },
+            });
+          }
+        });
+      },
+      listPorts() {
+        socket.emit("listPorts", (serialPorts) => {
+          let title, description;
+
+          if (serialPorts.length > 0) {
+            title = `Found ${serialPorts.length} port(s) available.`;
+            description = "select the one you want from the dropdown!";
+          } else {
+            title = `No ports connected at the moment.`;
+            description = "Don't fret!, give it another shot";
+          }
+
+          setState({
+            serialPorts,
+            toastContent: {
+              title,
+              description,
+            },
+          });
+        });
+      },
+      writeToPort(command) {
+        socket.emit("writeToPort", command);
+      },
+      updateAuth() {
+        socket.auth = { sessionID: getState().sessionID, ...getState().config };
+        // AFTER UPDATING AUTH THE USER NEEDS TO CLOSE AND REPOPEN THE SERIAL PORT
+        // AND YOU SHOULDN'T RELAY ON SOCKET.ID AS IT'S GOING TO CHANGE
+      },
+      restart() {
+        socket.disconnect().connect();
       },
     },
   };
 };
 
 export const useStore = create(combine(initialState, mutations));
+
+// NOTES
+
+/*
+    the setState function is to update state in the store. Because the state is immutable, it should have been like this:
+    {
+      ...state,
+      config: { ...state.config, ...prop },
+    }
+    as this is a common pattern, set actually merges state, and we can skip the ...state part
+    To disable the merging behavior, you can specify a replace boolean value for set like so: set((state) => newState, true)
+    for example, () => set({}, true) would delete the entire store and actions included.
+    */
+
+/*
+    using immer's produce() would make the component the state used in not re-render if it has been updated to the same value.
+      setState((state) => {
+        produce((state) => {
+          for (const [key, value] of Object.entries(props)) {
+            state.config[key] = value;
+          }
+        });
+      });
+    */
+
+/*
+    this however re-renders without using immer
+      setState((state) => {
+        for (const [key, value] of Object.entries(props)) {
+          state.config[key] = value;
+        }
+        return state.config;
+      });
+*/

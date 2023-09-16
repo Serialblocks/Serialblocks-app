@@ -1,7 +1,6 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Droplets } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import MyCustComp from "@/components/MyCustComp";
 import {
   Tooltip,
   TooltipContent,
@@ -9,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useStore } from "@/api/store";
-const Humidity = ({ Humidity }) => {
+const Humidity = () => {
   const { value, timestamp } = useStore((store) => store.serialData.Humidity);
   return (
     <Card className="col-span-3 row-span-2 min-h-[10rem]">
@@ -34,7 +33,6 @@ const Humidity = ({ Humidity }) => {
               <TooltipContent>
                 {/* requires DHT-11 sensor, <br /> make sure to use Temperature in
                 your JSON to get activated */}
-                <MyCustComp />
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

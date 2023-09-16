@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import {
-  SerialPort,
   Terminal,
   LineChart,
   Processor,
@@ -9,22 +8,21 @@ import {
   Humidity,
   Footer,
 } from "@/components";
-import { Toaster } from "@/components/ui/toaster";
 import { useStore } from "@/api/store";
+import Notification from "@/components/Notification";
+import { SerialPortForm } from "@/components/SerialPortForm";
 
 const App = () => {
-  const connected = useStore((store) => store.connected);
-  const { disconnect } = useStore((store) => store.serialActions);
+  const isWsConnected = useStore((store) => store.isWsConnected);
+  const { disconnect, closePort } = useStore((store) => store.serialActions);
 
   // cleanup for when the component unmounts/page closes or refreshes
   useEffect(() => {
-    const cleanup = () => {
-      // on socket disconnection disconnect port with it..
-      // or emit to an event that disconnects the port itself
-      // NEW: on socket disconnection disconnect port with it and viceversa
-      if (connected) {
+    const cleanup = async () => {
+      if (isWsConnected) {
         //TODO: Disconnect event listeners
-        // socket.current.off("getParsedData");
+        closePort();
+        await new Promise((res) => setTimeout(res, 1000, "success"));
         disconnect();
       }
     };
@@ -32,12 +30,12 @@ const App = () => {
     return () => {
       window.removeEventListener("beforeunload", cleanup);
     };
-  }, [connected, disconnect]);
+  }, [isWsConnected, disconnect, closePort]);
 
   return (
     <>
       <div className="mx-auto grid max-w-7xl grid-cols-12 grid-rows-[min_content_1fr] gap-4">
-        <SerialPort />
+        <SerialPortForm />
         <Terminal />
         <LineChart />
         <Processor />
@@ -46,7 +44,7 @@ const App = () => {
         <Humidity />
         <Footer />
       </div>
-      <Toaster />
+      <Notification />
     </>
   );
 };

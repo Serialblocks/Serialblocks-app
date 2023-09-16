@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Palette } from "lucide-react";
-import { RgbColorPicker } from "react-colorful";
+// import { RgbColorPicker } from "react-colorful";
 import { useState } from "react";
 function formatRGB({ r, g, b }) {
   // for (const [key, color] of Object.entries(rgb)) {
@@ -24,7 +24,7 @@ const RGB = () => {
           <Palette className="inline h-6 w-6" />
           RGB_LED
         </CardTitle>
-        <RgbColorPicker
+        {/* <RgbColorPicker
           color={color}
           className="h-auto flex-1"
           onChange={(color) => {
@@ -32,7 +32,7 @@ const RGB = () => {
             fetch(`./api/serialPort/write?command=${formatRGB(color)}`);
             setColor(color);
           }}
-        />
+        /> */}
         <Button size="pill" className="absolute right-2 top-2" asChild>
           <div>RGB</div>
         </Button>
