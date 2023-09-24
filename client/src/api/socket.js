@@ -5,6 +5,7 @@ const url =
   process.env.NODE_ENV === "production"
     ? undefined
     : "http://192.168.1.66:3003/";
+// : "https://true-areas-swim.loca.lt/";
 
 // by default HTTP long-polling connection is established first, and then an upgrade to WebSocket is attempted.
 // this makes sure that websocket connection is the default and fallsback to HTTP long-polling.

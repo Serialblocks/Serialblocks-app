@@ -10,6 +10,10 @@ const dateFormatter = new Intl.DateTimeFormat("en", {
   second: "2-digit",
   fractionalSecondDigits: 2,
 });
+// TODO: LOCK SCROLL
+// const sheko = window.getComputedStyle($0).height;
+// $0.style.maxHeight = sheko;
+//https://stackoverflow.com/questions/45395184/css-grid-row-max-height-1fr-scroll-content
 const Terminal = () => {
   const serialOutput = useStore((store) => store.serialOutput);
   const { writeToPort } = useStore((store) => store.serialActions);
