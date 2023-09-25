@@ -16,3 +16,10 @@ export function testJSON(text) {
     return false;
   }
 }
+
+export const dateFormatter = new Intl.DateTimeFormat("en", {
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  fractionalSecondDigits: 2,
+});

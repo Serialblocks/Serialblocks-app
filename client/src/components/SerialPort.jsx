@@ -11,11 +11,12 @@ import {
   SelectValue,
   SelectLabel,
   SelectGroup,
+  SelectSeparator,
 } from "@/components/ui/select";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { socket } from "@/api/socket";
-import { Search, SearchCheck, SearchX } from "lucide-react";
+import { Search, SearchCheck, SearchSlash, SearchX } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 const SerialPort = ({
@@ -147,6 +148,7 @@ const SerialPort = ({
                 {selectItems}
               </SelectGroup>
             )}
+            <SelectSeparator />
           </SelectContent>
         </Select>
 
@@ -173,6 +175,8 @@ const SerialPort = ({
             <Search className="mr-2 h-4 w-4" />
           ) : serialPorts?.length > 0 ? (
             <SearchCheck className="mr-2 h-4 w-4" />
+          ) : serialPorts?.length === 0 ? (
+            <SearchSlash className="mr-2 h-4 w-4" />
           ) : (
             <SearchX className="mr-2 h-4 w-4" />
           )}

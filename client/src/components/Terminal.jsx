@@ -1,49 +1,60 @@
-import { ChevronRight, TerminalSquare } from "lucide-react";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { ChevronRight, Clock, TerminalSquare } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Fragment, useEffect, useRef, useState } from "react";
-import { testJSON } from "@/lib/utils";
+import { testJSON, dateFormatter } from "@/lib/utils";
 import { socket } from "@/api/socket";
+import { Toggle } from "@/components/ui/toggle";
 const writeOnPort = async (command) => {
   let res = await fetch(`./api/serialPort/write?command=${command}`);
 };
-const dateFormatter = new Intl.DateTimeFormat("en", {
-  hour: "2-digit",
-  minute: "2-digit",
-  second: "2-digit",
-  fractionalSecondDigits: 2,
-});
+
 const Terminal = ({ isPortConn, setSerialData, portConfig }) => {
   const [serialOutput, setSerialOutput] = useState([
     { value: "WELCOME TO THE SUMMONERS RIFT..", timestamp: Date.now() },
   ]);
   const { path, baudRate } = portConfig;
-
+  const [timestamped, setTimeStamped] = useState(false);
   useEffect(() => {
     // on disconnection       // divRef.current.scrollTop = divRef.current.scrollHeight;
-    socket.on("rawData", (data) =>
-      setSerialOutput((prevOutput) => [...prevOutput, JSON.parse(data)]),
-    );
+    socket.on("rawData", (data) => {
+      console.log(data);
+      setSerialOutput((prevOutput) => [...prevOutput, JSON.parse(data)]);
+    });
     socket.on("portClose", (data) => alert(data));
     socket.on("portError", (data) => alert(data));
   }, [setSerialData]);
 
   return (
     <Card className=" col-span-6 row-[span_8_/_span_8] border-none bg-terminal font-mono text-terminal-foreground">
-      <CardContent className="flex h-full flex-col p-0">
-        <CardTitle className="flex items-center gap-1 rounded-t-lg bg-[#DFE0E2] p-1 text-sm/4 font-semibold tracking-tight dark:bg-[#333644]">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 rounded-t-lg bg-terminal-header p-0 text-sm/4 font-semibold tracking-tight">
+        <span className="ml-1 flex gap-1">
           <TerminalSquare className="inline h-4 w-4" />
           {!isPortConn ? "TERMINAL" : path}
-        </CardTitle>
+        </span>
+        <Toggle
+          size="sm"
+          defaultPressed={false}
+          onPressedChange={setTimeStamped}
+          className="group mr-[1px] rounded-none rounded-tr-md p-1"
+        >
+          <Clock className="inline h-4 w-4" />
+        </Toggle>
+      </CardHeader>
+      <CardContent className="flex h-full flex-col p-0">
         <div className="mt-1 max-h-[16rem] flex-1 overflow-y-scroll whitespace-break-spaces px-1 scrollbar scrollbar-thumb-terminal-thumb/80 hover:scrollbar-thumb-terminal-thumb">
-          {serialOutput.map(({ value, timestamp }, i) => (
-            <p key={i} className="group flex flex-row items-baseline gap-2">
+          {serialOutput.map(({ value, timestamp }) => (
+            <span
+              key={timestamp}
+              data-timestamped={timestamped}
+              className="group flex items-baseline gap-2"
+            >
               {value}
-              <span className="text-xs text-muted-foreground opacity-0 transition-opacity duration-75 group-hover:opacity-100">
+              <span className="text-xs text-muted-foreground opacity-0 transition-opacity duration-75 group-hover:opacity-100 group-data-[timestamped=true]:opacity-100">
                 {dateFormatter.format(timestamp)}
               </span>
-            </p>
+            </span>
           ))}
         </div>
         <form

@@ -2,6 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Sun, Moon, Github, Twitter } from "lucide-react";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import GitCard from "@/components/GitCard";
 const year = new Date().getFullYear();
 const Footer = () => {
   return (
@@ -13,7 +21,20 @@ const Footer = () => {
             Ahmad Ghoniem.
           </p>
           <p>Deployed on vercel</p>
-          <p>SerialSocket is open source. Contribute on GitHub!</p>
+          <p>
+            SerialSocket is open source.
+            <TooltipProvider delayDuration={250}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <span> Contribute </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <GitCard />
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            on GitHub!
+          </p>
         </div>
 
         <div className="flex flex-row">

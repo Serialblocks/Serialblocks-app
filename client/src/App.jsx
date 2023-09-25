@@ -19,20 +19,26 @@ const App = () => {
     baudRate: "115200",
   });
   const [serialData, setSerialData] = useState({
-    ProcessorTemp: { value: undefined, timestamp: 0 },
-    Humidity: { value: undefined, timestamp: 0 },
-    Brightness: [{ value: undefined, timestamp: 0 }],
-    LED: { value: undefined, timestamp: 0 },
+    ProcessorTemp: { value: 0, timestamp: 0 },
+    Humidity: { value: 0, timestamp: 0 },
+    Brightness: [{ x: 0, y: 0 }],
+    LED: { value: 0, timestamp: 0 },
   });
   // cleanup for when the component unmounts/page closes or refreshes
   useEffect(() => {
     socket.on("minpulatedData", (data) => {
       setSerialData((prevData) => {
         // you can mututate the prevData object as long as you are going to return a new object {...prevData}
-        // TODO: CHECK IF IT'S OKAY TO USE prevData itself
-        for (const key of Object.keys(prevData)) {
-          prevData[key] = Array.isArray(prevData[key])
-            ? [...prevData[key], data[key]]
+        //so you can have the array with the shape you want instead of mandatory value and timestamp..
+        for (const [key, value] of Object.entries(prevData)) {
+          prevData[key] = Array.isArray(value)
+            ? [
+                ...value,
+                {
+                  [Object.keys(value.at(0)).at(0)]: data[key]["timestamp"],
+                  [Object.keys(value.at(0)).at(1)]: data[key]["value"],
+                },
+              ]
             : data[key] || prevData[key];
         }
         return { ...prevData };

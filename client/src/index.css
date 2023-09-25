@@ -31,6 +31,7 @@
     --terminal: 210 29% 97%;
     --terminal-foreground: 229 9% 51%;
     --terminal-thumb: 220 12% 90%;
+    --terminal-header: 220 5% 88%;
 
     --ring: 215 20.2% 65.1%;
   }
@@ -63,6 +64,7 @@
     --terminal: 229 26% 16%;
     --terminal-foreground: 229 9% 51%;
     --terminal-thumb: 231 25% 22%;
+    --terminal-header: 229 14% 23%;
 
     --ring: 216 34% 17%;
   }

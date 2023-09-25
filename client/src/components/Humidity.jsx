@@ -1,13 +1,13 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Droplets } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import MyCustComp from "@/components/MyCustComp";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 const Humidity = ({ Humidity }) => {
   const { value, timestamp } = { value: 0, timestamp: 0 };
   return (
@@ -26,14 +26,11 @@ const Humidity = ({ Humidity }) => {
           <TooltipProvider delayDuration={250}>
             <Tooltip>
               <TooltipTrigger>
-                <Button size="pill" className="select-none shadow-md" asChild>
-                  <div>DHT11</div>
-                </Button>
+                <Badge className="select-none shadow-md">DHT11 </Badge>
               </TooltipTrigger>
               <TooltipContent>
-                {/* requires DHT-11 sensor, <br /> make sure to use Temperature in
-                your JSON to get activated */}
-                <MyCustComp />
+                requires DHT-11 sensor, <br /> make sure to use Temperature in
+                your JSON to get activated
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

@@ -8,7 +8,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 const LineChart = ({ Brightness }) => {
+  const [value, setVa] = useState(null);
+  console.log(Brightness);
   const options = {
     grid: {
       show: true,
@@ -22,7 +25,12 @@ const LineChart = ({ Brightness }) => {
         },
       },
     },
+    yaxis: {
+      // max: 100,
+    },
     xaxis: {
+      type: "numeric",
+      range: 25,
       lines: {
         show: false,
       },
@@ -102,13 +110,79 @@ const LineChart = ({ Brightness }) => {
     },
   };
 
-  const series = [
-    {
-      name: "Brightness",
-      data: Brightness,
-    },
-  ];
-
+  const series = {
+    data: [
+      {
+        x: 0,
+        y: 0,
+      },
+      {
+        x: 1693422915640,
+        y: 31,
+      },
+      {
+        x: 1693422915640,
+        y: 31,
+      },
+      {
+        x: 1693422916647,
+        y: 31,
+      },
+      {
+        x: 1693422916647,
+        y: 31,
+      },
+      {
+        x: 1693422917639,
+        y: 32,
+      },
+      {
+        x: 1693422917639,
+        y: 32,
+      },
+      {
+        x: 1693422918646,
+        y: 31,
+      },
+      {
+        x: 1693422918646,
+        y: 31,
+      },
+      {
+        x: 1693422919653,
+        y: 31,
+      },
+      {
+        x: 1693422919653,
+        y: 31,
+      },
+      {
+        x: 1693422920661,
+        y: 32,
+      },
+      {
+        x: 1693422920661,
+        y: 32,
+      },
+      {
+        x: 1693422921668,
+        y: 31,
+      },
+      {
+        x: 1693422921668,
+        y: 31,
+      },
+      {
+        x: 1693422922660,
+        y: 32,
+      },
+      {
+        x: 1693422922660,
+        y: 32,
+      },
+    ],
+  };
+  console.log(Brightness);
   return (
     <Card className="relative col-span-6 row-span-5">
       <CardContent className="">

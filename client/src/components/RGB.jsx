@@ -29,7 +29,8 @@ const RGB = () => {
           className="h-auto flex-1"
           onChange={(color) => {
             console.log(color);
-            fetch(`./api/serialPort/write?command=${formatRGB(color)}`);
+            // debounce calling the fetch color changing function...
+            // fetch(`./api/serialPort/write?command=${formatRGB(color)}`);
             setColor(color);
           }}
         />
