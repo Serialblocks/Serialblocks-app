@@ -22,7 +22,6 @@ const App = () => {
       if (isWsConnected) {
         //TODO: Disconnect event listeners
         closePort();
-        await new Promise((res) => setTimeout(res, 1000, "success"));
         disconnect();
       }
     };

@@ -1,9 +1,8 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { memo } from "react";
 
-let LED = memo(() => {
+let LED = () => {
   return (
     <Card className="relative col-span-3 row-span-2 min-h-[10rem]">
       {/* adding before:absolute and changing opacity of the before pseudo element will add grain effect to the background of the card */}
@@ -22,7 +21,6 @@ let LED = memo(() => {
       </CardContent>
     </Card>
   );
-});
-LED.displayName = "Temperature";
+};
 
 export { LED };

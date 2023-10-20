@@ -3,7 +3,6 @@ import { combine } from "zustand/middleware";
 import { produce } from "immer";
 import { socket, initialAuth } from "@/api/socket";
 const { sessionID, ...initialConfig } = initialAuth;
-// import { useToast } from "@/components/ui/use-toast";
 //  The initial state shapes what values we can have in our store.
 
 const initialState = {
@@ -22,7 +21,7 @@ const initialState = {
   serialData: {
     ProcessorTemp: { value: null, timestamp: 0 },
     Humidity: { value: null, timestamp: 0 },
-    Brightness: [{ value: null, timestamp: 0 }],
+    Brightness: [{ x: Date.now(), y: 0 }],
     LED: { value: null, timestamp: 0 },
   },
   config: initialConfig,
@@ -135,7 +134,6 @@ const mutations = (setState, getState) => {
           }`;
           break;
       }
-      console.log(title, description);
       setState({
         toastContent: { title, description },
       });
@@ -149,13 +147,23 @@ const mutations = (setState, getState) => {
         ],
       }));
     })
-    .on("parsedData", (data) => {
+    .on("parsedData", (JSONparsed) => {
+      const parsedData = JSON.parse(JSONparsed);
       setState(
         produce(({ serialData }) => {
           for (const key of Object.keys(serialData)) {
             serialData[key] = Array.isArray(serialData[key])
-              ? [...serialData[key], data[key]]
-              : data[key] || serialData[key];
+              ? [
+                  ...serialData[key],
+                  {
+                    //TODO: MKE IT BETTER
+                    [Object.keys(serialData[key].at(0)).at(0)]:
+                      parsedData[key]["timestamp"],
+                    [Object.keys(serialData[key].at(0)).at(1)]:
+                      parsedData[key]["value"],
+                  },
+                ]
+              : parsedData[key] || serialData[key];
           }
         }),
       );

@@ -11,23 +11,24 @@ import { Button } from "@/components/ui/button";
 import { useStore } from "@/api/store";
 const LineChart = () => {
   const Brightness = useStore((store) => store.serialData.Brightness);
-
+  console.log(Brightness);
   const options = {
-    grid: {
-      show: true,
-      borderColor: "hsl(var(--primary))",
-      strokeDashArray: 4,
-      position: "back",
-      xaxis: {},
-      yaxis: {
-        lines: {
-          show: true,
-        },
-      },
-    },
+    // grid: {
+    //   show: true,
+    //   borderColor: "hsl(var(--primary))",
+    //   strokeDashArray: 4,
+    //   position: "back",
+    //   xaxis: {},
+    //   yaxis: {
+    //     lines: {
+    //       show: true,
+    //     },
+    //   },
+    // },
     xaxis: {
+      range: 25,
       lines: {
-        show: false,
+        show: true,
       },
       axisBorder: {
         show: false,
@@ -55,10 +56,9 @@ const LineChart = () => {
     },
     chart: {
       toolbar: {
-        show: false,
+        show: true,
       },
       fontFamily: "Open Sans, Arial, sans-serif",
-      id: "realtime",
       type: "line",
       animations: {
         enabled: true,
@@ -68,7 +68,7 @@ const LineChart = () => {
         },
       },
       zoom: {
-        enabled: false,
+        enabled: true,
       },
     },
 
@@ -78,7 +78,6 @@ const LineChart = () => {
         series,
         seriesIndex,
         dataPointIndex,
-        w,
       }) => `<div class="rounded-lg border bg-background p-2">
       <div class="grid grid-cols-2 gap-2">
         <div class="flex flex-col">
@@ -96,7 +95,6 @@ const LineChart = () => {
       colors: "hsl(var(--primary))",
     },
     markers: {
-      size: 4,
       // the dot that appears when you hover
       colors: "hsl(var(--primary))",
       hover: {
@@ -119,7 +117,7 @@ const LineChart = () => {
           <Sun className="inline h-6 w-6" />
           Brightness
         </CardTitle>
-        <div className=" absolute inset-0 h-full w-full rounded-lg bg-[url('@/assets/grid.svg')] bg-[position:calc(100%+5px)_calc(100%+24px)] opacity-10"></div>
+        {/* <div className=" absolute inset-0 h-full w-full rounded-lg bg-[url('@/assets/grid.svg')] bg-[position:calc(100%+5px)_calc(100%+24px)] opacity-10"></div> */}
         <Chart options={options} series={series} />
         <div className="absolute right-2 top-2">
           <TooltipProvider delayDuration={250}>

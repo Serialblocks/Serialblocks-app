@@ -4,8 +4,22 @@ import { SerialPort, SerialPortMock } from "serialport";
 import { ReadlineParser } from "@serialport/parser-readline";
 import cors from "cors";
 import http from "http";
-import chalk from "chalk"; // to pin point server console outputs easily
+import chalk from "chalk";
+import "dotenv/config";
 
+// to pin point server console outputs easily
+function isJSON(text) {
+  if (typeof text !== "string") {
+    return false;
+  }
+  try {
+    JSON.parse(text);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+const PORT = process.env.PORT || 3003;
 const app = express();
 app.use(cors({ origin: "*" }));
 const httpServer = http.createServer(app);
@@ -44,13 +58,21 @@ io.on("connection", (socket) => {
   // reading from Port
   const parser = SERIALPORT.pipe(new ReadlineParser({ delimiter }));
   parser.on("data", (data) => {
-    socket.emit("parsedData", data);
+    console.log(chalk.greenBright(data));
+    // TODO: error handling..
+    if (isJSON(data)) {
+      const parsedData = JSON.parse(data);
+      for (const key of Object.keys(parsedData)) {
+        parsedData[key] = { value: parsedData[key], timestamp: Date.now() };
+      }
+      socket.emit("parsedData", JSON.stringify(parsedData));
+    }
     socket.emit("rawData", data);
   });
-
+  ``;
   socket
     .on("listPorts", async (cb) => {
-      // TODO: add isFetching state
+      // TODO: add isFetching state (no need?)
       const serialPorts = await SerialPort.list();
       cb(serialPorts);
     })
@@ -100,6 +122,6 @@ io.on("connection", (socket) => {
 });
 
 app.get("/", (req, res) => res.json(`you are in the root dir`));
-httpServer.listen(3003, () => {
+httpServer.listen(PORT, () => {
   console.log("Server is running");
 });

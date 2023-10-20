@@ -6,5 +6,8 @@
     "clientDist": "npm run clientDist --prefix client",
     "server": "npm run server --prefix server",
     "serverDist": "npm run serverDist --prefix server"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
   }
 }

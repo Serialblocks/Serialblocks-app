@@ -18,8 +18,8 @@ const Humidity = () => {
         </CardTitle>
 
         <span className="mt-4 flex justify-start gap-1">
-          <p className="text-3xl font-bold">30</p>
-          <span className="text-lg font-medium">%</span>
+          <p className="text-3xl font-bold">{value || 0}%</p>
+          <span className="text-lg font-medium">{timestamp}</span>
         </span>
 
         <div className="absolute right-2 top-2">

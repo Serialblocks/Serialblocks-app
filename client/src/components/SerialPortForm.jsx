@@ -44,17 +44,15 @@ const baudRates = [
 export function SerialPortForm() {
   const [pathOpen, setPathOpen] = useState(false);
   const [baudRateOpen, setBaudRateOpen] = useState(false);
-  const { isPortOpen, isConnecting, serialPorts } = useStore((store) => ({
-    isPortOpen: store.isPortOpen,
-    isConnecting: store.isConnecting,
-    serialPorts: store.serialPorts,
-  }));
+
+  const isPortOpen = useStore((store) => store.isPortOpen);
+  const isConnecting = useStore((store) => store.isConnecting);
+  const serialPorts = useStore((store) => store.serialPorts);
 
   const { closePort, openPort, listPorts, updateAuth, restart } = useStore(
     (store) => store.serialActions,
   );
   const { updateConfig } = useStore((store) => store.stateActions);
-
   const form = useForm({
     defaultValues: {
       path: "",
@@ -72,7 +70,7 @@ export function SerialPortForm() {
     }
   }
 
-  return (
+  return true ? (
     <Card className="col-span-6 row-span-6">
       <CardContent className="">
         <Form {...form}>
@@ -272,5 +270,7 @@ export function SerialPortForm() {
         </Form>
       </CardContent>
     </Card>
+  ) : (
+    <p>p</p>
   );
 }
