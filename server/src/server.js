@@ -59,7 +59,6 @@ io.on("connection", (socket) => {
   const parser = SERIALPORT.pipe(new ReadlineParser({ delimiter }));
   parser.on("data", (data) => {
     console.log(chalk.greenBright(data));
-    // TODO: error handling..
     if (isJSON(data)) {
       const parsedData = JSON.parse(data);
       for (const key of Object.keys(parsedData)) {

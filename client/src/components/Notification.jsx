@@ -1,4 +1,4 @@
-import { useStore } from "@/api/store";
+import { useStore } from "@/store/store";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";

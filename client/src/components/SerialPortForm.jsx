@@ -24,7 +24,7 @@ import {
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { useStore } from "@/api/store";
+import { useStore } from "@/store/store";
 import { Spinner } from "@/components/ui/spinner";
 
 const baudRates = [
@@ -52,7 +52,9 @@ export function SerialPortForm() {
   const { closePort, openPort, listPorts, updateAuth, restart } = useStore(
     (store) => store.serialActions,
   );
-  const { updateConfig } = useStore((store) => store.stateActions);
+  const { updateConfig, setPathPreview } = useStore(
+    (store) => store.stateActions,
+  );
   const form = useForm({
     defaultValues: {
       path: "",
@@ -70,7 +72,7 @@ export function SerialPortForm() {
     }
   }
 
-  return true ? (
+  return (
     <Card className="col-span-6 row-span-6">
       <CardContent className="">
         <Form {...form}>
@@ -86,7 +88,9 @@ export function SerialPortForm() {
                 <FormItem className="col-span-2 flex flex-col">
                   <Popover open={pathOpen} onOpenChange={setPathOpen}>
                     <PopoverTrigger asChild>
-                      <FormControl disabled={!serialPorts?.length}>
+                      <FormControl
+                        disabled={!serialPorts?.length || isPortOpen}
+                      >
                         <Button
                           variant="outline"
                           role="combobox"
@@ -97,9 +101,9 @@ export function SerialPortForm() {
                           )}
                         >
                           {field.value && Array.isArray(serialPorts)
-                            ? serialPorts.find((serialPort) => {
-                                return serialPort.path === field.value;
-                              })?.path
+                            ? serialPorts.find(
+                                (serialPort) => serialPort.path === field.value,
+                              )?.path
                             : "Select serialPort..."}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -136,13 +140,12 @@ export function SerialPortForm() {
                                   // also the cmdk searches by the textContent of commandItem if no value prop was provided
                                   // https://github.com/pacocoursey/cmdk#item-cmdk-item-data-disabled-data-selected
                                   // so serialPort.path will be used instead
-
-                                  form.setValue(
-                                    "path",
+                                  const currentPath =
                                     serialPort.path === field.value
                                       ? ""
-                                      : serialPort.path,
-                                  );
+                                      : serialPort.path;
+                                  form.setValue("path", currentPath);
+                                  setPathPreview(currentPath);
                                   setPathOpen(false);
                                 }}
                               >
@@ -177,7 +180,9 @@ export function SerialPortForm() {
                 <FormItem className="col-span-2 flex flex-col">
                   <Popover open={baudRateOpen} onOpenChange={setBaudRateOpen}>
                     <PopoverTrigger asChild>
-                      <FormControl disabled={form.watch("path") === ""}>
+                      <FormControl
+                        disabled={form.watch("path") === "" || isPortOpen}
+                      >
                         <Button
                           variant="outline"
                           role="combobox"
@@ -243,6 +248,7 @@ export function SerialPortForm() {
               variant="outline"
               onClick={listPorts}
               type="button"
+              disabled={isPortOpen}
             >
               {serialPorts === null ? (
                 <Search className="mr-2 h-4 w-4" />
@@ -270,7 +276,5 @@ export function SerialPortForm() {
         </Form>
       </CardContent>
     </Card>
-  ) : (
-    <p>p</p>
   );
 }

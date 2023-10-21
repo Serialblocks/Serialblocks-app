@@ -48,6 +48,7 @@ export default {
           DEFAULT: "hsl(var(--terminal) / <alpha-value>)",
           foreground: "hsl(var(--terminal-foreground) / <alpha-value>)",
           thumb: "hsl(var(--terminal-thumb) / <alpha-value>)",
+          header: "hsl(var(--terminal-header) / <alpha-value>)",
         },
       },
 

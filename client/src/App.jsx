@@ -8,7 +8,7 @@ import {
   Humidity,
   Footer,
 } from "@/components";
-import { useStore } from "@/api/store";
+import { useStore } from "@/store/store";
 import Notification from "@/components/Notification";
 import { SerialPortForm } from "@/components/SerialPortForm";
 

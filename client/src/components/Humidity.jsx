@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useStore } from "@/api/store";
+import { useStore } from "@/store/store";
 const Humidity = () => {
   const { value, timestamp } = useStore((store) => store.serialData.Humidity);
   return (

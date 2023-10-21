@@ -25,6 +25,7 @@ const initialState = {
     LED: { value: null, timestamp: 0 },
   },
   config: initialConfig,
+  pathPreview: "",
 };
 // https://serialport.io/docs/api-bindings-cpp#list
 
@@ -181,6 +182,9 @@ const mutations = (setState, getState) => {
         );
         // alternatively you can use
         // setState({ config: { ...getState().config, ...prop } });
+      },
+      setPathPreview(pathPreview) {
+        setState({ pathPreview });
       },
     },
     serialActions: {

@@ -2,7 +2,7 @@
   "name": "SerialBlocks-client",
   "type": "module",
   "scripts": {
-    "client": "vite --host 192.168.1.180",
+    "client": "vite --host",
     "clientDist": "localserver ./dist",
     "preview": "vite preview --host",
     "build": "vite build",
