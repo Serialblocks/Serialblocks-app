@@ -1,29 +1,15 @@
-import express from "express";
 import { Server } from "socket.io";
-import { SerialPort, SerialPortMock } from "serialport";
+import { SerialPort } from "serialport";
 import { ReadlineParser } from "@serialport/parser-readline";
-import cors from "cors";
-import http from "http";
+import https from "node:https";
 import chalk from "chalk";
 import "dotenv/config";
+import { isJSON } from "./lib/utils.js";
 
-// to pin point server console outputs easily
-function isJSON(text) {
-  if (typeof text !== "string") {
-    return false;
-  }
-  try {
-    JSON.parse(text);
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
 const PORT = process.env.PORT || 3003;
-const app = express();
-app.use(cors({ origin: "*" }));
-// const httpServer = http.createServer(app);
-// const io = new Server(httpServer);
+const httpServer = https.createServer();
+const io = new Server(httpServer);
+io.listen(PORT);
 
 io.on("connection", (socket) => {
   console.log(socket.handshake.auth);
@@ -118,9 +104,4 @@ io.on("connection", (socket) => {
         });
       }
     });
-});
-
-app.get("/", (req, res) => res.json(`you are in the root dir`));
-httpServer.listen(PORT, () => {
-  console.log("Server is running");
 });
