@@ -22,8 +22,8 @@ function isJSON(text) {
 const PORT = process.env.PORT || 3003;
 const app = express();
 app.use(cors({ origin: "*" }));
-const httpServer = http.createServer(app);
-const io = new Server(httpServer);
+// const httpServer = http.createServer(app);
+// const io = new Server(httpServer);
 
 io.on("connection", (socket) => {
   console.log(socket.handshake.auth);
