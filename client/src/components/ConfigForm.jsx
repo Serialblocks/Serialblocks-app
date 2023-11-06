@@ -55,7 +55,7 @@ const defaultValues = {
   ],
 };
 
-export function ProfileForm() {
+const ConfigForm = () => {
   const form = useForm({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
@@ -161,4 +161,5 @@ export function ProfileForm() {
       </form>
     </Form>
   );
-}
+};
+export { ConfigForm };

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 let LED = () => {
   return (
-    <Card className="relative col-span-3 row-span-2 min-h-[10rem]">
+    <Card className="relative col-span-3 row-span-2 ">
       {/* adding before:absolute and changing opacity of the before pseudo element will add grain effect to the background of the card */}
       <CardContent className="before:inset-0 before:rounded-lg before:bg-[url(@/assets/noise.svg)] before:opacity-0">
         <CardTitle className="flex items-center gap-1">
@@ -12,7 +12,7 @@ let LED = () => {
           Temperature
         </CardTitle>
         <span className="mt-4 flex justify-start gap-1">
-          <p className="text-3xl font-bold">27</p>
+          <p className="font-mono text-3xl font-bold">27</p>
           <p className="text-lg font-medium">°C</p>
         </span>
         <Button size="pill" className="absolute right-2 top-2" asChild>

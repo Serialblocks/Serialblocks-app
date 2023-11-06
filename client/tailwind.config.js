@@ -2,6 +2,7 @@
 import tailwindAnimate from "tailwindcss-animate";
 import tailwindScrollbar from "tailwind-scrollbar";
 import { fontFamily } from "tailwindcss/defaultTheme";
+
 export default {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -69,6 +70,8 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        status: `pingAnimation var(--interval) cubic-bezier(0, 0, 0.2, 1) 1,
+           idle var(--idle-transition-duration) cubic-bezier(0, 0, 0.2, 1) var(--idle-delay) 1 forwards`,
       },
     },
   },

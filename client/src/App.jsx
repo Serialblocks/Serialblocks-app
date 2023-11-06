@@ -6,11 +6,10 @@ import {
   RGB,
   LED,
   Humidity,
-  Footer,
-} from "@/components";
+  SerialPortForm,
+} from "@/blocks";
+import { Footer, Notification } from "@/components";
 import { useStore } from "@/store/store";
-import Notification from "@/components/Notification";
-import { SerialPortForm } from "@/components/SerialPortForm";
 
 const App = () => {
   const isWsConnected = useStore((store) => store.isWsConnected);
@@ -48,3 +47,4 @@ const App = () => {
   );
 };
 export default App;
+// feat: empty func, data Status & debounce rgb color chng

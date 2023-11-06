@@ -48,7 +48,11 @@ io.on("connection", (socket) => {
     if (isJSON(data)) {
       const parsedData = JSON.parse(data);
       for (const key of Object.keys(parsedData)) {
-        parsedData[key] = { value: parsedData[key], timestamp: Date.now() };
+        parsedData[key] = {
+          value: parsedData[key]?.value,
+          interval: parsedData[key]?.interval,
+          timestamp: Date.now(),
+        };
       }
       socket.emit("parsedData", JSON.stringify(parsedData));
     }

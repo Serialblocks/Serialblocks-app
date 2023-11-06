@@ -4,6 +4,19 @@
 
 @layer base {
   :root {
+    --palette-saturation-gradient: linear-gradient(0deg, #000, transparent),
+      linear-gradient(90deg, #fff, hsla(0, 0%, 100%, 0));
+    --hue-gradient: linear-gradient(
+      to bottom,
+      hsl(0, 100%, 50%),
+      hsl(60, 100%, 50%),
+      hsl(120, 100%, 50%),
+      hsl(180, 100%, 50%),
+      hsl(240, 100%, 50%),
+      hsl(300, 100%, 50%),
+      hsl(360, 100%, 50%)
+    );
+
     --font-mono: JetBrains Mono;
     --font-sans: Open Sans;
 
@@ -52,13 +65,14 @@
     --accent: 216 34% 17%;
     --accent-foreground: 210 40% 98%;
 
-    --popover: 229 84% 5%;
+    --popover: 229 84% 4.5%;
     --popover-foreground: 215 20.2% 65.1%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
 
-    --card: 229 84% 5%;
+    --card: 229 84% 4.5%;
+    /* 0 0% 3.9% neutral-950 */
     --card-foreground: 213 31% 91%;
 
     --terminal: 229 26% 16%;
@@ -78,6 +92,20 @@
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
+  }
+}
+
+@layer utilities {
+  @keyframes pingAnimation {
+    75%,
+    100% {
+      @apply scale-[2] opacity-0;
+    }
+  }
+  @keyframes idle {
+    100% {
+      @apply z-10 scale-105 bg-orange-500 opacity-100;
+    }
   }
 }
 /*resets for apexcharts*/

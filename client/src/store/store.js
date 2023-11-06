@@ -4,7 +4,12 @@ import { produce } from "immer";
 import { socket, initialAuth } from "@/api/socket";
 const { sessionID, ...initialConfig } = initialAuth;
 //  The initial state shapes what values we can have in our store.
-
+const serialDataInitialState = {
+  processorTemp: { value: null, timestamp: null, interval: null },
+  humidity: { value: null, timestamp: null, interval: null },
+  LED: { value: null, timestamp: null, interval: null },
+  brightness: { interval: null, data: [{ x: Date.now(), y: 0 }] },
+};
 const initialState = {
   sessionID: sessionID,
   serialPorts: null,
@@ -18,12 +23,7 @@ const initialState = {
   serialOutput: [
     { value: "welcome to SerialBlocks v1.0", timestamp: Date.now() },
   ],
-  serialData: {
-    ProcessorTemp: { value: null, timestamp: 0 },
-    Humidity: { value: null, timestamp: 0 },
-    Brightness: [{ x: Date.now(), y: 0 }],
-    LED: { value: null, timestamp: 0 },
-  },
+  serialData: serialDataInitialState,
   config: initialConfig,
   pathPreview: "",
 };
@@ -153,18 +153,22 @@ const mutations = (setState, getState) => {
       setState(
         produce(({ serialData }) => {
           for (const key of Object.keys(serialData)) {
-            serialData[key] = Array.isArray(serialData[key])
-              ? [
-                  ...serialData[key],
-                  {
-                    //TODO: MKE IT BETTER
-                    [Object.keys(serialData[key].at(0)).at(0)]:
-                      parsedData[key]["timestamp"],
-                    [Object.keys(serialData[key].at(0)).at(1)]:
-                      parsedData[key]["value"],
-                  },
-                ]
-              : parsedData[key] || serialData[key];
+            if (
+              Object.hasOwn(serialData[key], "data") &&
+              Object.hasOwn(parsedData, key)
+            ) {
+              const [key1, key2] = Object.keys(serialData[key].data.at(0));
+              if (serialData[key].data.length === 1)
+                serialData[key].data[0].timestamp = Date.now();
+
+              serialData[key].interval = parsedData[key]?.interval;
+              serialData[key].data.push({
+                [key1]: parsedData[key]?.timestamp,
+                [key2]: parsedData[key]?.value,
+              });
+            } else {
+              serialData[key] = parsedData[key] || serialData[key];
+            }
           }
         }),
       );
@@ -183,8 +187,26 @@ const mutations = (setState, getState) => {
         // alternatively you can use
         // setState({ config: { ...getState().config, ...prop } });
       },
-      setPathPreview(pathPreview) {
+      updatePathPreview(pathPreview) {
         setState({ pathPreview });
+      },
+      clearSerialDatum(...propsNames) {
+        setState(
+          produce((state) => {
+            for (const propName of propsNames) {
+              if (Object.hasOwn(getState().serialData, propName)) {
+                state.serialData[propName] = serialDataInitialState[propName];
+              }
+            }
+          }),
+        );
+      },
+      clearSerialOutput() {
+        setState({
+          serialOutput: [
+            { value: "Serial Output just got cleared!", timestamp: Date.now() },
+          ],
+        });
       },
     },
     serialActions: {

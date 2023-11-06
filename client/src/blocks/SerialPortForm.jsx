@@ -41,7 +41,7 @@ const baudRates = [
   { value: 115200, label: "115200" },
 ];
 
-export function SerialPortForm() {
+const SerialPortForm = () => {
   const [pathOpen, setPathOpen] = useState(false);
   const [baudRateOpen, setBaudRateOpen] = useState(false);
 
@@ -52,7 +52,7 @@ export function SerialPortForm() {
   const { closePort, openPort, listPorts, updateAuth, restart } = useStore(
     (store) => store.serialActions,
   );
-  const { updateConfig, setPathPreview } = useStore(
+  const { updateConfig, updatePathPreview } = useStore(
     (store) => store.stateActions,
   );
   const form = useForm({
@@ -145,7 +145,7 @@ export function SerialPortForm() {
                                       ? ""
                                       : serialPort.path;
                                   form.setValue("path", currentPath);
-                                  setPathPreview(currentPath);
+                                  updatePathPreview(currentPath);
                                   setPathOpen(false);
                                 }}
                               >
@@ -277,4 +277,5 @@ export function SerialPortForm() {
       </CardContent>
     </Card>
   );
-}
+};
+export { SerialPortForm };

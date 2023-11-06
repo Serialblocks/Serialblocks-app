@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Palette } from "lucide-react";
-// import { RgbColorPicker } from "react-colorful";
-import { useState } from "react";
+import { RgbColorPicker } from "react-colorful";
+import { useMemo, useState } from "react";
+import { useStore } from "@/store/store";
+import { debounce } from "lodash";
+
 function formatRGB({ r, g, b }) {
   // for (const [key, color] of Object.entries(rgb)) {
   //   if (Object.hasOwn(rgb, key)) {
@@ -12,30 +15,32 @@ function formatRGB({ r, g, b }) {
   const paddedR = String(r).padStart(3, "0");
   const paddedG = String(g).padStart(3, "0");
   const paddedB = String(b).padStart(3, "0");
-  console.log(`RGB_${paddedR}_${paddedG}_${paddedB}`);
   return `RGB_${paddedR}_${paddedG}_${paddedB}`;
 }
 const RGB = () => {
-  const [color, setColor] = useState({ r: 0, g: 0, b: 0 });
+  const { writeToPort } = useStore((store) => store.serialActions);
+  const isPortOpen = useStore((store) => store.isPortOpen);
+  const debouncedColorChangeHandler = useMemo(
+    () => debounce((color) => isPortOpen && writeToPort(formatRGB(color)), 10),
+    [isPortOpen],
+  );
+
   return (
     <Card className="col-span-3 row-span-2 min-h-[10rem]">
-      <CardContent className="relative flex flex-col">
+      {/* <CardHeader className="p-4 pb-0">
         <CardTitle className="flex items-center gap-1">
           <Palette className="inline h-6 w-6" />
-          RGB_LED
+          RGB LED
         </CardTitle>
-        {/* <RgbColorPicker
-          color={color}
-          className="h-auto flex-1"
-          onChange={(color) => {
-            console.log(color);
-            fetch(`./api/serialPort/write?command=${formatRGB(color)}`);
-            setColor(color);
-          }}
-        /> */}
         <Button size="pill" className="absolute right-2 top-2" asChild>
           <div>RGB</div>
         </Button>
+      </CardHeader> */}
+      <CardContent className="p-[0.375rem]">
+        <RgbColorPicker
+          className="!h-auto !w-auto basis-full rounded-sm"
+          onChange={debouncedColorChangeHandler}
+        />
       </CardContent>
     </Card>
   );
