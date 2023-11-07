@@ -32,7 +32,7 @@ const Processor = () => {
       <CardContent className="p-4">
         <div className="mt-4 flex justify-start gap-1">
           <p className="font-mono text-3xl font-bold">
-            {parseFloat(value).toFixed(2) || 0}
+            {(parseFloat(value) || 0).toFixed(2)}
           </p>
           <span className="text-lg font-medium">°C</span>
         </div>

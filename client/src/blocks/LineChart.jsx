@@ -7,6 +7,7 @@ import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { useStore } from "@/store/store";
 import { useMemo, useState } from "react";
 const dateFormatter = new Intl.DateTimeFormat("en", {
+  hour: "2-digit",
   minute: "2-digit",
   second: "2-digit",
   fractionalSecondDigits: 2,
@@ -122,7 +123,7 @@ const LineChart = () => {
    </div>
    <hr />
    <div class="p-2 flex flex-row items-center justify-between">
-      <span class="h-[0.625rem] w-[0.625rem] shadow-xl bg-primary rounded-full outline outline-1 outline-primary-foreground"></span>
+     <span class="flex gap-1 items-center"> <span class="h-[0.625rem] w-[0.625rem] shadow-xl bg-primary rounded-full outline outline-1 outline-primary-foreground" ></span>Brightness</span>
       <span class="font-bold text-foreground">
       ${series[seriesIndex][dataPointIndex]}
       </span>
@@ -170,10 +171,7 @@ const LineChart = () => {
               interval={interval}
               isPortOpen={isPortOpen}
             />
-            <InfoTooltip>
-              requires DHT-11 sensor, <br /> make sure to use{interval}
-              <code>"Temperature"</code> in your JSON to get activated
-            </InfoTooltip>
+            <InfoTooltip>Displays the brightness</InfoTooltip>
             <button onClick={() => clearSerialDatum("brightness")}>
               <Trash2 className="inline h-5 w-5" />
             </button>

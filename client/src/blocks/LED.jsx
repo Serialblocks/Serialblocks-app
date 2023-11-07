@@ -13,14 +13,14 @@ let LED = () => {
   const { value, interval, timestamp } = useStore(
     (store) => store.serialData.LED,
   );
-  const [refresh, setRefresh] = useState(0); // State to trigger re-render
-  console.log(refresh + "re-rendered");
+  const [referenceTimestamp, setReferenceTimestamp] = useState(() =>
+    Date.now(),
+  );
   const dateFormatter = new Intl.DateTimeFormat("en", {
     minute: "2-digit",
     second: "2-digit",
     fractionalSecondDigits: 2,
   });
-  const handleRefresh = () => setRefresh((prev) => prev + 1); // Update the state to trigger re-render
 
   const { writeToPort } = useStore((store) => store.serialActions);
   const isPortOpen = useStore((store) => store.isPortOpen);
@@ -56,13 +56,21 @@ let LED = () => {
           <span className="flex justify-start gap-1">
             {value ? "ON" : "OFF"}
           </span>
-          <p className="flex flex-row items-center gap-2 text-sm text-muted-foreground">
-            <span>{dateFormatter.format(timestamp)}</span>
-            {intlFormatDistance(Date.now(timestamp), Date.now())}
-            <Button variant="ghost" size="sm" onClick={handleRefresh}>
-              <RefreshCw className="h-3 w-3" />
-            </Button>
-          </p>
+          {timestamp && (
+            <div className="flex flex-row items-center gap-2 text-sm text-muted-foreground">
+              <span>{dateFormatter.format(timestamp)}</span>
+              {timestamp < referenceTimestamp
+                ? intlFormatDistance(timestamp, referenceTimestamp)
+                : "now"}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setReferenceTimestamp(Date.now())}
+              >
+                <RefreshCw className="h-3 w-3" />
+              </Button>
+            </div>
+          )}
         </div>
         <Button onClick={() => isPortOpen && writeToPort("LED_TOGGLE")}>
           Toggle

@@ -39,9 +39,9 @@ const Terminal = () => {
           {isPortOpen ? path : "TERMINAL"}
         </CardTitle>
         <div className="flex flex-row items-center gap-2">
-          <button className="h-4 w-4" onClick={clearSerialOutput}>
+          <Button variant="ghost" size="sm" onClick={clearSerialOutput}>
             <Trash2 className="inline h-5 w-5" />
-          </button>
+          </Button>
           <Toggle
             size="sm"
             defaultPressed={false}
@@ -49,7 +49,7 @@ const Terminal = () => {
           >
             <Clock className="inline h-4 w-4" />
           </Toggle>
-          <Button variant="ghost">
+          <Button variant="ghost" size="sm">
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </div>
