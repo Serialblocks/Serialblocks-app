@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Palette } from "lucide-react";
 import { RgbColorPicker } from "react-colorful";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useStore } from "@/store/store";
 import { debounce } from "lodash";
 
@@ -24,6 +24,9 @@ const RGB = () => {
     () => debounce((color) => isPortOpen && writeToPort(formatRGB(color)), 10),
     [isPortOpen],
   );
+
+  // Stop the invocation of the debounced function after unmounting
+  useEffect(() => debouncedColorChangeHandler.cancel(), []);
 
   return (
     <Card className="col-span-3 row-span-2 min-h-[10rem]">
