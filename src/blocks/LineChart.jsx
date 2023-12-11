@@ -204,7 +204,6 @@ const LineChart = () => {
           </div>
         </CardHeader>
 
-        {/* <div className=" absolute inset-0 h-full w-full rounded-lg bg-[url('@/assets/grid.svg')] bg-[position:calc(100%+5px)_calc(100%+24px)] opacity-10"></div> */}
         <Chart type="line" options={options} series={series} />
         <Slider
           defaultValue={[5]}
