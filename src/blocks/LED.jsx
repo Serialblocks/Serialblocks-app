@@ -1,9 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useStore } from "@/store/store";
+import { useStore } from "@/store/Serialstore";
 import Status from "@/components/ui/Status";
-import { InfoTooltip } from "@/components/ui/InfoTooltip";
-import LedIcon from "@/assets/led.svg?react";
+import LedIcon from "@/assets/icons/led.svg?react";
 import { intlFormatDistance } from "date-fns";
 import { cn } from "@/lib/utils";
 import { RefreshCw } from "lucide-react";
@@ -26,16 +25,19 @@ let LED = () => {
   const isPortOpen = useStore((store) => store.isPortOpen);
   return (
     <Card className="relative col-span-3 row-span-2 ">
-      <CardHeader className="items-start p-4 pb-0">
+      <CardHeader className="p-4 pb-0">
         <CardTitle className="flex flex-col items-start gap-x-2">
-          <span className="flex items-center gap-[0.0625rem]">
+          <span className="flex items-center gap-px">
             <LedIcon
               className={cn(
-                "inline h-6 w-6 scale-[1.75]",
+                "inline h-6 w-6 scale-[1.75] fill-none stroke-foreground stroke-[60] text-foreground",
                 value && "[&_g_path]:fill-yellow-300",
               )}
             />
-            LED
+            <div>
+              Led
+              <p className="text-xs font-normal text-primary/90">LED</p>
+            </div>
           </span>
         </CardTitle>
         <div className="flex flex-row items-center gap-2">
@@ -45,10 +47,6 @@ let LED = () => {
             interval={interval}
             isPortOpen={isPortOpen}
           />
-          <InfoTooltip>
-            requires DHT-11 sensor, <br /> make sure to use{interval}
-            <code>"Temperature"</code> in your JSON to get activated
-          </InfoTooltip>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col justify-between">

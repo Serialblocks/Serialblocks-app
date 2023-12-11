@@ -1,25 +1,21 @@
 import { io } from "socket.io-client";
-import { v4 as uuidv4 } from "uuid";
-
-const url =
-  process.env.NODE_ENV === "production"
-    ? undefined
-    : "http://192.168.1.180:3003/";
-// : "https://true-areas-swim.loca.lt/";
+import { useUserStore } from "@/store/UserStore";
 
 // by default HTTP long-polling connection is established first, and then an upgrade to WebSocket is attempted.
-// this makes sure that websocket connection is the default and fallsback to HTTP long-polling.
+// this makes sure that websocket connection is the default and falls back to HTTP long-polling.
 // this should so
 // cors: {
 //   origin: "*",
 //   methods: ["GET", "POST"],
 // },
-export const initialAuth = {
-  sessionID: uuidv4(),
+
+// const url =
+//   process.env.NODE_ENV === "production" ? undefined : "http://192.168.1.180:8008";
+export const initialConfig = {
   path: "path/to/port",
   baudRate: 0,
   delimiter: "\r\n",
-  EOL: "\r\n",
+  EOL: "\n",
   dataBits: 8,
   lock: true,
   stopBits: 1,
@@ -30,10 +26,17 @@ export const initialAuth = {
   xany: false,
   hupcl: true,
 };
-export const socket = io(url, {
+const DisplayName = useUserStore.getState().DisplayName;
+const initialAuth = { DisplayName, ...initialConfig };
+
+const remoteUrl = useUserStore.getState().RemoteUrl;
+export const socket = io(remoteUrl, {
   transports: ["websocket", "polling"],
-  autoConnect: true,
+  autoConnect: false,
   reconnectionAttempts: 5,
   auth: initialAuth,
-  // defaults
 });
+
+if (useUserStore.getState().isLoggedIn) {
+  socket.connect();
+}

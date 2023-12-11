@@ -1,4 +1,4 @@
-import { useStore } from "@/store/store";
+import { useStore } from "@/store/Serialstore";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
@@ -17,4 +17,4 @@ const Notification = () => {
   return <Toaster />;
 };
 
-export { Notification };
+export default Notification;

@@ -24,8 +24,8 @@ import {
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { useStore } from "@/store/store";
-import { Spinner } from "@/components/ui/spinner";
+import { useStore } from "@/store/Serialstore";
+import Spinner from "@/assets/icons/spinner.svg?react";
 
 const baudRates = [
   { value: 300, label: "300" },
@@ -62,14 +62,7 @@ const SerialPortForm = () => {
     },
   });
   function onSubmit({ path, baudRate }) {
-    if (!isPortOpen) {
-      updateConfig({ path, baudRate });
-      updateAuth();
-      restart();
-      openPort();
-    } else {
-      closePort();
-    }
+    updateConfig({ path, baudRate });
   }
 
   return (
@@ -104,7 +97,7 @@ const SerialPortForm = () => {
                             ? serialPorts.find(
                                 (serialPort) => serialPort.path === field.value,
                               )?.path
-                            : "Select serialPort..."}
+                            : "Serialport"}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
@@ -188,7 +181,7 @@ const SerialPortForm = () => {
                           role="combobox"
                           aria-expanded={baudRateOpen}
                           className={cn(
-                            "w-full justify-between",
+                            "flex w-full justify-between",
                             !field.value && "text-muted-foreground",
                           )}
                         >
@@ -196,7 +189,7 @@ const SerialPortForm = () => {
                             ? baudRates.find(
                                 (baudRate) => baudRate.value === field.value,
                               )?.label
-                            : "Select baudRate..."}
+                            : "BaudRate"}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
@@ -269,7 +262,9 @@ const SerialPortForm = () => {
               className="col-span-5"
               type="submit"
             >
-              {isConnecting && <Spinner />}
+              {isConnecting && (
+                <Spinner className="mr-2 h-4 w-4 animate-spin [&>circle]:opacity-25 [&>path]:opacity-75 " />
+              )}
               {isPortOpen ? "Disconnect" : "Connect"}
             </Button>
           </form>

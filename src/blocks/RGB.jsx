@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Palette } from "lucide-react";
 import { RgbColorPicker } from "react-colorful";
 import { useEffect, useMemo, useState } from "react";
-import { useStore } from "@/store/store";
+import { useStore } from "@/store/Serialstore";
 import { debounce } from "lodash";
 
 function formatRGB({ r, g, b }) {

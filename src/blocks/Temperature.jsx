@@ -9,7 +9,10 @@ let LED = () => {
       <CardContent className="before:inset-0 before:rounded-lg before:bg-[url(@/assets/noise.svg)] before:opacity-0">
         <CardTitle className="flex items-center gap-1">
           <Sun className="inline h-6 w-6" />
-          Temperature
+          <div>
+            Led
+            <p className="text-xs font-normal text-primary/90">LED</p>
+          </div>
         </CardTitle>
         <span className="mt-4 flex justify-start gap-1">
           <p className="font-mono text-3xl font-bold">27</p>

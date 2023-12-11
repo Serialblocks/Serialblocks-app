@@ -1,11 +1,13 @@
 import Chart from "react-apexcharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sun, Trash2 } from "lucide-react";
+import { ListX, Sun } from "lucide-react";
 import { intlFormatDistance } from "date-fns";
 import Status from "@/components/ui/Status";
-import { InfoTooltip } from "@/components/ui/InfoTooltip";
-import { useStore } from "@/store/store";
+import { useStore } from "@/store/Serialstore";
 import { useMemo, useState } from "react";
+import { Slider } from "@/components/ui/slider";
+import ButtonTooltip from "@/components/ui/ButtonTooltip";
+import { Button } from "@/components/ui/button";
 const dateFormatter = new Intl.DateTimeFormat("en", {
   hour: "2-digit",
   minute: "2-digit",
@@ -13,7 +15,10 @@ const dateFormatter = new Intl.DateTimeFormat("en", {
   fractionalSecondDigits: 2,
 });
 const LineChart = () => {
-  const { interval, data } = useStore((store) => store.serialData.brightness);
+  const serialDatumName = "brightness";
+  const { interval, data } = useStore(
+    (store) => store.serialData[serialDatumName],
+  );
   const { x: timestamp = null, y: value = null } = data.slice(-1).at(0);
   const clearSerialDatum = useStore(
     (store) => store.stateActions.clearSerialDatum,
@@ -23,16 +28,11 @@ const LineChart = () => {
   const options = useMemo(
     () => ({
       noData: {
-        text: "yoo",
+        text: "No data is available yet",
         align: "center",
         verticalAlign: "middle",
         offsetX: 0,
         offsetY: 0,
-        style: {
-          color: undefined,
-          fontSize: "14px",
-          fontFamily: undefined,
-        },
       },
       chart: {
         type: "numeric",
@@ -59,10 +59,12 @@ const LineChart = () => {
         },
         fontFamily: "Open Sans, Arial, sans-serif",
         animations: {
-          enabled: true,
-          easing: "easeinout",
-
+          easing: "linear",
           animateGradually: {
+            enabled: true,
+            speed: interval,
+          },
+          dynamicAnimation: {
             enabled: true,
             speed: interval,
           },
@@ -79,6 +81,10 @@ const LineChart = () => {
         lines: {
           show: true,
         },
+        yaxis: {
+          min: 0,
+          max: 200,
+        },
         axisBorder: {
           show: false,
         },
@@ -91,7 +97,6 @@ const LineChart = () => {
           position: "back",
           opacity: 0.9,
           stroke: {
-            // TODO: CHANGE COLOR USING HSL VAR ..
             color: "hsl(var(--muted-foreground))",
             width: 1,
             dashArray: 0,
@@ -109,22 +114,31 @@ const LineChart = () => {
       },
       tooltip: {
         followCursor: false,
-        custom: ({ series, seriesIndex, dataPointIndex, w }) => `
+        custom: ({
+          series,
+          seriesIndex,
+          dataPointIndex,
+          w: {
+            globals: { initialSeries },
+          },
+        }) => `
         <div class="flex flex-col rounded-lg border bg-background">
    <div class="flex flex-row justify-between p-1 gap-4 items-baseline">
       <span class="text-xs">${dateFormatter.format(
-        w.globals.initialSeries[seriesIndex].data[dataPointIndex].x,
+        initialSeries[seriesIndex].data[dataPointIndex].x,
       )}
       </span>
       <span class="text-xs">${intlFormatDistance(
-        w.globals.initialSeries[seriesIndex].data[dataPointIndex].x,
+        initialSeries[seriesIndex].data[dataPointIndex].x,
         Date.now(),
       )}</span>
    </div>
    <hr />
    <div class="p-2 flex flex-row items-center justify-between">
-     <span class="flex gap-1 items-center"> <span class="h-[0.625rem] w-[0.625rem] shadow-xl bg-primary rounded-full outline outline-1 outline-primary-foreground" ></span>Brightness</span>
-      <span class="font-bold text-foreground">
+     <span class="flex gap-1 items-center capitalize leading-snug text-sm"> <span class="h-[0.625rem] w-[0.625rem] shadow-xl bg-primary rounded-full outline outline-1 outline-primary-foreground" ></span>${
+       initialSeries[seriesIndex].label
+     }</span>
+      <span class="font-bold text-foreground font-mono">
       ${series[seriesIndex][dataPointIndex]}
       </span>
    </div>
@@ -137,22 +151,23 @@ const LineChart = () => {
       },
       markers: {
         enabled: true,
-        strokeColors: "hsl(var(--background))",
+        size: !isPortOpen ? 4 : 0,
+        colors: "hsl(var(--background))",
+        strokeColors: "hsl(var(--primary))",
         strokeWidth: 2.5,
-        strokeOpacity: 1,
-        // the dot that appears when you hover
-        colors: "hsl(var(--primary))",
+        fillOpacity: 1,
         hover: {
-          size: 7,
+          sizeOffset: !isPortOpen ? 3 : 5,
         },
       },
     }),
-    [interval, num],
+    [interval, num, isPortOpen],
   );
 
   const series = [
     {
-      data: data,
+      label: serialDatumName,
+      data: data.slice(1),
     },
   ];
 
@@ -160,26 +175,44 @@ const LineChart = () => {
     <Card className="relative col-span-6 row-span-5">
       <CardContent className="">
         <CardHeader className="">
-          <CardTitle className="flex items-center gap-1">
+          <CardTitle className="flex items-center gap-1 capitalize">
             <Sun className="inline h-6 w-6" />
-            Brightness
+            <div>
+              {serialDatumName}
+              <p className="text-xs font-normal text-primary/90">LDR</p>
+            </div>
           </CardTitle>
           <div className="flex flex-row items-center gap-2">
+            <ButtonTooltip title="Clear Output">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => clearSerialDatum(serialDatumName)}
+                asChild
+              >
+                <div>
+                  <ListX className="inline h-4 w-4" />
+                </div>
+              </Button>
+            </ButtonTooltip>
             <Status
               value={value}
               timestamp={timestamp}
               interval={interval}
               isPortOpen={isPortOpen}
             />
-            <InfoTooltip>Displays the brightness</InfoTooltip>
-            <button onClick={() => clearSerialDatum("brightness")}>
-              <Trash2 className="inline h-5 w-5" />
-            </button>
           </div>
         </CardHeader>
 
         {/* <div className=" absolute inset-0 h-full w-full rounded-lg bg-[url('@/assets/grid.svg')] bg-[position:calc(100%+5px)_calc(100%+24px)] opacity-10"></div> */}
         <Chart type="line" options={options} series={series} />
+        <Slider
+          defaultValue={[5]}
+          min={3}
+          max={100}
+          step={1}
+          onValueChange={setNum}
+        />
       </CardContent>
     </Card>
   );

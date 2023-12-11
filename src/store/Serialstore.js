@@ -1,28 +1,30 @@
 import { create } from "zustand";
 import { combine } from "zustand/middleware";
 import { produce } from "immer";
-import { socket, initialAuth } from "@/api/socket";
-const { sessionID, ...initialConfig } = initialAuth;
+import { socket, initialConfig } from "@/api/socket";
+import { useUserStore } from "@/store/UserStore";
 //  The initial state shapes what values we can have in our store.
 const serialDataInitialState = {
   processorTemp: { value: null, timestamp: null, interval: null },
   humidity: { value: null, timestamp: null, interval: null },
   LED: { value: null, timestamp: null, interval: null },
-  brightness: { interval: null, data: [{ x: Date.now(), y: 0 }] },
+  brightness: { interval: null, data: [{ x: null, y: null }] },
 };
+
+const initialDisplayName = useUserStore.getState().DisplayName;
+
 const initialState = {
-  sessionID: sessionID,
-  serialPorts: null,
+  DisplayName: initialDisplayName,
+  // usually it's false
+  isWsConnected: socket.connected,
+  isPortOpen: false,
+  isConnecting: false,
   toastContent: {
     title: "",
     description: "",
   },
-  // usually it's false
-  isWsConnected: socket.connected,
-  isPortOpen: false,
-  serialOutput: [
-    { value: "welcome to SerialBlocks v1.0", timestamp: Date.now() },
-  ],
+  serialPorts: null,
+  serialOutput: [],
   serialData: serialDataInitialState,
   config: initialConfig,
   pathPreview: "",
@@ -76,13 +78,12 @@ const mutations = (setState, getState) => {
       isWsConnected: false,
       toastContent: {
         title: "Failed",
-        description: `Connection failed, Please try again later..`,
+        description: `Connection failed, Please try again later.`,
       },
     });
   });
 
-  // this is enough to connect all our server events
-  // to our state management system!
+  // this is enough to connect all our server events to our state management system!
   socket
     .on("connect", () => {
       setState({
@@ -117,20 +118,20 @@ const mutations = (setState, getState) => {
         },
       });
     })
-    .on("notifyClients", ({ path, sessionID, action, err }) => {
+    .on("notifyClients", ({ path, DisplayName, action, err }) => {
       let title, description;
       switch (action) {
         case "openPort":
           title = "Opened";
-          description = `${path} has been opened successfully by ${sessionID}`;
+          description = `${path} has been opened successfully by ${DisplayName}`;
           break;
         case "closePort":
           title = "Closed";
-          description = `${path} has been closed successfully by ${sessionID}`;
+          description = `${path} has been closed successfully by ${DisplayName}`;
           break;
         case "suddenPortDisc":
           title = "Disconnected";
-          description = `${path} was suddenly disconnected by ${sessionID}, ${
+          description = `${path} was suddenly disconnected by ${DisplayName}, ${
             err || ""
           }`;
           break;
@@ -139,7 +140,6 @@ const mutations = (setState, getState) => {
         toastContent: { title, description },
       });
     })
-
     .on("rawData", (data) => {
       setState((state) => ({
         serialOutput: [
@@ -150,6 +150,7 @@ const mutations = (setState, getState) => {
     })
     .on("parsedData", (JSONparsed) => {
       const parsedData = JSON.parse(JSONparsed);
+      console.log(parsedData);
       setState(
         produce(({ serialData }) => {
           for (const key of Object.keys(serialData)) {
@@ -158,16 +159,16 @@ const mutations = (setState, getState) => {
               Object.hasOwn(parsedData, key)
             ) {
               const [key1, key2] = Object.keys(serialData[key].data.at(0));
-              if (serialData[key].data.length === 1)
-                serialData[key].data[0].timestamp = Date.now();
-
               serialData[key].interval = parsedData[key]?.interval;
               serialData[key].data.push({
                 [key1]: parsedData[key]?.timestamp,
                 [key2]: parsedData[key]?.value,
               });
             } else {
-              serialData[key] = parsedData[key] || serialData[key];
+              serialData[key] =
+                parsedData[key] !== undefined
+                  ? parsedData[key]
+                  : serialData[key];
             }
           }
         }),
@@ -175,41 +176,10 @@ const mutations = (setState, getState) => {
     });
 
   return {
-    stateActions: {
-      updateConfig(props) {
-        setState(
-          produce((state) => {
-            for (const [key, value] of Object.entries(props)) {
-              state.config[key] = value;
-            }
-          }),
-        );
-        // alternatively you can use
-        // setState({ config: { ...getState().config, ...prop } });
-      },
-      updatePathPreview(pathPreview) {
-        setState({ pathPreview });
-      },
-      clearSerialDatum(...propsNames) {
-        setState(
-          produce((state) => {
-            for (const propName of propsNames) {
-              if (Object.hasOwn(getState().serialData, propName)) {
-                state.serialData[propName] = serialDataInitialState[propName];
-              }
-            }
-          }),
-        );
-      },
-      clearSerialOutput() {
-        setState({
-          serialOutput: [
-            { value: "Serial Output just got cleared!", timestamp: Date.now() },
-          ],
-        });
-      },
-    },
     serialActions: {
+      connect() {
+        socket.connect();
+      },
       disconnect() {
         socket.disconnect();
       },
@@ -274,13 +244,93 @@ const mutations = (setState, getState) => {
       writeToPort(command) {
         socket.emit("writeToPort", command);
       },
+      writeMockData() {
+        let timerId;
+        function toggleWritingMockData() {
+          if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
+            return false;
+          } else {
+            timerId = setInterval(
+              () =>
+                socket.emit(
+                  "writeToPort",
+                  JSON.stringify({
+                    processorTemp: {
+                      value: ~~(Math.random() * 33),
+                      interval: 1000,
+                    },
+                    brightness: {
+                      value: ~~(Math.random() * 200),
+                      interval: 1000,
+                    },
+                    humidity: {
+                      value: ~~(Math.random() * 40),
+                      interval: 1000,
+                    },
+                  }),
+                ),
+              1000,
+            );
+            return true;
+          }
+        }
+        return toggleWritingMockData;
+      },
+
       updateAuth() {
-        socket.auth = { sessionID: getState().sessionID, ...getState().config };
-        // AFTER UPDATING AUTH THE USER NEEDS TO CLOSE AND REPOPEN THE SERIAL PORT
+        socket.auth = {
+          DisplayName: getState().DisplayName,
+          ...getState().config,
+        };
+        // AFTER UPDATING AUTH THE USER NEEDS TO CLOSE AND REOPEN THE SERIAL PORT
         // AND YOU SHOULDN'T RELAY ON SOCKET.ID AS IT'S GOING TO CHANGE
       },
       restart() {
         socket.disconnect().connect();
+      },
+    },
+    stateActions: {
+      updateConfig(props) {
+        setState(
+          produce((state) => {
+            for (const [key, value] of Object.entries(props)) {
+              state.config[key] = value;
+            }
+          }),
+        );
+        if (!getState().isPortOpen) {
+          getState().serialActions.updateAuth();
+          getState().serialActions.restart();
+          getState().serialActions.openPort();
+        } else {
+          getState().serialActions.closePort();
+        }
+
+        // alternatively you can use
+        // setState({ config: { ...getState().config, ...prop } });
+      },
+      updatePathPreview(pathPreview) {
+        setState({ pathPreview });
+      },
+      clearSerialDatum(...propsNames) {
+        setState(
+          produce((state) => {
+            for (const propName of propsNames) {
+              if (Object.hasOwn(getState().serialData, propName)) {
+                state.serialData[propName] = serialDataInitialState[propName];
+              }
+            }
+          }),
+        );
+      },
+      clearSerialOutput() {
+        setState({
+          serialOutput: [
+            { value: "Serial Output just got cleared!", timestamp: Date.now() },
+          ],
+        });
       },
     },
   };

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import {
   Terminal,
   LineChart,
@@ -8,31 +8,45 @@ import {
   Humidity,
   SerialPortForm,
 } from "@/blocks";
-import { Footer, Notification } from "@/components";
-import { useStore } from "@/store/store";
-
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import Notification from "@/components/Notification";
+import { useStore } from "@/store/Serialstore";
+import { useUserStore } from "@/store/UserStore";
 const App = () => {
   const isWsConnected = useStore((store) => store.isWsConnected);
   const { disconnect, closePort } = useStore((store) => store.serialActions);
+  const Theme = useUserStore((store) => store.Theme);
+  const isLoggedIn = useUserStore((store) => store.isLoggedIn);
 
+  useLayoutEffect(() => {
+    const documentClassList = document.documentElement.classList;
+    if (Theme === "dark") {
+      if (!documentClassList.contains("dark")) documentClassList.add("dark");
+    } else {
+      if (documentClassList.contains("dark")) documentClassList.remove("dark");
+    }
+  }, [Theme]);
   // cleanup for when the component unmounts/page closes or refreshes
   useEffect(() => {
-    const cleanup = async () => {
+    const cleanup = () => {
       if (isWsConnected) {
         //TODO: Disconnect event listeners
         closePort();
         disconnect();
       }
     };
+
     window.addEventListener("beforeunload", cleanup);
     return () => {
       window.removeEventListener("beforeunload", cleanup);
     };
-  }, [isWsConnected, disconnect, closePort]);
+  }, [isWsConnected]);
 
   return (
-    <>
-      <div className="mx-auto grid max-w-7xl grid-cols-12 grid-rows-[min_content_1fr] gap-4">
+    <div className="container flex flex-col gap-y-8 rounded-lg border border-border p-0">
+      <Header />
+      <main className="container my-auto grid grid-cols-12 grid-rows-[min_content_1fr] gap-6">
         <SerialPortForm />
         <Terminal />
         <LineChart />
@@ -41,10 +55,9 @@ const App = () => {
         <LED />
         <Humidity />
         <Footer />
-      </div>
+      </main>
       <Notification />
-    </>
+    </div>
   );
 };
 export default App;
-// feat: empty func, data Status & debounce rgb color chng

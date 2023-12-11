@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-import tailwindAnimate from "tailwindcss-animate";
-import tailwindScrollbar from "tailwind-scrollbar";
-import { fontFamily } from "tailwindcss/defaultTheme";
+import tailwindAnimate from "tailwindcss-animate"
+import tailwindScrollbar from "tailwind-scrollbar"
+import { fontFamily } from "tailwindcss/defaultTheme"
 
 export default {
   darkMode: ["class"],
@@ -37,6 +37,10 @@ export default {
           DEFAULT: "hsl(var(--accent) / <alpha-value>)",
           foreground: "hsl(var(--accent-foreground) / <alpha-value>)",
         },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive) / <alpha-value>)",
+          foreground: "hsl(var(--destructive-foreground) / <alpha-value>)",
+        },
         popover: {
           DEFAULT: "hsl(var(--popover) / <alpha-value>)",
           foreground: "hsl(var(--popover-foreground) / <alpha-value>)",
@@ -56,6 +60,7 @@ export default {
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
         mono: ["var(--font-mono)", ...fontFamily.mono],
+        ligo: ["Ligo", ...fontFamily.mono],
       },
       keyframes: {
         "accordion-down": {
@@ -76,4 +81,4 @@ export default {
     },
   },
   plugins: [tailwindAnimate, tailwindScrollbar],
-};
+}

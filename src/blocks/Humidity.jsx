@@ -1,8 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Droplets } from "lucide-react";
 import Status from "@/components/ui/Status";
-import { InfoTooltip } from "@/components/ui/InfoTooltip";
-import { useStore } from "@/store/store";
+import { useStore } from "@/store/Serialstore";
 const Humidity = () => {
   const { value, timestamp, interval } = useStore(
     (store) => store.serialData.humidity,
@@ -12,7 +11,11 @@ const Humidity = () => {
     <Card className="col-span-3 row-span-2 min-h-[10rem]">
       <CardHeader className="p-4 pb-0">
         <CardTitle className="flex items-center gap-1">
-          <Droplets className="inline h-6 w-6" /> Humidity
+          <Droplets className="inline h-6 w-6" />
+          <div>
+            Humidity
+            <p className="text-xs font-normal text-primary/90">DHT11</p>
+          </div>
         </CardTitle>
         <div className="flex flex-row items-center gap-2">
           <Status
@@ -21,10 +24,6 @@ const Humidity = () => {
             interval={interval}
             isPortOpen={isPortOpen}
           />
-          <InfoTooltip>
-            requires DHT-11 sensor, <br /> make sure to use{interval}
-            <code>"Temperature"</code> in your JSON to get activated
-          </InfoTooltip>
         </div>
       </CardHeader>
       <CardContent className="">
