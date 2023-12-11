@@ -17,7 +17,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Spinner from "@/assets/icons/spinner.svg?react";
 import LoveItEmoji from "@/assets/emojis/LoveItEmoji.svg?react";
-import ItsOkayEmoji from "@/assets/emojis/itsOkayEmoji.svg?react";
+import ItsOkayEmoji from "@/assets/emojis/ItsOkayEmoji.svg?react";
 import MehEmoji from "@/assets/emojis/MehEmoji.svg?react";
 import NotGreatEmoji from "@/assets/emojis/NotGreatEmoji.svg?react";
 import { useStore } from "@/store/Serialstore";
