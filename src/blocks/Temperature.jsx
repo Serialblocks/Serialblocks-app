@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 let LED = () => {
   return (
     <Card className="relative col-span-3 row-span-2 ">
-      {/* adding before:absolute and changing opacity of the before pseudo element will add grain effect to the background of the card */}
-      <CardContent className="before:inset-0 before:rounded-lg before:bg-[url(@/assets/noise.svg)] before:opacity-0">
+      <CardContent>
         <CardTitle className="flex items-center gap-1">
           <Sun className="inline h-6 w-6" />
           <div>
