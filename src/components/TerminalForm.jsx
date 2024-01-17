@@ -16,8 +16,6 @@ const TerminalForm = () => {
   });
 
   const handleWritingOnPort = ({ command }) => {
-    console.log(command);
-    writeToPort(command);
     form.setValue("command", "");
   };
 

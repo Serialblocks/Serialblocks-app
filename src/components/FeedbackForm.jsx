@@ -1,7 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,44 +20,10 @@ import NotGreatEmoji from "@/assets/emojis/NotGreatEmoji.svg?react";
 import { useStore } from "@/store/Serialstore";
 import { useUserStore } from "@/store/UserStore";
 
-const FeedbackFormSchema = z.object({
-  First_Name: z
-    .string()
-    .min(2, {
-      message: "DisplayName must be at least 2 characters.",
-    })
-    .max(30, {
-      message: "DisplayName must not be longer than 30 characters.",
-    })
-    .optional(),
-  Last_Name: z
-    .string()
-    .min(2, {
-      message: "DisplayName must be at least 2 characters.",
-    })
-    .max(30, {
-      message: "DisplayName must not be longer than 30 characters.",
-    })
-    .optional(),
-  Email: z
-    .string({
-      message: "Please select an Email to display.",
-    })
-    .email()
-    .optional(),
-  Feedback: z.string({
-    required_error: "Please write a feedback.",
-  }),
-  Rate: z.enum(["Love It", "It's Okay", "Meh", "Hate It"], {
-    required_error: "Please select an emoji.",
-  }),
-});
-
 const FeedbackForm = ({ setStatus, isLoading, SUBMIT_STATUS }) => {
   const { First_Name, Last_Name, Email } = useUserStore();
 
   const form = useForm({
-    resolver: zodResolver(FeedbackFormSchema),
     mode: "onChange",
     defaultValues: {
       First_Name,
@@ -100,20 +63,6 @@ const FeedbackForm = ({ setStatus, isLoading, SUBMIT_STATUS }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} id="FeedbackForm">
-        <FormField
-          control={form.control}
-          name="DisplayName"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormControl>
-                  <Input type="hidden" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
         <FormField
           control={form.control}
           name="Email"

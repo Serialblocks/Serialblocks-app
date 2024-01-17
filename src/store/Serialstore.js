@@ -3,7 +3,6 @@ import { combine } from "zustand/middleware";
 import { produce } from "immer";
 import { socket, initialConfig } from "@/api/socket";
 import { useUserStore } from "@/store/UserStore";
-//  The initial state shapes what values we can have in our store.
 const serialDataInitialState = {
   processorTemp: { value: null, timestamp: null, interval: null },
   humidity: { value: null, timestamp: null, interval: null },
@@ -16,21 +15,24 @@ const initialDisplayName = useUserStore.getState().DisplayName;
 const initialState = {
   DisplayName: initialDisplayName,
   // usually it's false
-  isWsConnected: socket.connected,
+  isWsConnected: false,
+  ////////////////////////////////////// TODO: split into a slice
   isPortOpen: false,
-  isConnecting: false,
+  isPortOpening: false,
+  isPortClosing: false,
+
   toastContent: {
     title: "",
     description: "",
   },
   serialPorts: null,
+  /////////////////////////////////////
   serialOutput: [],
   serialData: serialDataInitialState,
-  config: initialConfig,
   pathPreview: "",
+  config: initialConfig,
 };
 // https://serialport.io/docs/api-bindings-cpp#list
-
 /*
  Here we have access to functions tha let us mutate or get data from our state.
  This is where the magic happens, we can fully hide
@@ -85,39 +87,41 @@ const mutations = (setState, getState) => {
 
   // this is enough to connect all our server events to our state management system!
   socket
-    .on("connect", () => {
+    .on("connect", () =>
       setState({
         isWsConnected: true,
-      });
-    })
-    .on("disconnect", () => {
+      }),
+    )
+    .on("disconnect", () =>
       setState({
         isWsConnected: false,
-      });
-    })
-    .on("portError", (err, path) => {
+      }),
+    )
+    .on("portError", (err, path) =>
       // errored but all of a sudden
       // aborted while reading from serialport most likely....
       setState({
         isPortOpen: false,
-        isConnecting: false,
+        isPortOpening: false,
+        isPortClosing: false,
         toastContent: {
           title: "Error",
           description: `there was a problem with ${path}: ${err}`,
         },
-      });
-    })
-    .on("suddenPortDisc", (err, path) => {
+      }),
+    )
+    .on("suddenPortDisc", (err, path) =>
       // closed but all of a sudden..
       setState({
         isPortOpen: false,
-        isConnecting: false,
+        isPortOpening: false,
+        isPortClosing: false,
         toastContent: {
           title: "Disconnected",
           description: `${path} was suddenly disconnected by YOU, ${err || ""}`,
         },
-      });
-    })
+      }),
+    )
     .on("notifyClients", ({ path, DisplayName, action, err }) => {
       let title, description;
       switch (action) {
@@ -140,17 +144,16 @@ const mutations = (setState, getState) => {
         toastContent: { title, description },
       });
     })
-    .on("rawData", (data) => {
+    .on("rawData", (data) =>
       setState((state) => ({
         serialOutput: [
           ...state.serialOutput,
           { value: data, timestamp: Date.now() },
         ],
-      }));
-    })
+      })),
+    )
     .on("parsedData", (JSONparsed) => {
       const parsedData = JSON.parse(JSONparsed);
-      console.log(parsedData);
       setState(
         produce(({ serialData }) => {
           for (const key of Object.keys(serialData)) {
@@ -185,10 +188,12 @@ const mutations = (setState, getState) => {
       },
       closePort() {
         // BROADCAST client disconnection
+        setState({ isPortClosing: true });
         socket.emit("closePort", (path) => {
           setState({
-            isConnecting: false,
             isPortOpen: false,
+            isPortOpening: false,
+            isPortClosing: false,
             toastContent: {
               title: "Closed",
               description: `${path} has been closed successfully by YOU`,
@@ -197,12 +202,13 @@ const mutations = (setState, getState) => {
         });
       },
       openPort() {
-        setState({ isConnecting: true });
+        setState({ isPortOpening: true });
         socket.emit("openPort", (errorMsg, path) => {
           if (errorMsg === null) {
             setState({
-              isConnecting: false,
               isPortOpen: true,
+              isPortOpening: false,
+              isPortClosing: false,
               toastContent: {
                 title: "Opened",
                 description: `${path} has been opened successfully by YOU`,
@@ -210,7 +216,8 @@ const mutations = (setState, getState) => {
             });
           } else {
             setState({
-              isConnecting: false,
+              isPortOpening: false,
+              isPortClosing: false,
               isPortOpen: false,
               toastContent: {
                 title: "Error",
@@ -231,7 +238,6 @@ const mutations = (setState, getState) => {
             title = `No ports connected at the moment.`;
             description = "Don't fret!, give it another shot";
           }
-
           setState({
             serialPorts,
             toastContent: {
@@ -281,8 +287,8 @@ const mutations = (setState, getState) => {
 
       updateAuth() {
         socket.auth = {
-          DisplayName: getState().DisplayName,
           ...getState().config,
+          DisplayName: getState().DisplayName,
         };
         // AFTER UPDATING AUTH THE USER NEEDS TO CLOSE AND REOPEN THE SERIAL PORT
         // AND YOU SHOULDN'T RELAY ON SOCKET.ID AS IT'S GOING TO CHANGE

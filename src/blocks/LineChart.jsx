@@ -14,6 +14,36 @@ const dateFormatter = new Intl.DateTimeFormat("en", {
   second: "2-digit",
   fractionalSecondDigits: 2,
 });
+const CustomToolTip = ({
+  series,
+  seriesIndex,
+  dataPointIndex,
+  w: {
+    globals: { initialSeries },
+  },
+}) => `
+<div class="flex flex-col rounded-lg border bg-background">
+<div class="flex flex-row justify-between p-1 gap-4 items-baseline">
+<span class="text-xs">${dateFormatter.format(
+  initialSeries[seriesIndex].data[dataPointIndex].x,
+)}
+</span>
+<span class="text-xs">${intlFormatDistance(
+  initialSeries[seriesIndex].data[dataPointIndex].x,
+  Date.now(),
+)}</span>
+</div>
+<hr />
+<div class="p-2 flex flex-row items-center justify-between">
+<span class="flex gap-1 items-center capitalize leading-snug text-sm"> <span class="h-[0.625rem] w-[0.625rem] shadow-xl bg-primary rounded-full outline outline-1 outline-primary-foreground" ></span>${
+  initialSeries[seriesIndex].label
+}</span>
+<span class="font-bold text-foreground font-mono">
+${series[seriesIndex][dataPointIndex]}
+</span>
+</div>
+</div>`;
+
 const LineChart = () => {
   const serialDatumName = "brightness";
   const { interval, data } = useStore(
@@ -114,35 +144,7 @@ const LineChart = () => {
       },
       tooltip: {
         followCursor: false,
-        custom: ({
-          series,
-          seriesIndex,
-          dataPointIndex,
-          w: {
-            globals: { initialSeries },
-          },
-        }) => `
-        <div class="flex flex-col rounded-lg border bg-background">
-   <div class="flex flex-row justify-between p-1 gap-4 items-baseline">
-      <span class="text-xs">${dateFormatter.format(
-        initialSeries[seriesIndex].data[dataPointIndex].x,
-      )}
-      </span>
-      <span class="text-xs">${intlFormatDistance(
-        initialSeries[seriesIndex].data[dataPointIndex].x,
-        Date.now(),
-      )}</span>
-   </div>
-   <hr />
-   <div class="p-2 flex flex-row items-center justify-between">
-     <span class="flex gap-1 items-center capitalize leading-snug text-sm"> <span class="h-[0.625rem] w-[0.625rem] shadow-xl bg-primary rounded-full outline outline-1 outline-primary-foreground" ></span>${
-       initialSeries[seriesIndex].label
-     }</span>
-      <span class="font-bold text-foreground font-mono">
-      ${series[seriesIndex][dataPointIndex]}
-      </span>
-   </div>
-</div>`,
+        custom: CustomToolTip,
       },
       stroke: {
         curve: "smooth",
@@ -206,7 +208,7 @@ const LineChart = () => {
 
         <Chart type="line" options={options} series={series} />
         <Slider
-          defaultValue={[5]}
+          defaultValue={[3]}
           min={3}
           max={100}
           step={1}

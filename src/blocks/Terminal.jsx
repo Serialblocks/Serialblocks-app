@@ -1,5 +1,4 @@
 import {
-  ChevronRight,
   ChevronsDown,
   Clock,
   ListX,
@@ -9,7 +8,6 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useStore } from "@/store/Serialstore";
 import { Toggle } from "@/components/ui/toggle";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -103,7 +101,7 @@ const Terminal = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                disabled={!isPortOpen}
+                disabled={isPortOpen}
                 className="hover:bg-transparent"
                 asChild
               >

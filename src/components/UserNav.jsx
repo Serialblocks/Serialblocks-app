@@ -14,7 +14,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -22,13 +21,6 @@ import { ChevronDown } from "lucide-react";
 import EditUserProfile from "@/components/EditUserProfile";
 import { useUserStore } from "@/store/UserStore";
 import DeleteDataAlert from "@/components/DeleteDataAlert";
-
-const userInfo = {
-  firstName: "ahmad",
-  lastName: "ibrahim",
-  email: "ahmadghoniem@outlook.com",
-  remoteUrl: "serialblocks.loc.",
-};
 
 const UserNav = () => {
   const { DisplayName, Theme, Email, updateUserData } = useUserStore(

@@ -1,5 +1,5 @@
-import { io } from "socket.io-client";
 import { useUserStore } from "@/store/UserStore";
+import { io } from "socket.io-client";
 
 // by default HTTP long-polling connection is established first, and then an upgrade to WebSocket is attempted.
 // this makes sure that websocket connection is the default and falls back to HTTP long-polling.
@@ -11,6 +11,8 @@ import { useUserStore } from "@/store/UserStore";
 
 // const url =
 //   process.env.NODE_ENV === "production" ? undefined : "http://192.168.1.180:8008";
+const initialDisplayName = useUserStore.getState().displayName;
+const initialRemoteUrl = useUserStore.getState().RemoteUrl;
 export const initialConfig = {
   path: "path/to/port",
   baudRate: 0,
@@ -26,11 +28,9 @@ export const initialConfig = {
   xany: false,
   hupcl: true,
 };
-const DisplayName = useUserStore.getState().DisplayName;
-const initialAuth = { DisplayName, ...initialConfig };
 
-const remoteUrl = useUserStore.getState().RemoteUrl;
-export const socket = io(remoteUrl, {
+const initialAuth = { displayName: initialDisplayName || "", ...initialConfig };
+export const socket = io(initialRemoteUrl || "", {
   transports: ["websocket", "polling"],
   autoConnect: false,
   reconnectionAttempts: 5,

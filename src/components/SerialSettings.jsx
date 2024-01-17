@@ -11,7 +11,7 @@ const SerialSettings = ({ children }) => {
   const isLoggedIn = useUserStore((store) => store.isLoggedIn);
   return (
     <Popover>
-      <PopoverTrigger disabled={!isPortOpen && isLoggedIn}>
+      <PopoverTrigger disabled={isPortOpen && isLoggedIn}>
         {children}
       </PopoverTrigger>
       <PopoverContent side="bottom" align="end" className="w-[19rem] p-1.5">

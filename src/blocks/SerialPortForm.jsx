@@ -46,7 +46,8 @@ const SerialPortForm = () => {
   const [baudRateOpen, setBaudRateOpen] = useState(false);
 
   const isPortOpen = useStore((store) => store.isPortOpen);
-  const isConnecting = useStore((store) => store.isConnecting);
+  const isPortOpening = useStore((store) => store.isPortOpening);
+  const isPortClosing = useStore((store) => store.isPortClosing);
   const serialPorts = useStore((store) => store.serialPorts);
 
   const { closePort, openPort, listPorts, updateAuth, restart } = useStore(
@@ -62,6 +63,7 @@ const SerialPortForm = () => {
     },
   });
   function onSubmit({ path, baudRate }) {
+    /// used to have close restart update open
     updateConfig({ path, baudRate });
   }
 
@@ -262,10 +264,16 @@ const SerialPortForm = () => {
               className="col-span-5"
               type="submit"
             >
-              {isConnecting && (
+              {(isPortOpening || isPortClosing) && (
                 <Spinner className="mr-2 h-4 w-4 animate-spin [&>circle]:opacity-25 [&>path]:opacity-75 " />
               )}
-              {isPortOpen ? "Disconnect" : "Connect"}
+              {!isPortClosing && !isPortOpening
+                ? isPortOpen
+                  ? "Disconnect"
+                  : "Connect"
+                : isPortClosing
+                ? "Disconnecting"
+                : isPortOpening && "Connecting"}
             </Button>
           </form>
         </Form>
