@@ -10,10 +10,7 @@ const serialDataInitialState = {
   brightness: { interval: null, data: [{ x: null, y: null }] },
 };
 
-const initialDisplayName = useUserStore.getState().DisplayName;
-
 const initialState = {
-  DisplayName: initialDisplayName,
   // usually it's false
   isWsConnected: false,
   ////////////////////////////////////// TODO: split into a slice
@@ -288,7 +285,7 @@ const mutations = (setState, getState) => {
       updateAuth() {
         socket.auth = {
           ...getState().config,
-          DisplayName: getState().DisplayName,
+          DisplayName: useUserStore.getState().DisplayName,
         };
         // AFTER UPDATING AUTH THE USER NEEDS TO CLOSE AND REOPEN THE SERIAL PORT
         // AND YOU SHOULDN'T RELAY ON SOCKET.ID AS IT'S GOING TO CHANGE

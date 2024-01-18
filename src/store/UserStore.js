@@ -21,10 +21,13 @@ const mutations = (setState, getState) => {
     },
     updateUserData(UserData) {
       socket.io.uri = UserData.RemoteUrl;
-      // TODO: fix DisplayName not changing across other connected users to the same namespace
-      socket.auth.DisplayName = UserData.DisplayName;
       if (socket.connected) {
-        socket.disconnect().connect();
+        socket.disconnect();
+        socket.auth = {
+          ...socket.auth,
+          DisplayName: UserData.DisplayName,
+        };
+        socket.connect();
       } else {
         socket.connect();
       }
