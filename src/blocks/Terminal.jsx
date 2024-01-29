@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useStore } from "@/store/Serialstore";
+import { useSerialStore } from "@/store/Serialstore";
 import { Toggle } from "@/components/ui/toggle";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { dateFormatter } from "@/lib/utils";
@@ -21,15 +21,15 @@ const DateNow = Date.now();
 const Terminal = () => {
   const [timestamped, setTimeStamped] = useState(false);
   const DisplayName = useUserStore((store) => store.DisplayName);
-  const serialOutput = useStore((store) => store.serialOutput);
-  const isPortOpen = useStore((store) => store.isPortOpen);
-  const { path } = useStore((store) => store.config);
-  const pathPreview = useStore((store) => store.pathPreview);
-  const serialPorts = useStore((store) => store.serialPorts);
-  const clearSerialOutput = useStore(
+  const serialOutput = useSerialStore((store) => store.serialOutput);
+  const isPortOpen = useSerialStore((store) => store.isPortOpen);
+  const { path } = useUserStore((store) => store.portConfig);
+  const pathPreview = useSerialStore((store) => store.pathPreview);
+  const serialPorts = useSerialStore((store) => store.serialPorts);
+  const clearSerialOutput = useSerialStore(
     (store) => store.stateActions.clearSerialOutput,
   );
-  const { writeMockData } = useStore((store) => store.serialActions);
+  const { writeMockData } = useSerialStore((store) => store.serialActions);
 
   const [isWritingMockData, setIsWritingMockData] = useState(false);
   const toggleWritingMockData = useMemo(() => writeMockData(), []);

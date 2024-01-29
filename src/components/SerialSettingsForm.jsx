@@ -9,14 +9,13 @@ import {
 } from "@/components/ui/form";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useStore } from "@/store/Serialstore";
 import { useEffect } from "react";
+import { useUserStore } from "@/store/UserStore";
 
 const SerialSettingsForm = () => {
-  const config = useStore((store) => store.config);
+  const { updateConfig, portConfig } = useUserStore();
   const { dataBits, stopBits, EOL, delimiter, parity, xon, xoff, rtscts } =
-    config;
-
+    portConfig;
   const form = useForm({
     mode: "onChange",
     defaultValues: {
@@ -25,7 +24,7 @@ const SerialSettingsForm = () => {
       EOL,
       delimiter,
       parity,
-      flowControl: xon && xoff ? "XON/XOFF" : rtscts ? "RTS/CTS" : "",
+      flowControl: xon && xoff ? "XON/XOFF" : rtscts ? "RTS/CTS" : "none",
     },
   });
 
@@ -51,8 +50,7 @@ const SerialSettingsForm = () => {
         data.rtscts = false;
     }
     delete data.flowControl;
-    useStore.setState({ config: { config, ...data } });
-    // setOpen(false);
+    updateConfig(data);
   }
 
   useEffect(() => {
@@ -65,7 +63,6 @@ const SerialSettingsForm = () => {
     <Form {...form}>
       <form
         noValidate
-        // onSubmit={(e) => e.preventDefault()}
         id="SerialSettingsForm"
         className="flex flex-col gap-y-2"
       >
@@ -414,7 +411,7 @@ const SerialSettingsForm = () => {
                 <FormItem>
                   <FormLabel className="gap-p h-auto [&:has([data-state=checked])>div]:bg-accent [&:has([data-state=checked])>div]:text-accent-foreground ">
                     <FormControl>
-                      <RadioGroupItem value="" className="sr-only" />
+                      <RadioGroupItem value="none" className="sr-only" />
                     </FormControl>
                     <Button
                       size="xs"

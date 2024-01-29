@@ -1,13 +1,13 @@
-import { useStore } from "@/store/Serialstore";
+import { useSerialStore } from "@/store/Serialstore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Cpu } from "lucide-react";
 import Status from "@/components/ui/Status";
 
 const Processor = () => {
-  const { value, interval, timestamp } = useStore(
+  const { value, interval, timestamp } = useSerialStore(
     (store) => store.serialData.processorTemp,
   );
-  const isPortOpen = useStore((store) => store.isPortOpen);
+  const isPortOpen = useSerialStore((store) => store.isPortOpen);
   return (
     <Card className="col-span-3 row-span-2 ">
       <CardHeader className="p-4 pb-0">

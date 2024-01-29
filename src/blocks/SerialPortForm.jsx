@@ -24,8 +24,10 @@ import {
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { useStore } from "@/store/Serialstore";
+import { useSerialStore } from "@/store/Serialstore";
 import Spinner from "@/assets/icons/spinner.svg?react";
+import { useUserStore } from "@/store/UserStore";
+import { useSocketStore } from "@/store/SocketStore";
 
 const baudRates = [
   { value: 300, label: "300" },
@@ -44,18 +46,14 @@ const baudRates = [
 const SerialPortForm = () => {
   const [pathOpen, setPathOpen] = useState(false);
   const [baudRateOpen, setBaudRateOpen] = useState(false);
-
-  const isPortOpen = useStore((store) => store.isPortOpen);
-  const isPortOpening = useStore((store) => store.isPortOpening);
-  const isPortClosing = useStore((store) => store.isPortClosing);
-  const serialPorts = useStore((store) => store.serialPorts);
-
-  const { closePort, openPort, listPorts, updateAuth, restart } = useStore(
+  const socket = useSocketStore((store) => store.socket);
+  const { isPortOpen, isPortOpening, isPortClosing, serialPorts } =
+    useSerialStore();
+  const { updateConfig, updateAuth, handleConnection } = useUserStore();
+  const { openPort, listPorts, closePort } = useSerialStore(
     (store) => store.serialActions,
   );
-  const { updateConfig, updatePathPreview } = useStore(
-    (store) => store.stateActions,
-  );
+  const { updatePathPreview } = useSerialStore((store) => store.stateActions);
   const form = useForm({
     defaultValues: {
       path: "",
@@ -63,8 +61,16 @@ const SerialPortForm = () => {
     },
   });
   function onSubmit({ path, baudRate }) {
-    /// used to have close restart update open
+    if (!socket.connected) return;
+
     updateConfig({ path, baudRate });
+    updateAuth();
+    handleConnection({ closeOpenedPort: true, action: "RESTART" });
+    if (!isPortOpen) {
+      openPort();
+    } else {
+      closePort();
+    }
   }
 
   return (
@@ -269,11 +275,11 @@ const SerialPortForm = () => {
               )}
               {!isPortClosing && !isPortOpening
                 ? isPortOpen
-                  ? "Disconnect"
-                  : "Connect"
+                  ? "Close"
+                  : "Open"
                 : isPortClosing
-                ? "Disconnecting"
-                : isPortOpening && "Connecting"}
+                ? "Closing"
+                : isPortOpening && "Opening"}
             </Button>
           </form>
         </Form>

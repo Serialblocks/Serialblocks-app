@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ListX, Sun } from "lucide-react";
 import { intlFormatDistance } from "date-fns";
 import Status from "@/components/ui/Status";
-import { useStore } from "@/store/Serialstore";
+import { useSerialStore } from "@/store/Serialstore";
 import { useMemo, useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import ButtonTooltip from "@/components/ui/ButtonTooltip";
@@ -46,14 +46,14 @@ ${series[seriesIndex][dataPointIndex]}
 
 const LineChart = () => {
   const serialDatumName = "brightness";
-  const { interval, data } = useStore(
+  const { interval, data } = useSerialStore(
     (store) => store.serialData[serialDatumName],
   );
   const { x: timestamp = null, y: value = null } = data.slice(-1).at(0);
-  const clearSerialDatum = useStore(
+  const clearSerialDatum = useSerialStore(
     (store) => store.stateActions.clearSerialDatum,
   );
-  const isPortOpen = useStore((store) => store.isPortOpen);
+  const isPortOpen = useSerialStore((store) => store.isPortOpen);
   const [num, setNum] = useState(10);
   const options = useMemo(
     () => ({

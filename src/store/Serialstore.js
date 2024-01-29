@@ -1,124 +1,61 @@
 import { create } from "zustand";
 import { combine } from "zustand/middleware";
 import { produce } from "immer";
-import { socket, initialConfig } from "@/api/socket";
 import { useUserStore } from "@/store/UserStore";
-const serialDataInitialState = {
+import { useSocketStore } from "@/store/SocketStore";
+const initialSerialData = {
   processorTemp: { value: null, timestamp: null, interval: null },
   humidity: { value: null, timestamp: null, interval: null },
   LED: { value: null, timestamp: null, interval: null },
   brightness: { interval: null, data: [{ x: null, y: null }] },
 };
-
 const initialState = {
-  // usually it's false
-  isWsConnected: false,
-  ////////////////////////////////////// TODO: split into a slice
   isPortOpen: false,
   isPortOpening: false,
   isPortClosing: false,
-
-  toastContent: {
-    title: "",
-    description: "",
-  },
   serialPorts: null,
-  /////////////////////////////////////
   serialOutput: [],
-  serialData: serialDataInitialState,
+  serialData: initialSerialData,
   pathPreview: "",
-  config: initialConfig,
 };
-// https://serialport.io/docs/api-bindings-cpp#list
 /*
  Here we have access to functions tha let us mutate or get data from our state.
  This is where the magic happens, we can fully hide
  the WebSocket implementation here and then use our store anywhere in our app!
  */
+const pushNotification = useUserStore.getState().pushNotification;
+const socket = useSocketStore.getState().socket;
+const DisplayName = useUserStore.getState().DisplayName;
+
 const mutations = (setState, getState) => {
-  // the reason why we didn't chain those events together because they don't return Socket Object instead they return Manager Object.
-  // handles connection problems
-  //Fired upon a successful reconnection.
-  socket.io.on("reconnect", (attempt) => {
-    const ordinalSuffix =
-      attempt === 1
-        ? "st"
-        : attempt === 2
-        ? "nd"
-        : attempt === 3
-        ? "rd"
-        : attempt > 3 && "th";
-    setState({
-      isWsConnected: true,
-      toastContent: {
-        title: "Reconnected",
-        description: `reconnected on the ${
-          attempt.toString() + ordinalSuffix
-        } attempt,
-          we were so worried!`,
-      },
-    });
-  }),
-    // Fired upon an attempt to reconnect.
-    socket.io.on("reconnect_attempt", (attempt) => {
-      const reconnectionAttempts = socket.io.reconnectionAttempts();
-      setState({
-        isWsConnected: false,
-        toastContent: {
-          title: "Reconnecting",
-          description: `Connection failed, trying to reconnect.. (${attempt}/${reconnectionAttempts})`,
-        },
-      });
-    });
-
-  // Fired when couldn't reconnect within reconnectionAttempts.
-  socket.io.on("reconnect_failed", () => {
-    setState({
-      isWsConnected: false,
-      toastContent: {
-        title: "Failed",
-        description: `Connection failed, Please try again later.`,
-      },
-    });
-  });
-
-  // this is enough to connect all our server events to our state management system!
   socket
-    .on("connect", () =>
-      setState({
-        isWsConnected: true,
-      }),
-    )
-    .on("disconnect", () =>
-      setState({
-        isWsConnected: false,
-      }),
-    )
-    .on("portError", (err, path) =>
+    .on("portError", (err, path) => {
       // errored but all of a sudden
       // aborted while reading from serialport most likely....
       setState({
         isPortOpen: false,
         isPortOpening: false,
         isPortClosing: false,
-        toastContent: {
-          title: "Error",
-          description: `there was a problem with ${path}: ${err}`,
-        },
-      }),
-    )
-    .on("suddenPortDisc", (err, path) =>
+      });
+      pushNotification({
+        title: "Error",
+        description: `there was a problem with ${path}: ${err}`,
+      });
+    })
+    .on("suddenPortDisc", (err, path) => {
       // closed but all of a sudden..
       setState({
         isPortOpen: false,
         isPortOpening: false,
         isPortClosing: false,
-        toastContent: {
-          title: "Disconnected",
-          description: `${path} was suddenly disconnected by YOU, ${err || ""}`,
-        },
-      }),
-    )
+      });
+      pushNotification({
+        title: "Disconnected",
+        description: `${path} was suddenly disconnected by ${DisplayName} (you), ${
+          err || ""
+        }`,
+      });
+    })
     .on("notifyClients", ({ path, DisplayName, action, err }) => {
       let title, description;
       switch (action) {
@@ -137,9 +74,7 @@ const mutations = (setState, getState) => {
           }`;
           break;
       }
-      setState({
-        toastContent: { title, description },
-      });
+      pushNotification({ title, description });
     })
     .on("rawData", (data) =>
       setState((state) => ({
@@ -177,75 +112,63 @@ const mutations = (setState, getState) => {
 
   return {
     serialActions: {
-      connect() {
-        socket.connect();
+      async listPorts() {
+        let title, description;
+        const serialPorts = await socket.emitWithAck("listPorts");
+        if (serialPorts.length > 0) {
+          title = `Found ${serialPorts.length} port(s) available.`;
+          description = "select the one you want from the dropdown!";
+        } else {
+          title = `No ports connected at the moment.`;
+          description = "Don't fret!, give it another shot";
+        }
+        setState({
+          serialPorts,
+        });
+        pushNotification({ title, description });
       },
-      disconnect() {
-        socket.disconnect();
-      },
-      closePort() {
-        // BROADCAST client disconnection
-        setState({ isPortClosing: true });
-        socket.emit("closePort", (path) => {
+      async openPort() {
+        setState({ isPortOpening: true });
+        const { errorMsg, path } = await socket.emitWithAck("openPort");
+        if (errorMsg === null) {
           setState({
-            isPortOpen: false,
+            isPortOpen: true,
             isPortOpening: false,
             isPortClosing: false,
-            toastContent: {
-              title: "Closed",
-              description: `${path} has been closed successfully by YOU`,
-            },
           });
-        });
-      },
-      openPort() {
-        setState({ isPortOpening: true });
-        socket.emit("openPort", (errorMsg, path) => {
-          if (errorMsg === null) {
-            setState({
-              isPortOpen: true,
-              isPortOpening: false,
-              isPortClosing: false,
-              toastContent: {
-                title: "Opened",
-                description: `${path} has been opened successfully by YOU`,
-              },
-            });
-          } else {
-            setState({
-              isPortOpening: false,
-              isPortClosing: false,
-              isPortOpen: false,
-              toastContent: {
-                title: "Error",
-                description: `${errorMsg}`,
-              },
-            });
-          }
-        });
-      },
-      listPorts() {
-        socket.emit("listPorts", (serialPorts) => {
-          let title, description;
-
-          if (serialPorts.length > 0) {
-            title = `Found ${serialPorts.length} port(s) available.`;
-            description = "select the one you want from the dropdown!";
-          } else {
-            title = `No ports connected at the moment.`;
-            description = "Don't fret!, give it another shot";
-          }
+          pushNotification({
+            title: "Opened",
+            description: `${path} has been opened successfully by ${DisplayName} (you)`,
+          });
+        } else {
           setState({
-            serialPorts,
-            toastContent: {
-              title,
-              description,
-            },
+            isPortOpening: false,
+            isPortClosing: false,
+            isPortOpen: false,
           });
-        });
+          pushNotification({
+            title: "Error",
+            description: `${errorMsg}`,
+          });
+        }
       },
       writeToPort(command) {
         socket.emit("writeToPort", command);
+      },
+      async closePort() {
+        setState({ isPortClosing: true });
+        // emitWithAck Promised-based version of emitting and expecting an acknowledgement from the server
+        // as it's needed to await the port disconnection then close socket connection.
+        const path = await socket.emitWithAck("closePort");
+        setState({
+          isPortOpen: false,
+          isPortOpening: false,
+          isPortClosing: false,
+        });
+        pushNotification({
+          title: "Closed",
+          description: `${path} has been closed successfully by ${DisplayName} (you)`,
+        });
       },
       writeMockData() {
         let timerId;
@@ -281,52 +204,10 @@ const mutations = (setState, getState) => {
         }
         return toggleWritingMockData;
       },
-
-      updateAuth() {
-        socket.auth = {
-          ...getState().config,
-          DisplayName: useUserStore.getState().DisplayName,
-        };
-        // AFTER UPDATING AUTH THE USER NEEDS TO CLOSE AND REOPEN THE SERIAL PORT
-        // AND YOU SHOULDN'T RELAY ON SOCKET.ID AS IT'S GOING TO CHANGE
-      },
-      restart() {
-        socket.disconnect().connect();
-      },
     },
     stateActions: {
-      updateConfig(props) {
-        setState(
-          produce((state) => {
-            for (const [key, value] of Object.entries(props)) {
-              state.config[key] = value;
-            }
-          }),
-        );
-        if (!getState().isPortOpen) {
-          getState().serialActions.updateAuth();
-          getState().serialActions.restart();
-          getState().serialActions.openPort();
-        } else {
-          getState().serialActions.closePort();
-        }
-
-        // alternatively you can use
-        // setState({ config: { ...getState().config, ...prop } });
-      },
       updatePathPreview(pathPreview) {
         setState({ pathPreview });
-      },
-      clearSerialDatum(...propsNames) {
-        setState(
-          produce((state) => {
-            for (const propName of propsNames) {
-              if (Object.hasOwn(getState().serialData, propName)) {
-                state.serialData[propName] = serialDataInitialState[propName];
-              }
-            }
-          }),
-        );
       },
       clearSerialOutput() {
         setState({
@@ -335,11 +216,22 @@ const mutations = (setState, getState) => {
           ],
         });
       },
+      clearSerialDatum(...propsNames) {
+        setState(
+          produce((state) => {
+            for (const propName of propsNames) {
+              if (Object.hasOwn(getState().serialData, propName)) {
+                state.serialData[propName] = initialSerialData[propName];
+              }
+            }
+          }),
+        );
+      },
     },
   };
 };
 
-export const useStore = create(combine(initialState, mutations));
+export const useSerialStore = create(combine(initialState, mutations));
 
 // NOTES
 

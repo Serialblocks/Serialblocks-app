@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
-import { useStore } from "@/store/Serialstore";
+import { useSerialStore } from "@/store/Serialstore";
 import { ChevronRight } from "lucide-react";
 
 const TerminalForm = () => {
-  const { writeToPort } = useStore((store) => store.serialActions);
-  const isPortOpen = useStore((store) => store.isPortOpen);
+  const { writeToPort } = useSerialStore((store) => store.serialActions);
+  const isPortOpen = useSerialStore((store) => store.isPortOpen);
 
   const form = useForm({
     mode: "onChange",
@@ -17,6 +17,7 @@ const TerminalForm = () => {
 
   const handleWritingOnPort = ({ command }) => {
     form.setValue("command", "");
+    writeToPort(command);
   };
 
   return (

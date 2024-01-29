@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Palette } from "lucide-react";
 import { RgbColorPicker } from "react-colorful";
 import { useEffect, useMemo, useState } from "react";
-import { useStore } from "@/store/Serialstore";
+import { useSerialStore } from "@/store/Serialstore";
 import { debounce } from "lodash";
 
 function formatRGB({ r, g, b }) {
@@ -18,8 +18,8 @@ function formatRGB({ r, g, b }) {
   return `RGB_${paddedR}_${paddedG}_${paddedB}`;
 }
 const RGB = () => {
-  const { writeToPort } = useStore((store) => store.serialActions);
-  const isPortOpen = useStore((store) => store.isPortOpen);
+  const { writeToPort } = useSerialStore((store) => store.serialActions);
+  const isPortOpen = useSerialStore((store) => store.isPortOpen);
   const debouncedColorChangeHandler = useMemo(
     () => debounce((color) => isPortOpen && writeToPort(formatRGB(color)), 10),
     [isPortOpen],

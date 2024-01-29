@@ -4,10 +4,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import SerialSettingsForm from "@/components/SerialSettingsForm";
-import { useStore } from "@/store/Serialstore";
+import { useSerialStore } from "@/store/Serialstore";
 import { useUserStore } from "@/store/UserStore";
 const SerialSettings = ({ children }) => {
-  const isPortOpen = useStore((store) => store.isPortOpen);
+  const isPortOpen = useSerialStore((store) => store.isPortOpen);
   const isLoggedIn = useUserStore((store) => store.isLoggedIn);
   return (
     <Popover>

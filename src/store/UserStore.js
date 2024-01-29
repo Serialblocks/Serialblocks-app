@@ -1,7 +1,28 @@
 import { shared } from "use-broadcast-ts";
-import { create } from "zustand";
 import { combine, persist } from "zustand/middleware";
-import { socket } from "@/api/socket";
+import { produce } from "immer";
+import { toast } from "@/components/ui/use-toast";
+import { useSerialStore } from "@/store/Serialstore";
+import { create } from "zustand";
+import { useSocketStore } from "@/store/SocketStore";
+
+const initialPortConfig = {
+  path: "path/to/port",
+  baudRate: 0,
+  delimiter: "\r\n",
+  EOL: "\n",
+  dataBits: 8,
+  lock: true,
+  stopBits: 1,
+  parity: "",
+  rtscts: false,
+  xon: false,
+  xoff: false,
+  xany: false,
+  hupcl: true,
+};
+// https://serialport.io/docs/api-bindings-cpp#list
+
 const userDataInitialState = {
   isLoggedIn: false,
   First_Name: "",
@@ -12,26 +33,75 @@ const userDataInitialState = {
   Theme: window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light",
+  notifications: [],
+  portConfig: initialPortConfig,
 };
 
 const mutations = (setState, getState) => {
   return {
-    clearUserData() {
+    updateConfig(props) {
+      setState(
+        produce((state) => {
+          for (const [key, value] of Object.entries(props)) {
+            state.portConfig[key] = value;
+          }
+        }),
+      );
+    },
+    pushNotification({ title, description }) {
+      setState((state) => ({
+        notifications: [
+          ...state.notifications,
+          {
+            id: crypto.randomUUID(),
+            timestamp: Date.now(),
+            title,
+            description,
+          },
+        ],
+      }));
+      toast({ title, description, className: "mt-[0.15rem]" });
+    },
+    async clearUserData() {
       setState(userDataInitialState);
+      getState().updateAuth();
+      getState().handleConnection({
+        closeOpenedPort: true,
+        action: "DISCONNECT",
+      });
     },
     updateUserData(UserData) {
-      socket.io.uri = UserData.RemoteUrl;
-      if (socket.connected) {
-        socket.disconnect();
-        socket.auth = {
-          ...socket.auth,
-          DisplayName: UserData.DisplayName,
-        };
-        socket.connect();
-      } else {
-        socket.connect();
-      }
       setState({ ...UserData });
+      getState().updateAuth();
+      getState().handleConnection({ closeOpenedPort: true, action: "RESTART" });
+    },
+    updateAuth() {
+      const socket = useSocketStore.getState().socket;
+      socket.io.uri = getState().RemoteUrl;
+      socket.auth = {
+        DisplayName: getState().DisplayName,
+        ...getState().portConfig,
+      };
+    },
+    async handleConnection({ closeOpenedPort = false, action = "RESTART" }) {
+      const closePort = useSerialStore.getState().serialActions.closePort;
+      const isPortOpen = useSerialStore.getState().isPortOpen;
+      const { connect, disconnect, restart } = useSocketStore.getState();
+
+      if (isPortOpen && closeOpenedPort) {
+        await closePort();
+      }
+      switch (action) {
+        case "RESTART":
+          restart();
+          break;
+        case "CONNECT":
+          connect();
+          break;
+        case "DISCONNECT":
+          disconnect();
+          break;
+      }
     },
   };
 };

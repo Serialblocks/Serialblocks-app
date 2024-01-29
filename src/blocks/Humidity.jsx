@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Droplets } from "lucide-react";
 import Status from "@/components/ui/Status";
-import { useStore } from "@/store/Serialstore";
+import { useSerialStore } from "@/store/Serialstore";
 const Humidity = () => {
-  const { value, timestamp, interval } = useStore(
+  const { value, timestamp, interval } = useSerialStore(
     (store) => store.serialData.humidity,
   );
-  const isPortOpen = useStore((store) => store.isPortOpen);
+  const isPortOpen = useSerialStore((store) => store.isPortOpen);
   return (
     <Card className="col-span-3 row-span-2 min-h-[10rem]">
       <CardHeader className="p-4 pb-0">

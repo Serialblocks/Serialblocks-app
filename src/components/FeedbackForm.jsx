@@ -17,7 +17,7 @@ import LoveItEmoji from "@/assets/emojis/LoveItEmoji.svg?react";
 import ItsOkayEmoji from "@/assets/emojis/ItsOkayEmoji.svg?react";
 import MehEmoji from "@/assets/emojis/MehEmoji.svg?react";
 import NotGreatEmoji from "@/assets/emojis/NotGreatEmoji.svg?react";
-import { useStore } from "@/store/Serialstore";
+import { useSerialStore } from "@/store/Serialstore";
 import { useUserStore } from "@/store/UserStore";
 
 const FeedbackForm = ({ setStatus, isLoading, SUBMIT_STATUS }) => {
@@ -49,7 +49,7 @@ const FeedbackForm = ({ setStatus, isLoading, SUBMIT_STATUS }) => {
       setStatus(SUBMIT_STATUS.SUCCESS);
     } catch (e) {
       setStatus(SUBMIT_STATUS.ERROR);
-      useStore.setState({
+      useSerialStore.setState({
         toastContent: {
           title: "Error",
           content:

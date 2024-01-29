@@ -23,9 +23,7 @@ import { useUserStore } from "@/store/UserStore";
 import DeleteDataAlert from "@/components/DeleteDataAlert";
 
 const UserNav = () => {
-  const { DisplayName, Theme, Email, updateUserData } = useUserStore(
-    (store) => store,
-  );
+  const { DisplayName, Theme, Email, updateUserData } = useUserStore();
   const clearUserData = useUserStore((store) => store.clearUserData);
   return (
     <DropdownMenu modal={false}>

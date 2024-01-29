@@ -80,14 +80,13 @@ const EditProfileForm = ({ formId, setOpen }) => {
   function onSubmit(data) {
     updateUserData({ isLoggedIn: true, ...data });
     setOpen(false);
-    // restart();
   }
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-cols-2 gap-x-2 gap-y-2"
+        className="grid grid-cols-2 gap-x-2 gap-y-2.5"
         id={formId}
       >
         <FormField
@@ -99,7 +98,6 @@ const EditProfileForm = ({ formId, setOpen }) => {
               <FormControl>
                 <Input placeholder="John" {...field} />
               </FormControl>
-
               <FormMessage />
             </FormItem>
           )}
@@ -164,7 +162,8 @@ const EditProfileForm = ({ formId, setOpen }) => {
               <FormDescription>
                 Click
                 <a href="#" className="text-sky-600">
-                  here
+                  {" "}
+                  here{" "}
                 </a>
                 to know how to get the remote url
               </FormDescription>
@@ -181,7 +180,7 @@ const EditProfileForm = ({ formId, setOpen }) => {
               <FormLabel>Theme</FormLabel>
               <FormMessage />
               <FormDescription>
-                Select the theme for the dashboard.
+                Select a theme for the dashboard.
               </FormDescription>
               <RadioGroup
                 onValueChange={field.onChange}

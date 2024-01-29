@@ -10,15 +10,16 @@ import {
 } from "@/blocks";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import Notification from "@/components/Notification";
-import { useStore } from "@/store/Serialstore";
+import { Toaster } from "@/components/ui/toaster";
 import { useUserStore } from "@/store/UserStore";
-const App = () => {
-  const isWsConnected = useStore((store) => store.isWsConnected);
-  const { disconnect, closePort } = useStore((store) => store.serialActions);
-  const Theme = useUserStore((store) => store.Theme);
-  const isLoggedIn = useUserStore((store) => store.isLoggedIn);
+import { useSocketStore } from "@/store/SocketStore";
 
+const App = () => {
+  const Theme = useUserStore((store) => store.Theme);
+  const updateAuth = useUserStore((store) => store.updateAuth);
+  const socket = useSocketStore((store) => store.socket);
+  const handleConnection = useUserStore((store) => store.handleConnection);
+  const isLoggedIn = useUserStore((store) => store.isLoggedIn);
   useLayoutEffect(() => {
     const documentClassList = document.documentElement.classList;
     if (Theme === "dark") {
@@ -29,11 +30,13 @@ const App = () => {
   }, [Theme]);
   // cleanup for when the component unmounts/page closes or refreshes
   useEffect(() => {
+    if (isLoggedIn) {
+      updateAuth();
+      handleConnection({ closeOpenedPort: false, action: "CONNECT" });
+    }
     const cleanup = () => {
-      if (isWsConnected) {
-        //TODO: Disconnect event listeners
-        closePort();
-        disconnect();
+      if (socket.connected) {
+        handleConnection({ closeOpenedPort: true, action: "DISCONNECT" });
       }
     };
 
@@ -41,7 +44,7 @@ const App = () => {
     return () => {
       window.removeEventListener("beforeunload", cleanup);
     };
-  }, [isWsConnected]);
+  }, []);
 
   return (
     <div className="container flex flex-col gap-y-8 rounded-lg border border-border p-0">
@@ -56,7 +59,7 @@ const App = () => {
         <Humidity />
         <Footer />
       </main>
-      <Notification />
+      <Toaster />
     </div>
   );
 };
