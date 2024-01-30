@@ -71,7 +71,13 @@ const mutations = (setState, getState) => {
       });
     },
     updateUserData(UserData) {
+      const socket = useSocketStore.getState().socket;
       setState({ ...UserData });
+      if (
+        socket.auth.DisplayName === getState().DisplayName &&
+        socket.io.uri === getState().RemoteUrl
+      )
+        return;
       getState().updateAuth();
       getState().handleConnection({ closeOpenedPort: true, action: "RESTART" });
     },
