@@ -74,7 +74,7 @@ const mutations = (setState, getState) => {
       const socket = useSocketStore.getState().socket;
       setState({ ...UserData });
       if (
-        socket.auth.DisplayName === getState().DisplayName &&
+        socket.auth?.DisplayName === getState().DisplayName &&
         socket.io.uri === getState().RemoteUrl
       )
         return;
