@@ -2,8 +2,8 @@
   "name": "SerialBlocks-client",
   "type": "module",
   "scripts": {
-    "client": "vite --host",
-    "preview": "vite preview --host",
+    "client:dev": "vite --host",
+    "client:prod": "vite preview --host",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
