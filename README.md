@@ -1,14 +1,14 @@
 # Table of contents
 
 
-- **[introduction](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#introduction)**
-- [Tech Stack](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#project-uses-the-following-stack)
-- [Features](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#features)
-- [Getting started](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#getting-started)
-    - [Installation](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#installation)
-    - [Usage](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#usage)
-- [Contributing](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#contributing)
-- [License](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#license)
+- **[introduction](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#introduction)**
+- [Tech Stack](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#project-uses-the-following-stack)
+- [Features](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#features)
+- [Getting started](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#getting-started)
+    - [Installation](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#installation)
+    - [Usage](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#usage)
+- [Contributing](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#contributing)
+- [License](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#license)
 
 # **Introduction**
 
@@ -21,7 +21,7 @@ Built with❤︎by [ahmad ghoniem](https://twitter.com/yoshuawuyts) and [cont
 # project uses the following stack:
 
 
-[(Back to top)](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#table-of-contents)
+[(Back to top)](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#table-of-contents)
 
 ## 1. Client-side (Serialblocks-app)
 
@@ -40,7 +40,7 @@ Built with❤︎by [ahmad ghoniem](https://twitter.com/yoshuawuyts) and [cont
 # Features[](https://docs.amplication.com/#key-features-of-amplication)
 
 
-[(Back to top)](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#table-of-contents)
+[(Back to top)](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#table-of-contents)
 
 - communicate with serial port connected to your machine , a machine on the same network or even a remote machine!
 - list connected serial ports
@@ -66,7 +66,7 @@ Built with❤︎by [ahmad ghoniem](https://twitter.com/yoshuawuyts) and [cont
 # Getting Started
 
 
-[(Back to top)](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#table-of-contents)
+[(Back to top)](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#table-of-contents)
 
 Serialblocks is using **Multi-Repo structure** where the frontend is in [serialblocks-app](https://github.com/Serialblocks/Serialblocks-app) while backend is in [serialblocks-local](https://github.com/Serialblocks/Serialblocks-local)<br />
 First, in order to use serialblocks you will need to be running Serialblocks-local on your machine.
@@ -155,7 +155,7 @@ npm run client:dev
 ## **Usage**
 
 
-[(Back to top)](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#table-of-contents)
+[(Back to top)](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#table-of-contents)
 
 After you click the get started button and add the remote url provided by localtunnel or Vs Code local port forwarding<br />
 you get to communicate with the server through socket connection made easy by [Socket.IO](https://socket.io/)<br />
@@ -182,7 +182,7 @@ accompanied by a refresh interval of 1000 milliseconds that the idle indicator c
 # **Contributing**
 
 
-[(Back to top)](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#table-of-contents)
+[(Back to top)](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#table-of-contents)
 
 Serialblocks is an open-source project. We are committed to a fully transparent development process and highly appreciate any contributions.<br />
 Whether you are helping us fix bugs, proposing new features, improving our documentation.<br /> 
@@ -194,7 +194,7 @@ Please refer to our [contribution guidelines](https://github.com/Serialblocks/.
 # License
 
 
-[(Back to top)](https://github.com/Serialblocks/Serialblocks-app/blob/main/README.md#table-of-contents)
+[(Back to top)](https://github.com/Serialblocks/Serialblocks-app?tab=readme-ov-file#table-of-contents)
 
 This project is licensed under the [GPL-3.0 license](https://www.tldrlegal.com/license/gnu-general-public-license-v3-gpl-3).
 
