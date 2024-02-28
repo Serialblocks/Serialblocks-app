@@ -21,12 +21,21 @@ import { ChevronDown } from "lucide-react";
 import EditUserProfile from "@/components/EditUserProfile";
 import { useUserStore } from "@/store/UserStore";
 import DeleteDataAlert from "@/components/DeleteDataAlert";
+import { useState } from "react";
 
-const UserNav = () => {
+const UserNav = ({ setEditOpen }) => {
   const { DisplayName, Theme, Email, updateUserData } = useUserStore();
   const clearUserData = useUserStore((store) => store.clearUserData);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    setEditOpen((pre) => !pre);
+  };
+
   return (
-    <DropdownMenu modal={false}>
+    <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen} modal={false}>
       <DropdownMenuTrigger asChild>
         <div className="flex flex-row-reverse items-center gap-1">
           <Button
@@ -49,16 +58,14 @@ const UserNav = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <EditUserProfile
-            TriggerComponent={
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                Edit Profile
-              </DropdownMenuItem>
-            }
-            title="Edit Profile"
-            description="edit your profile and click save when you are done"
-            formId="EditProfileForm"
-          />
+          <DropdownMenuItem
+            onSelect={(e) => {
+              e.preventDefault();
+              closeMenu();
+            }}
+          >
+            Edit Profile
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -92,3 +99,9 @@ const UserNav = () => {
   );
 };
 export default UserNav;
+
+<EditUserProfile
+  title="Edit Profile"
+  description="edit your profile and click save when you are done"
+  formId="EditProfileForm"
+/>;
