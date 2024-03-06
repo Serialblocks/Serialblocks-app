@@ -7,21 +7,29 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { DialogTrigger } from "@radix-ui/react-dialog";
 
-const EditUserProfile = ({ TriggerComponent, title, description, formId }) => {
-  const [open, setOpen] = useState(false);
+const EditUserProfile = ({
+  title,
+  description,
+  formId,
+  setEditOpen,
+  openEdit,
+  TriggerComponent,
+}) => {
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{TriggerComponent}</DialogTrigger>
+    <Dialog open={openEdit} onOpenChange={setEditOpen}>
+      {TriggerComponent && (
+        <DialogTrigger asChild>{TriggerComponent}</DialogTrigger>
+      )}
+
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <EditProfileForm formId={formId} setOpen={setOpen} />
+        <EditProfileForm formId={formId} setOpen={setEditOpen} />
         <DialogFooter className="mt-2">
           <Button type="submit" form={formId}>
             Save changes
