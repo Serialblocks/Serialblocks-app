@@ -23,11 +23,12 @@ import { useUserStore } from "@/store/UserStore";
 import DeleteDataAlert from "@/components/DeleteDataAlert";
 import { useState } from "react";
 
-const UserNav = ({ setEditOpen }) => {
+const UserNav = () => {
   const { DisplayName, Theme, Email, updateUserData } = useUserStore();
   const clearUserData = useUserStore((store) => store.clearUserData);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openEdit, setEditOpen] = useState(false);
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -95,13 +96,14 @@ const UserNav = ({ setEditOpen }) => {
           </DropdownMenuItem>
         </DeleteDataAlert>
       </DropdownMenuContent>
+      <EditUserProfile
+        title="Edit Profile"
+        description="edit your profile and click save when you are done"
+        formId="EditProfileForm"
+        openEdit={openEdit}
+        setEditOpen={setEditOpen}
+      />
     </DropdownMenu>
   );
 };
 export default UserNav;
-
-<EditUserProfile
-  title="Edit Profile"
-  description="edit your profile and click save when you are done"
-  formId="EditProfileForm"
-/>;
