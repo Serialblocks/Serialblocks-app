@@ -16,9 +16,11 @@
 Serialblocks is an open-source project that combines web development with embedded systems<br />
 Communicate with a real hardware like an Arduino through an interactive web-based interface.
 
-Built with❤︎by [ahmad ghoniem](https://twitter.com/ghoniemcodes) and [contributors](https://github.com/Serialblocks/Serialblocks-app/graphs/contributors)
+Built with ❤︎ by [ahmad ghoniem](https://twitter.com/ghoniemcodes) and [contributors](https://github.com/Serialblocks/Serialblocks-app/graphs/contributors)
 
-### [see in action](https://twitter.com/ghoniemcodes/status/1764809175995957482)
+![132](https://github.com/user-attachments/assets/b5f50183-845d-4641-869a-3a12314a6eda)
+
+## [Also see in action](https://twitter.com/ghoniemcodes/status/1764809175995957482)
 # project uses the following stack:
 
 
